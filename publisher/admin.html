@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MINTRO admin</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0c0e; --panel: #121417; --panel-2: #181b1f; --line: rgba(255,255,255,.08); --line-2: rgba(255,255,255,.15);
+    --ink: #f1f5f3; --ink-2: #a3abad; --ink-3: #6a7376; --mint: #3ddc97; --mint-ink: #032417; --mint-soft: rgba(61,220,151,.12);
+    --amber: #f3b04d; --red: #ff7b6f; --gold: #f2c46d;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  header { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 22px; padding: 0 28px; height: 60px;
+           background: rgba(11,12,14,.92); border-bottom: 1px solid var(--line); backdrop-filter: blur(10px); }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .22em; font-size: 13px; }
+  .brand i { width: 12px; height: 12px; border-radius: 3px; rotate: 45deg; background: linear-gradient(135deg, #a6f7d2, var(--mint)); }
+  .brand span { letter-spacing: 0; font-weight: 500; color: var(--ink-3); margin-left: 4px; }
+  nav { display: flex; gap: 4px; }
+  nav button { background: none; border: 0; padding: 8px 14px; border-radius: 99px; color: var(--ink-2); }
+  nav button.on { background: var(--panel-2); color: var(--ink); }
+  nav b { display: inline-grid; place-items: center; min-width: 18px; height: 18px; margin-left: 6px; padding: 0 5px; border-radius: 99px; background: var(--mint); color: var(--mint-ink); font-size: 11px; }
+  .bar { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .changes { color: var(--ink-3); font-size: 13px; }
+  .changes.dirty { color: var(--amber); }
+  .btn { height: 34px; padding: 0 14px; border-radius: 9px; border: 1px solid var(--line-2); background: var(--panel-2); }
+  .btn:hover { border-color: rgba(255,255,255,.3); }
+  .btn.primary { background: var(--mint); color: var(--mint-ink); border: 0; font-weight: 600; }
+  .btn.danger { color: var(--red); }
+  .btn:disabled { opacity: .45; cursor: default; }
+  main { padding: 26px 28px 80px; max-width: 1280px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -.02em; }
+  .lede { color: var(--ink-2); margin: 0 0 20px; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; background: var(--panel-2); }
+  tr:last-child td { border-bottom: 0; }
+  td small { display: block; color: var(--ink-3); }
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 12px; background: var(--panel-2); color: var(--ink-2); white-space: nowrap; }
+  .pill.new { background: var(--mint-soft); color: var(--mint); } .pill.featured, .pill.awaiting_payment { background: rgba(243,176,77,.12); color: var(--amber); }
+  .pill.listed { background: var(--mint-soft); color: var(--mint); } .pill.rejected, .pill.delisted { background: rgba(255,123,111,.1); color: var(--red); }
+  .pill.paused { color: var(--amber); } .pill.promo { color: var(--gold); }
+  a { color: var(--mint); }
+  .acts select { height: 28px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--line-2); padding: 0 8px; }
+  .acts { display: flex; gap: 6px; flex-wrap: wrap; }
+  .acts .btn { height: 28px; font-size: 12.5px; padding: 0 10px; }
+  .empty { padding: 40px; text-align: center; color: var(--ink-3); background: var(--panel); border: 1px dashed var(--line-2); border-radius: 12px; }
+  .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
+  .toolbar select { height: 34px; border-radius: 9px; background: var(--panel-2); border: 1px solid var(--line-2); padding: 0 10px; }
+  /* editor */
+  .drawer { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; z-index: 10; }
+  .drawer.open { display: block; }
+  .drawer > div { position: absolute; top: 0; right: 0; bottom: 0; width: min(720px, 100%); background: var(--bg); border-left: 1px solid var(--line-2); overflow-y: auto; padding: 24px 26px 100px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  .grid .full { grid-column: 1 / -1; }
+  label.f { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; color: var(--ink-2); }
+  label.f input, label.f select, label.f textarea { background: var(--panel); border: 1px solid var(--line-2); border-radius: 9px; padding: 8px 10px; color: var(--ink); }
+  label.f textarea { min-height: 64px; resize: vertical; }
+  label.f input:focus, label.f select:focus, label.f textarea:focus { outline: 2px solid var(--mint); outline-offset: 1px; }
+  fieldset { border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin: 16px 0 0; }
+  legend { padding: 0 6px; color: var(--ink-3); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; }
+  .pool { display: grid; grid-template-columns: 1.1fr 1.6fr .6fr .5fr 1fr auto; gap: 8px; margin-bottom: 8px; align-items: end; }
+  .pool label.f { font-size: 11.5px; }
+  .checks { list-style: none; padding: 0; margin: 14px 0 0; }
+  .checks li { padding: 7px 10px; border-radius: 8px; margin-bottom: 4px; background: var(--panel); font-size: 13px; }
+  .checks li::before { font-weight: 700; margin-right: 8px; }
+  .checks .ok::before { content: "✓"; color: var(--mint); } .checks .warn::before { content: "!"; color: var(--amber); } .checks .fail::before { content: "✕"; color: var(--red); }
+  .foot { position: sticky; bottom: -100px; display: flex; gap: 10px; justify-content: flex-end; padding: 16px 0 0; margin-top: 18px; border-top: 1px solid var(--line); background: var(--bg); }
+  .hint { color: var(--ink-3); font-size: 12.5px; margin: 6px 0 0; }
+  .log { white-space: pre-wrap; font: 12.5px/1.6 ui-monospace, Consolas, monospace; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; color: var(--ink-2); }
+  .toast { position: fixed; left: 50%; bottom: 24px; translate: -50% 0; background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 20; max-width: 80vw; }
+  .toast.show { opacity: 1; }
+  .req-msg { color: var(--ink-2); font-size: 13px; max-width: 420px; }
+  .settings { max-width: 560px; display: grid; gap: 14px; }
+  .settings h2 { font-size: 16px; margin: 18px 0 0; }
+  /* sign-in */
+  #auth { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; background:
+          radial-gradient(60% 50% at 50% 40%, rgba(61,220,151,.08), transparent), var(--bg); }
+  #auth[hidden] { display: none; }
+  .auth-card { width: min(380px, 92vw); padding: 30px 28px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line-2);
+               box-shadow: 0 40px 100px -40px #000; display: grid; gap: 14px; }
+  .auth-card .brand { justify-content: center; margin-bottom: 4px; }
+  .auth-card h1 { text-align: center; font-size: 19px; }
+  .auth-card p { margin: 0; color: var(--ink-2); font-size: 13px; text-align: center; }
+  .auth-card .btn { height: 40px; }
+  .auth-err { color: var(--red); font-size: 13px; min-height: 18px; text-align: center; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><i></i>MINTRO<span>admin</span></div>
+  <nav>
+    <button data-tab="requests" class="on">Requests<b id="newCount" hidden></b></button>
+    <button data-tab="listings">Listings</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
+  <div class="bar">
+    <span class="changes" id="changes">No unpublished changes</span>
+    <button class="btn" id="previewBtn">Preview on my PC</button>
+    <button class="btn primary" id="publishBtn">Publish</button>
+    <button class="btn" id="signOut" title="Sign out of the admin dashboard">Sign out</button>
+  </div>
+</header>
+
+<div id="auth" hidden>
+  <form class="auth-card" id="authForm" autocomplete="on">
+    <div class="brand"><i></i>MINTRO<span>admin</span></div>
+    <h1 id="authTitle">Sign in</h1>
+    <p id="authLede">Only the MINTRO admin can use this dashboard.</p>
+    <input type="text" name="username" value="admin" autocomplete="username" hidden>
+    <label class="f">Admin password<input id="authPass" type="password" autocomplete="current-password" required></label>
+    <label class="f" id="authConfirmWrap" hidden>Repeat it<input id="authConfirm" type="password" autocomplete="new-password"></label>
+    <div class="auth-err" id="authErr"></div>
+    <button class="btn primary" type="submit" id="authGo">Sign in</button>
+  </form>
+</div>
+
+<main>
+  <section data-panel="requests">
+    <h1>Listing requests</h1>
+    <p class="lede">From the website's "List your coin" form. Review one to turn it into a listing.</p>
+    <div class="toolbar"><select id="reqFilter"><option value="open">Open</option><option value="all">All</option>
+      <option value="new">New</option><option value="reviewing">Reviewing</option><option value="awaiting_payment">Awaiting payment</option>
+      <option value="listed">Listed</option><option value="rejected">Rejected</option></select>
+      <button class="btn" id="reqReload">Reload</button></div>
+    <div id="reqTable"></div>
+  </section>
+
+  <section data-panel="listings" hidden>
+    <h1>Listings</h1>
+    <p class="lede">What every installed MINTRO gets after you publish. Paused and delisted coins stay here for the record.</p>
+    <div class="toolbar"><button class="btn primary" id="addCoin">Add coin</button></div>
+    <div id="listTable"></div>
+  </section>
+
+  <section data-panel="settings" hidden>
+    <h1>Settings</h1>
+    <p class="lede">Kept on this PC only (%USERPROFILE%\MINTRO-publisher\admin.json).</p>
+    <div class="settings">
+      <label class="f">Stats service URL<input id="setUrl" placeholder="https://mintro-stats.you.workers.dev"></label>
+      <label class="f">Admin token<input id="setToken" type="password" placeholder="the ADMIN_TOKEN secret you set with wrangler"></label>
+      <div><button class="btn primary" id="saveSettings">Save</button></div>
+      <p class="hint" id="setInfo"></p>
+      <h2>Admin password</h2>
+      <label class="f">Current password<input id="pwCurrent" type="password" autocomplete="current-password"></label>
+      <label class="f">New password (12 characters or more)<input id="pwNew" type="password" autocomplete="new-password"></label>
+      <div><button class="btn" id="changePw">Change password</button></div>
+    </div>
+  </section>
+</main>
+
+<div class="drawer" id="drawer"><div>
+  <h1 id="edTitle">Listing</h1>
+  <p class="lede" id="edFrom"></p>
+  <div class="grid">
+    <label class="f">Ticker<input id="f_symbol" maxlength="10"></label>
+    <label class="f">Name<input id="f_name" maxlength="40"></label>
+    <label class="f">Plan<select id="f_tier"><option value="standard">Standard: in the catalog, scored normally</option>
+      <option value="featured">Featured: guaranteed share of mining time</option><option value="promo">Promo: Sponsored box, not mined</option></select></label>
+    <label class="f" id="shareWrap">Guaranteed share of mining time (%)<input id="f_share" type="number" min="1" max="10" step="1"></label>
+    <label class="f">Status<select id="f_status"><option value="listed">Listed</option><option value="paused">Paused</option><option value="delisted">Delisted</option></select></label>
+    <label class="f">Listed until (optional)<input id="f_until" type="date"></label>
+    <label class="f full">Pitch, shown on the coin (200 characters)<textarea id="f_pitch" maxlength="200"></textarea></label>
+  </div>
+  <fieldset id="mineSet"><legend>Mining</legend>
+    <div class="grid">
+      <label class="f">Where it's mined<select id="f_source"><option value="rplant">On the rplant pool (network data from rplant)</option>
+        <option value="custom">Its own pool</option></select></label>
+      <label class="f" id="algoWrap">Algorithm<select id="f_algo"></select></label>
+    </div>
+    <div id="customSet">
+      <p class="hint">Pools, first is used first. Login: {address} is the miner's wallet, {worker} is "mintro".</p>
+      <div id="pools"></div>
+      <button class="btn" id="addPool">Add pool</button>
+      <div class="grid" style="margin-top:12px">
+        <label class="f">Network hashrate (H/s)<input id="n_hashrate" type="number" min="0"></label>
+        <label class="f">Block time (s)<input id="n_block_time" type="number" min="0"></label>
+        <label class="f">Block reward (coins)<input id="n_reward" type="number" min="0" step="any"></label>
+        <label class="f">Pool minimum payout (coins)<input id="n_min_payout" type="number" min="0" step="any"></label>
+        <label class="f">Pool fee (0.01 = 1%)<input id="n_fee" type="number" min="0" max="0.2" step="0.001"></label>
+        <label class="f">Price in USD (blank = no market)<input id="n_price_usd" type="number" min="0" step="any"></label>
+        <label class="f">Active miners<input id="n_miners" type="number" min="0"></label>
+        <label class="f">Network API (optional, https)<input id="f_network_api" placeholder="returns the same fields as JSON"></label>
+      </div>
+    </div>
+  </fieldset>
+  <fieldset><legend>Links</legend>
+    <div class="grid">
+      <label class="f">Website<input id="l_site" placeholder="https://"></label>
+      <label class="f">Wallet download<input id="l_wallet" placeholder="https://"></label>
+      <label class="f">Explorer<input id="l_be" placeholder="https://"></label>
+      <label class="f">Markets (one per line: Name | https://…)<textarea id="f_markets"></textarea></label>
+    </div>
+  </fieldset>
+  <ul class="checks" id="checks"></ul>
+  <div class="foot">
+    <button class="btn danger" id="edDelete">Remove</button>
+    <span style="flex:1"></span>
+    <button class="btn" id="edCheck">Run checks</button>
+    <button class="btn" id="edCancel">Cancel</button>
+    <button class="btn primary" id="edSave">Save to list</button>
+  </div>
+</div></div>
+
+<div class="drawer" id="pubDrawer"><div>
+  <h1>Publish listings</h1>
+  <p class="lede" id="pubSummary"></p>
+  <label class="f">Commit message (optional)<input id="pubMsg" placeholder="e.g. List NOVA (featured, 30 days)"></label>
+  <p><label><input type="checkbox" id="pubPush" checked> Push to GitHub now (every running MINTRO picks it up within about 15 minutes)</label></p>
+  <div class="log" id="pubLog" hidden></div>
+  <div class="foot"><button class="btn" id="pubCancel">Close</button><button class="btn primary" id="pubGo">Sign and publish</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+let STATE = null, WORK = [], REQUESTS = [], editing = null, fromRequest = null, previewOn = false;
+
+async function api(path, body) {
+  const r = await fetch(path, body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await r.json();
+  if (r.status === 401 && data.signin) { showAuth(true); throw new Error("Signed out. Sign in again."); }
+  if (!r.ok || data.error) throw new Error(data.error || r.status);
+  return data;
+}
+
+// ---- sign-in
+let firstRun = false;
+function showAuth(hasPassword) {
+  firstRun = !hasPassword;
+  $("#authTitle").textContent = firstRun ? "Create the admin password" : "Sign in";
+  $("#authLede").textContent = firstRun ? "This dashboard is for the MINTRO admin only. Choose a password of 12 characters or more; you'll need it every time."
+    : "Only the MINTRO admin can use this dashboard.";
+  $("#authConfirmWrap").hidden = !firstRun;
+  $("#authPass").autocomplete = firstRun ? "new-password" : "current-password";
+  $("#authGo").textContent = firstRun ? "Create and sign in" : "Sign in";
+  $("#authErr").textContent = "";
+  $("#auth").hidden = false;
+  $("#authPass").value = ""; $("#authPass").focus();
+}
+$("#authForm").onsubmit = async (e) => {
+  e.preventDefault();
+  const password = $("#authPass").value;
+  if (firstRun && password !== $("#authConfirm").value) { $("#authErr").textContent = "The two passwords don't match."; return; }
+  $("#authGo").disabled = true;
+  try {
+    await api(firstRun ? "/api/setup" : "/api/login", { password });
+    $("#auth").hidden = true; $("#authConfirm").value = ""; await load();
+  } catch (err) { $("#authErr").textContent = err.message; }
+  finally { $("#authGo").disabled = false; }
+};
+$("#signOut").onclick = async () => { try { await api("/api/logout", {}); } catch { /* fine */ } showAuth(true); };
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 3600); }
+const today = () => new Date().toISOString().slice(0, 10);
+const plus = (days) => new Date(Date.now() + days * 864e5).toISOString().slice(0, 10);
+
+// ---- tabs
+$$("nav button").forEach((b) => b.onclick = () => {
+  $$("nav button").forEach((x) => x.classList.toggle("on", x === b));
+  $$("[data-panel]").forEach((p) => p.hidden = p.dataset.panel !== b.dataset.tab);
+});
+
+// ---- state and changes
+async function load() {
+  STATE = await api("/api/state");
+  WORK = structuredClone((STATE.draft && STATE.draft.coins) || STATE.published.coins || []);
+  $("#setUrl").value = STATE.settings.stats_url;
+  $("#setInfo").textContent = STATE.settings.has_token ? "An admin token is saved." : "No admin token saved yet.";
+  $("#f_algo").innerHTML = STATE.algos.map((a) => `<option>${esc(a)}</option>`).join("");
+  if (!STATE.key) toast("No publisher signing key on this PC: publishing won't work.");
+  renderList(); updateChanges(); loadRequests();
+}
+function diff() {
+  const pub = Object.fromEntries((STATE.published.coins || []).map((c) => [c.symbol, JSON.stringify(c)]));
+  const work = Object.fromEntries(WORK.map((c) => [c.symbol, JSON.stringify(c)]));
+  const added = Object.keys(work).filter((s) => !(s in pub)), removed = Object.keys(pub).filter((s) => !(s in work));
+  const changed = Object.keys(work).filter((s) => s in pub && pub[s] !== work[s]);
+  return { added, removed, changed, count: added.length + removed.length + changed.length };
+}
+function updateChanges() {
+  const d = diff(), el = $("#changes");
+  el.classList.toggle("dirty", d.count > 0);
+  el.textContent = d.count ? [d.added.length && `${d.added.length} added`, d.changed.length && `${d.changed.length} changed`, d.removed.length && `${d.removed.length} removed`].filter(Boolean).join(", ") + " · not published"
+    : `Published: serial ${STATE.published.serial || 0}`;
+  $("#publishBtn").disabled = !d.count;
+  $("#previewBtn").textContent = previewOn ? "Stop preview" : "Preview on my PC";
+}
+async function saveDraft() { updateChanges(); try { await api("/api/draft", { coins: WORK }); } catch (e) { toast(e.message); } }
+
+// ---- requests
+async function loadRequests() {
+  try { REQUESTS = (await api("/api/requests")).requests; }
+  catch (e) { $("#reqTable").innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+  const n = REQUESTS.filter((r) => r.status === "new").length;
+  $("#newCount").hidden = !n; $("#newCount").textContent = n;
+  renderRequests();
+}
+function renderRequests() {
+  const f = $("#reqFilter").value;
+  const rows = REQUESTS.filter((r) => f === "all" || (f === "open" ? !["listed", "rejected"].includes(r.status) : r.status === f));
+  if (!rows.length) { $("#reqTable").innerHTML = `<div class="empty">No requests here.</div>`; return; }
+  $("#reqTable").innerHTML = `<table><thead><tr><th>Received</th><th>Project</th><th>Plan</th><th>Mining</th><th>Contact</th><th>Status</th><th></th></tr></thead><tbody>`
+    + rows.map((r) => { const d = r.data; return `<tr data-id="${r.id}">
+      <td>${new Date(r.created * 1000).toLocaleDateString()}<small>#${r.id}</small></td>
+      <td><b>${esc(d.project)}</b> ${esc(d.symbol)}<small><a href="${esc(d.site)}" target="_blank" rel="noopener">${esc(d.site)}</a></small>${d.message ? `<div class="req-msg">${esc(d.message)}</div>` : ""}</td>
+      <td><span class="pill ${esc(d.plan)}">${esc(d.plan)}</span></td>
+      <td>${esc(d.algorithm)}<small>${d.source === "rplant" ? "on rplant" : esc(`${d.pool_host}:${d.pool_port}`)}</small></td>
+      <td>${esc(d.email)}<small>${esc(d.telegram || "")}</small></td>
+      <td><span class="pill ${esc(r.status)}">${esc(r.status.replace("_", " "))}</span>${r.note ? `<small>${esc(r.note)}</small>` : ""}</td>
+      <td><div class="acts"><button class="btn" data-act="review">Review</button>
+        <select data-act="status">${["new", "reviewing", "awaiting_payment", "listed", "rejected"].map((s) => `<option ${s === r.status ? "selected" : ""}>${s}</option>`).join("")}</select></div></td></tr>`; }).join("")
+    + `</tbody></table>`;
+  $$("#reqTable tr[data-id]").forEach((tr) => {
+    const req = REQUESTS.find((r) => r.id === +tr.dataset.id);
+    $("[data-act=review]", tr).onclick = () => openEditor(fromForm(req), req);
+    $("[data-act=status]", tr).onchange = async (e) => {
+      const note = prompt("Note for this request (kept private, in the stats service):", req.note || "") ?? req.note;
+      try { await api(`/api/requests/${req.id}`, { status: e.target.value, note }); toast("Request updated"); loadRequests(); } catch (err) { toast(err.message); }
+    };
+  });
+}
+function fromForm(r) {
+  const d = r.data, algo = STATE.algos.find((a) => a.toLowerCase() === String(d.algorithm).toLowerCase()) || STATE.algos[0];
+  const existing = WORK.find((c) => c.symbol === d.symbol);
+  if (existing) return existing;
+  return { symbol: d.symbol, name: d.project, tier: d.plan, status: "listed", until: plus(30), pitch: "",
+    min_share: d.plan === "featured" ? 0.05 : undefined, source: d.source, algo,
+    pools: d.source === "custom" ? [{ name: `${d.project} pool`, host: d.pool_host, port: +d.pool_port || 0, tls: d.pool_tls === "true", user: "{address}.{worker}" }] : undefined,
+    network: d.source === "custom" ? {} : undefined, links: { site: d.site, wallet: d.wallet || undefined, be: d.explorer || undefined } };
+}
+
+// ---- listings table
+function renderList() {
+  if (!WORK.length) { $("#listTable").innerHTML = `<div class="empty">No coins listed yet. Review a request, or Add coin.</div>`; return; }
+  const d = diff();
+  $("#listTable").innerHTML = `<table><thead><tr><th>Coin</th><th>Plan</th><th>Status</th><th>Until</th><th>Mined on</th><th></th></tr></thead><tbody>`
+    + [...WORK].sort((a, b) => a.symbol.localeCompare(b.symbol)).map((c) => `<tr data-s="${esc(c.symbol)}">
+      <td><b>${esc(c.symbol)}</b> ${esc(c.name)}${d.added.includes(c.symbol) ? ' <span class="pill new">new</span>' : d.changed.includes(c.symbol) ? ' <span class="pill featured">edited</span>' : ""}<small>${esc(c.pitch || "")}</small></td>
+      <td><span class="pill ${esc(c.tier)}">${esc(c.tier)}${c.tier === "featured" ? ` ${Math.round((c.min_share || 0) * 100)}%` : ""}</span></td>
+      <td><span class="pill ${esc(c.status)}">${esc(c.status)}</span></td>
+      <td>${esc(c.until || "open-ended")}${c.until && c.until < today() ? "<small>expired</small>" : ""}</td>
+      <td>${c.tier === "promo" ? "not mined" : c.source === "custom" ? esc(`${c.algo} · ${(c.pools || [])[0]?.host || "?"}`) : "rplant"}</td>
+      <td><div class="acts"><button class="btn" data-act="edit">Edit</button>
+        <button class="btn" data-act="extend">+30 days</button>
+        <button class="btn" data-act="toggle">${c.status === "listed" ? "Pause" : "List"}</button></div></td></tr>`).join("")
+    + `</tbody></table>`;
+  $$("#listTable tr[data-s]").forEach((tr) => {
+    const c = WORK.find((x) => x.symbol === tr.dataset.s);
+    $("[data-act=edit]", tr).onclick = () => openEditor(c);
+    $("[data-act=extend]", tr).onclick = () => { const base = c.until && c.until > today() ? new Date(c.until) : new Date(); c.until = new Date(+base + 30 * 864e5).toISOString().slice(0, 10); renderList(); saveDraft(); };
+    $("[data-act=toggle]", tr).onclick = () => { c.status = c.status === "listed" ? "paused" : "listed"; renderList(); saveDraft(); };
+  });
+}
+$("#addCoin").onclick = () => openEditor({ symbol: "", name: "", tier: "standard", status: "listed", until: plus(30), source: "rplant", links: {} });
+
+// ---- editor
+function openEditor(entry, request) {
+  editing = entry; fromRequest = request || null;
+  $("#edTitle").textContent = WORK.includes(entry) ? `Edit ${entry.symbol}` : "New listing";
+  $("#edFrom").textContent = request ? `From request #${request.id} (${request.data.email}). ${request.data.message || ""}` : "";
+  $("#edDelete").hidden = !WORK.includes(entry);
+  const n = entry.network || {}, l = entry.links || {};
+  $("#f_symbol").value = entry.symbol || ""; $("#f_name").value = entry.name || ""; $("#f_tier").value = entry.tier || "standard";
+  $("#f_share").value = entry.min_share ? Math.round(entry.min_share * 100) : 5; $("#f_status").value = entry.status || "listed";
+  $("#f_until").value = entry.until || ""; $("#f_pitch").value = entry.pitch || ""; $("#f_source").value = entry.source || "rplant";
+  $("#f_algo").value = entry.algo || STATE.algos[0]; $("#f_network_api").value = entry.network_api || "";
+  for (const k of ["hashrate", "block_time", "reward", "min_payout", "fee", "price_usd", "miners"]) $(`#n_${k}`).value = n[k] ?? "";
+  for (const k of ["site", "wallet", "be"]) $(`#l_${k}`).value = l[k] || "";
+  $("#f_markets").value = (entry.markets || []).map((m) => `${m.name} | ${m.url}`).join("\n");
+  $("#pools").innerHTML = ""; (entry.pools || [{}]).forEach(addPoolRow);
+  $("#checks").innerHTML = ""; sync(); $("#drawer").classList.add("open");
+}
+function addPoolRow(p = {}) {
+  const row = document.createElement("div"); row.className = "pool";
+  row.innerHTML = `<label class="f">Name<input data-k="name" value="${esc(p.name || "")}"></label>
+    <label class="f">Host<input data-k="host" value="${esc(p.host || "")}"></label>
+    <label class="f">Port<input data-k="port" type="number" value="${esc(p.port || "")}"></label>
+    <label class="f">TLS<select data-k="tls"><option value="true" ${p.tls ? "selected" : ""}>yes</option><option value="false" ${p.tls ? "" : "selected"}>no</option></select></label>
+    <label class="f">Login<input data-k="user" value="${esc(p.user || "{address}.{worker}")}"></label>
+    <button class="btn" title="Remove this pool">✕</button>`;
+  $("button", row).onclick = () => row.remove();
+  $("#pools").append(row);
+}
+$("#addPool").onclick = () => addPoolRow();
+function sync() {
+  const tier = $("#f_tier").value, custom = $("#f_source").value === "custom";
+  $("#shareWrap").hidden = tier !== "featured"; $("#mineSet").hidden = tier === "promo";
+  $("#customSet").hidden = !custom; $("#algoWrap").hidden = !custom;
+}
+$("#f_tier").onchange = $("#f_source").onchange = sync;
+function readEditor() {
+  const num = (id) => { const v = $(id).value.trim(); return v === "" ? undefined : Number(v); };
+  const e = { symbol: $("#f_symbol").value.trim().toUpperCase(), name: $("#f_name").value.trim(), tier: $("#f_tier").value,
+    status: $("#f_status").value, until: $("#f_until").value || undefined, pitch: $("#f_pitch").value.trim() || undefined };
+  if (e.tier === "featured") e.min_share = Math.min(Number($("#f_share").value) || 0, STATE.max_featured * 100) / 100;
+  if (e.tier !== "promo") {
+    e.source = $("#f_source").value;
+    if (e.source === "custom") {
+      e.algo = $("#f_algo").value;
+      e.pools = $$("#pools .pool").map((row) => { const g = (k) => $(`[data-k=${k}]`, row).value.trim();
+        return { name: g("name") || undefined, host: g("host"), port: Number(g("port")), tls: g("tls") === "true", user: g("user") || "{address}" }; })
+        .filter((p) => p.host);
+      e.network = Object.fromEntries(["hashrate", "block_time", "reward", "min_payout", "fee", "price_usd", "miners"].map((k) => [k, num(`#n_${k}`)]).filter(([, v]) => v !== undefined));
+      if ($("#f_network_api").value.trim()) e.network_api = $("#f_network_api").value.trim();
+    }
+  }
+  const links = Object.fromEntries(["site", "wallet", "be"].map((k) => [k, $(`#l_${k}`).value.trim()]).filter(([, v]) => v));
+  if (Object.keys(links).length) e.links = links;
+  const markets = $("#f_markets").value.split("\n").map((line) => line.split("|").map((x) => x.trim())).filter(([n, u]) => n && u).map(([name, url]) => ({ name, url }));
+  if (markets.length) e.markets = markets;
+  return JSON.parse(JSON.stringify(e));  // drops undefined fields
+}
+$("#edCheck").onclick = async () => {
+  $("#checks").innerHTML = "<li class='warn'>Checking… (pools are contacted live)</li>";
+  const e = readEditor(), all = [...WORK.filter((c) => c !== editing), e];
+  try { const r = await api("/api/check", { entry: e, all }); $("#checks").innerHTML = r.checks.map((c) => `<li class="${c.level}">${esc(c.text)}</li>`).join(""); }
+  catch (err) { $("#checks").innerHTML = `<li class="fail">${esc(err.message)}</li>`; }
+};
+$("#edSave").onclick = async () => {
+  const e = readEditor();
+  if (!/^[A-Z0-9]{2,10}$/.test(e.symbol) || !e.name) return toast("A ticker (2-10 letters or digits) and a name are needed.");
+  if (WORK.some((c) => c !== editing && c.symbol === e.symbol)) return toast(`${e.symbol} is already in the list.`);
+  const i = WORK.indexOf(editing);
+  if (i >= 0) WORK[i] = e; else WORK.push(e);
+  $("#drawer").classList.remove("open"); renderList(); await saveDraft();
+  if (fromRequest && fromRequest.status === "new") { try { await api(`/api/requests/${fromRequest.id}`, { status: "reviewing", note: fromRequest.note || "" }); loadRequests(); } catch { /* fine */ } }
+  toast(`${e.symbol} saved to the list. Preview or publish when ready.`);
+};
+$("#edDelete").onclick = () => {
+  if (!confirm(`Remove ${editing.symbol} from the list entirely? (Delisting keeps a record; this doesn't.)`)) return;
+  WORK = WORK.filter((c) => c !== editing); $("#drawer").classList.remove("open"); renderList(); saveDraft();
+};
+$("#edCancel").onclick = () => $("#drawer").classList.remove("open");
+
+// ---- preview and publish
+$("#previewBtn").onclick = async () => {
+  try { const r = await api(previewOn ? "/api/preview/stop" : "/api/preview", { coins: WORK }); previewOn = !previewOn; toast(r.message); updateChanges(); }
+  catch (e) { toast(e.message); }
+};
+$("#publishBtn").onclick = () => {
+  const d = diff();
+  $("#pubSummary").textContent = `Serial ${(STATE.published.serial || 0) + 1}: ${[d.added.length && `add ${d.added.join(", ")}`, d.changed.length && `update ${d.changed.join(", ")}`, d.removed.length && `remove ${d.removed.join(", ")}`].filter(Boolean).join("; ")}.`;
+  $("#pubLog").hidden = true; $("#pubGo").disabled = false; $("#pubDrawer").classList.add("open");
+};
+$("#pubCancel").onclick = () => $("#pubDrawer").classList.remove("open");
+$("#pubGo").onclick = async () => {
+  $("#pubGo").disabled = true;
+  try {
+    const r = await api("/api/publish", { coins: WORK, push: $("#pubPush").checked, message: $("#pubMsg").value });
+    $("#pubLog").hidden = false; $("#pubLog").textContent = r.log.join("\n");
+    previewOn = false; await load();
+  } catch (e) { $("#pubLog").hidden = false; $("#pubLog").textContent = e.message; $("#pubGo").disabled = false; }
+};
+
+// ---- settings
+$("#saveSettings").onclick = async () => {
+  try { await api("/api/settings", { stats_url: $("#setUrl").value, admin_token: $("#setToken").value }); $("#setToken").value = ""; toast("Saved"); load(); }
+  catch (e) { toast(e.message); }
+};
+$("#changePw").onclick = async () => {
+  try { await api("/api/password", { current: $("#pwCurrent").value, new: $("#pwNew").value }); $("#pwCurrent").value = $("#pwNew").value = ""; toast("Password changed"); }
+  catch (e) { toast(e.message); }
+};
+$("#reqFilter").onchange = renderRequests;
+$("#reqReload").onclick = loadRequests;
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") $$(".drawer").forEach((d) => d.classList.remove("open")); });
+(async () => {
+  const s = await (await fetch("/api/session")).json();
+  if (s.signed_in) load().catch((e) => toast(e.message)); else showAuth(s.has_password);
+})();
+</script>
+</body>
+</html>

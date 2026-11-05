@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MINTRO</title>
+<style>
+  :root {
+    --bg: #f6f6f3; --card: #ffffff; --ink: #191917; --muted: #6d6c66; --line: #e7e6e0;
+    --good: #12733f; --good-bg: #e9f5ee; --bad: #b02a20; --bad-bg: #fcefed;
+    --warn: #8a5800; --warn-bg: #fbf1dc; --btn: #191917; --btn-ink: #ffffff; --track: #ecebe6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110; --card: #1b1b1a; --ink: #ededea; --muted: #9b9a94; --line: #2c2c2a;
+      --good: #63d394; --good-bg: #14261b; --bad: #ff8b7e; --bad-bg: #2c1714;
+      --warn: #e5b45a; --warn-bg: #2a2112; --btn: #ededea; --btn-ink: #111110; --track: #2c2c2a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 940px; margin: 0 auto; padding: 24px 16px 48px; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .brand { font-weight: 750; letter-spacing: .14em; }
+  .status { background: none; border: 0; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; padding: 4px 0; }
+  .status:hover { color: var(--ink); }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+  .warn { color: var(--warn); }
+  .good { color: var(--good); }
+  .bad { color: var(--bad); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; margin-bottom: 14px; }
+
+  .verdict { border-left-width: 5px; }
+  .verdict.is-good { border-left-color: var(--good); }
+  .verdict.is-bad { border-left-color: var(--bad); }
+  .verdict .label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  .verdict h1 { margin: 6px 0 0; font-size: 24px; font-weight: 650; }
+  .verdict p { margin: 8px 0 0; }
+  .big { font-size: 42px; font-weight: 750; line-height: 1.15; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .big .unit { font-size: 18px; font-weight: 500; color: var(--muted); margin-left: 4px; }
+  .skeleton { height: 76px; margin-top: 10px; border-radius: 10px; background: linear-gradient(90deg, var(--track), var(--line), var(--track)); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  .controls { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px 28px; }
+  .rate { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding-top: 6px; }
+  .field { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 9px; padding: 0 10px; background: var(--bg); }
+  .field span { color: var(--muted); }
+  .field input { width: 76px; border: 0; background: none; color: var(--ink); font: inherit; font-weight: 600; padding: 7px 0 7px 4px; outline: none; font-variant-numeric: tabular-nums; }
+  .field:focus-within { border-color: var(--ink); }
+  select { font: inherit; font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 9px; padding: 7px 6px; }
+  .benchbox { flex: 1 1 280px; max-width: 420px; }
+  .btn { font: inherit; font-weight: 600; background: var(--btn); color: var(--btn-ink); border: 0; border-radius: 10px; padding: 10px 18px; cursor: pointer; }
+  .btn:disabled { opacity: .55; cursor: default; }
+  #benchStatus { margin-top: 8px; }
+  .bar { height: 6px; border-radius: 99px; background: var(--track); overflow: hidden; margin-bottom: 6px; }
+  .bar i { display: block; height: 100%; background: var(--ink); transition: width .6s ease; }
+
+  .tips { list-style: none; margin: 0 0 14px; padding: 0; }
+  .tips li { background: var(--warn-bg); color: var(--ink); border-radius: 10px; padding: 9px 14px; margin-bottom: 6px; font-size: 13.5px; }
+  .tips li::before { content: "•"; color: var(--warn); font-weight: 700; margin-right: 8px; }
+
+  .table-card { padding: 8px 10px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th { text-align: right; font-weight: 500; font-size: 12px; color: var(--muted); padding: 10px 10px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { text-align: right; padding: 11px 10px; border-bottom: 1px solid var(--line); vertical-align: top; white-space: nowrap; }
+  tr:last-child td { border-bottom: 0; }
+  th:first-child, td:first-child { text-align: left; white-space: normal; }
+  tr.pick td { background: var(--bg); }
+  .coin { font-weight: 600; }
+  .chip { display: inline-block; font-size: 11px; font-weight: 500; padding: 1px 8px; border-radius: 99px; background: var(--warn-bg); color: var(--warn); margin: 4px 4px 0 0; }
+  .chip.merge { background: var(--good-bg); color: var(--good); }
+  footer { margin-top: 18px; }
+  footer p { margin: 6px 0 0; }
+  @media (max-width: 640px) { .hide-s { display: none; } .big { font-size: 34px; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand">MINTRO</div>
+    <button id="status" class="status" title="Refresh live prices">Loading…</button>
+  </header>
+
+  <section id="verdict" class="card verdict">
+    <div class="label">Checking your computer and live prices…</div>
+    <div class="skeleton"></div>
+  </section>
+
+  <section class="card controls">
+    <div class="rate">
+      <span class="muted">Electricity</span>
+      <label class="field"><span id="sym">$</span><input id="rate" inputmode="decimal" autocomplete="off" aria-label="Electricity price per kWh"></label>
+      <select id="currency" aria-label="Currency"></select>
+      <span class="muted">per kWh</span>
+    </div>
+    <div class="benchbox">
+      <button id="bench" class="btn" disabled>Measure real speed</button>
+      <div id="benchStatus" class="small muted"></div>
+    </div>
+  </section>
+
+  <ul id="tips" class="tips"></ul>
+
+  <section class="card table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Coin</th>
+          <th>Your speed</th>
+          <th class="hide-s">Earns / day</th>
+          <th class="hide-s">Power / day</th>
+          <th>Profit / month</th>
+          <th class="hide-s" title="The highest electricity price per kWh at which this coin still makes money">Break-even / kWh</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+
+  <footer>
+    <div id="hw" class="small muted"></div>
+    <p class="small muted">Estimates from live network data (WhatToMine, CoinGecko), not guarantees. Coin prices and mining difficulty change every day. Not financial advice.</p>
+  </footer>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const CURRENCIES = ["USD", "EUR", "GBP", "INR", "CAD", "AUD", "JPY", "CNY", "BRL", "MXN", "ZAR", "NGN", "PKR", "BDT", "PHP", "IDR", "TRY", "RUB", "KRW", "CHF"];
+const BUSY = ["starting", "downloading", "verifying", "warming", "measuring"];
+let R = null, poll = null, rateTimer = null;
+
+async function api(path, body) {
+  const opts = body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
+  const res = await fetch(path, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  return data;
+}
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (v, opts) => new Intl.NumberFormat(undefined, { style: "currency", currency: R.currency, ...opts }).format(v);
+
+function money(v, digits = 2) {
+  const a = Math.abs(v);
+  if (a >= 100) return fmt(v, { maximumFractionDigits: 0 });
+  if (a >= 1) return fmt(v, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return a === 0 ? fmt(0) : fmt(v, { minimumSignificantDigits: digits, maximumSignificantDigits: digits });
+}
+const signed = (v) => (v > 0 ? "+" : "") + money(v);
+const amount = (n) => n.toLocaleString(undefined, n >= 100 ? { maximumFractionDigits: 0 }
+  : n >= 1 ? { maximumFractionDigits: 2 } : { maximumSignificantDigits: 3 });
+
+function speed(h) {
+  if (h >= 1e6) return (h / 1e6).toFixed(1) + " MH/s";
+  if (h >= 1e3) return (h / 1e3).toFixed(2) + " kH/s";
+  return Math.round(h) + " H/s";
+}
+
+function ago(s) {
+  if (s < 90) return "just now";
+  if (s < 3600) return `${Math.round(s / 60)} min ago`;
+  if (s < 86400) return `${Math.round(s / 3600)} h ago`;
+  return `${Math.round(s / 86400)} days ago`;
+}
+
+function symbol(cur) {
+  try {
+    return new Intl.NumberFormat(undefined, { style: "currency", currency: cur, currencyDisplay: "narrowSymbol" })
+      .formatToParts(0).find((p) => p.type === "currency").value;
+  } catch { return cur; }
+}
+
+async function load(refresh) {
+  try { render(await api("/api/report" + (refresh ? "?refresh=1" : ""))); }
+  catch (e) { showError(e.message); }
+}
+
+function render(r) {
+  R = r;
+  const st = $("#status");
+  st.textContent = r.market.stale ? `Offline · prices from ${ago(r.market.age_s)}` : `Live prices · updated ${ago(r.market.age_s)}`;
+  st.classList.toggle("warn", r.market.stale);
+
+  renderVerdict(r);
+
+  const input = $("#rate");
+  if (document.activeElement !== input) input.value = +r.rate.toPrecision(4);
+  $("#sym").textContent = symbol(r.currency);
+  const list = CURRENCIES.includes(r.currency) ? CURRENCIES : [r.currency, ...CURRENCIES];
+  $("#currency").innerHTML = list.map((c) => `<option${c === r.currency ? " selected" : ""}>${c}</option>`).join("");
+
+  renderBench(r.bench);
+  $("#tips").innerHTML = r.tips.map((t) => `<li>${esc(t)}</li>`).join("");
+  $("#rows").innerHTML = r.rows.map(rowHtml).join("");
+
+  const h = r.hardware;
+  $("#hw").textContent = [
+    h.cpu,
+    `${h.cores} cores / ${h.threads} threads`,
+    h.l3_mb ? `${h.l3_mb} MB L3 cache → ${h.rx_threads} RandomX threads` : null,
+    h.ram_gb ? `${h.ram_gb} GB RAM (${h.free_gb} GB free)` : null,
+    `GPU: ${h.gpu_kind}`,
+  ].filter(Boolean).join(" · ");
+}
+
+function renderVerdict(r) {
+  const b = r.best, v = $("#verdict");
+  if (!b) {
+    v.className = "card verdict";
+    v.innerHTML = `<div class="label">No coins could be estimated right now.</div>`;
+    return;
+  }
+  const ok = b.profit_day > 0;
+  const even = !ok && b.revenue_day >= 0.9 * b.cost_day;
+  const mined = b.parts.map((p) => `${amount(p.coins_day * 30)} ${esc(p.tag)}`).join(" + ");
+  const breakeven = !b.breakeven_rate ? "" : ok
+    ? `Stays profitable up to ${money(b.breakeven_rate, 3)}/kWh.`
+    : `It would pay off at ${money(b.breakeven_rate, 3)}/kWh or less.`;
+  v.className = "card verdict " + (ok ? "is-good" : "is-bad");
+  v.innerHTML = `
+    <div class="label">${ok ? "Best for this computer right now"
+      : even ? "About break-even at your electricity price" : "Mining doesn't pay at your electricity price"}</div>
+    <h1>${ok ? "" : "Closest: "}${esc(b.name)}</h1>
+    <div class="big ${ok ? "good" : "bad"}">${signed(b.profit_day * 30)}<span class="unit">/ month</span></div>
+    <p>Earns ${money(b.revenue_day)} a day (about ${mined} a month) while electricity costs ${money(b.cost_day)} a day. ${breakeven}</p>
+    <p class="small muted">Using your ${b.speed_source === "measured" ? "measured" : "estimated"} speed of ${speed(b.hps)} at about ${Math.round(b.watts)} W, after ${Math.round(r.fee * 100)}% fees.</p>`;
+}
+
+function rowHtml(x) {
+  const chips = (x.merged ? `<span class="chip merge">2 coins, same work</span>` : "")
+    + x.flags.map((f) => `<span class="chip">${esc(f)}</span>`).join("");
+  const source = { estimated: "estimate", calibrated: "calibrated", measured: "measured" }[x.speed_source];
+  return `<tr${R.best && x.name === R.best.name ? ' class="pick"' : ""}>
+    <td><div class="coin">${esc(x.name)} <span class="muted small">${esc(x.tag)}</span></div>${chips ? `<div>${chips}</div>` : ""}</td>
+    <td>${speed(x.hps)}<div class="small muted">${source}</div></td>
+    <td class="hide-s">${money(x.revenue_day)}</td>
+    <td class="hide-s">${money(x.cost_day)}</td>
+    <td class="${x.profit_day > 0 ? "good" : "bad"}"><b>${signed(x.profit_day * 30)}</b></td>
+    <td class="hide-s">${x.breakeven_rate ? money(x.breakeven_rate, 3) : "—"}</td>
+  </tr>`;
+}
+
+function renderBench(st) {
+  const busy = BUSY.includes(st.state);
+  const btn = $("#bench"), box = $("#benchStatus");
+  btn.disabled = busy;
+  btn.textContent = busy ? "Measuring…" : st.measured_at ? "Measure again" : "Measure real speed";
+  if (busy) box.innerHTML = `<div class="bar"><i style="width:${st.progress || 0}%"></i></div>${esc(st.message || "")}`;
+  else if (st.state === "error") box.innerHTML = `<span class="warn">${esc(st.message)}</span>`;
+  else if (st.measured_at) box.textContent = `Speed measured ${ago(Date.now() / 1000 - st.measured_at)}.`;
+  else box.textContent = "About 2 minutes at full load. The first time, it downloads XMRig (about 3 MB) from its official GitHub and checks its fingerprint.";
+  if (busy && !poll) poll = setInterval(pollBench, 1000);
+}
+
+async function pollBench() {
+  let st;
+  try { st = await api("/api/bench"); } catch { return; }
+  if (BUSY.includes(st.state)) return renderBench({ ...st, measured_at: R && R.bench.measured_at });
+  clearInterval(poll);
+  poll = null;
+  await load();
+}
+
+function showError(msg) {
+  if (!R) {
+    $("#verdict").className = "card verdict is-bad";
+    $("#verdict").innerHTML = `<div class="label">Couldn't load</div><p>${esc(msg)}</p><p><button class="btn" onclick="load(true)">Try again</button></p>`;
+    return;
+  }
+  const st = $("#status");
+  st.textContent = "⚠ " + msg;
+  st.classList.add("warn");
+}
+
+$("#rate").addEventListener("input", () => {
+  clearTimeout(rateTimer);
+  rateTimer = setTimeout(async () => {
+    const v = parseFloat($("#rate").value.replace(",", "."));
+    if (!(v >= 0)) return;
+    try { render(await api("/api/settings", { rate: v })); } catch (e) { showError(e.message); }
+  }, 350);
+});
+$("#currency").addEventListener("change", async (e) => {
+  try { render(await api("/api/settings", { currency: e.target.value })); } catch (err) { showError(err.message); }
+});
+$("#bench").addEventListener("click", async () => {
+  try { renderBench({ ...(await api("/api/bench", {})), measured_at: R && R.bench.measured_at }); }
+  catch (e) { showError(e.message); }
+});
+$("#status").addEventListener("click", () => load(true));
+
+setInterval(() => fetch("/api/ping").catch(() => {}), 20000);   // lets MINTRO quit by itself after the tab closes
+setInterval(() => { if (!poll) load(); }, 5 * 60 * 1000);       // keep prices current while open
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Signed files must reach GitHub byte for byte, or their signatures stop matching
+listings/** -text
+*.sig -text
+
+# Windows scripts keep Windows line endings
+*.bat text eol=crlf
+*.ps1 text eol=crlf

@@ -1,0 +1,36 @@
+# Public audit trail for the website's counters: once a day, record the live numbers in stats/history.csv.
+# Every row is a commit made by GitHub Actions, so anyone can see when each number was recorded and that
+# the history wasn't rewritten. Set the repository variable STATS_URL (Settings > Secrets and variables >
+# Actions > Variables) to your stats service, e.g. https://mintro-stats.you.workers.dev
+name: Public stats snapshot
+
+on:
+  schedule:
+    - cron: "15 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    if: ${{ vars.STATS_URL != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record today's numbers
+        env:
+          STATS_URL: ${{ vars.STATS_URL }}
+        run: |
+          mkdir -p stats
+          [ -f stats/history.csv ] || echo "recorded_utc,mining_now,mined_24h,active_30d,installs,downloads" > stats/history.csv
+          curl -fsSL "${STATS_URL%/}/v1/stats" -o now.json
+          jq -r '[(now | strftime("%Y-%m-%dT%H:%MZ")), .mining_now, .mined_24h, .active_30d, .installs, (.downloads // "")] | @csv' now.json >> stats/history.csv
+          rm now.json
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stats/history.csv
+          git commit -m "Stats snapshot $(date -u +%F)" || exit 0
+          git push

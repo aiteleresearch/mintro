@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MINTRO · Mine a basket of early coins</title>
+<meta name="description" content="MINTRO is a floating desktop card that mines a basket of early-stage CPU coins on an ordinary laptop, tuned to your PC. Free, open source, 0% fee.">
+<meta name="theme-color" content="#050607">
+<!--
+  GitHub Pages site (Settings > Pages > Deploy from branch > main, folder /docs).
+  The repository and stats service are set in SITE at the top of assets/ui.js. Share previews need full URLs,
+  so the canonical, og: and twitter: URLs below name the site's address directly.
+-->
+<link rel="canonical" href="https://aiteleresearch.github.io/mintro/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+
+<!-- Share previews (WhatsApp, X, LinkedIn, Slack, Discord, iMessage, Facebook...) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MINTRO">
+<meta property="og:url" content="https://aiteleresearch.github.io/mintro/">
+<meta property="og:title" content="MINTRO · Early coins. Ordinary laptop. Three clicks.">
+<meta property="og:description" content="A floating desktop card that mines a basket of early-stage coins, tuned to your PC. Free, open source, 0% fee.">
+<meta property="og:image" content="https://aiteleresearch.github.io/mintro/assets/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="MINTRO: a mint crystal with a basket of coins in orbit, and the words Early coins. Ordinary laptop. Three clicks.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MINTRO · Early coins. Ordinary laptop. Three clicks.">
+<meta name="twitter:description" content="A floating desktop card that mines a basket of early-stage coins, tuned to your PC. Free, open source, 0% fee.">
+<meta name="twitter:image" content="https://aiteleresearch.github.io/mintro/assets/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Sora:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>document.documentElement.classList.add('js')</script>
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }
+</script>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin>
+<script type="module" src="assets/scene.js"></script>
+<script defer src="assets/ui.js"></script>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <div class="ld-mark">
+    <svg viewBox="0 0 64 64"><rect class="ld-gem" x="17" y="17" width="30" height="30" rx="6" transform="rotate(45 32 32)"/></svg>
+  </div>
+  <div class="ld-word">MINTRO</div>
+  <div class="ld-bar"><i id="ldBar"></i></div>
+  <div class="ld-pct"><span id="ldPct">0</span></div>
+</div>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="MINTRO, back to top"><span class="brand-gem"><i></i></span>MINTRO</a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#numbers">Numbers</a><a href="#how">How it works</a><a href="#basket">Basket</a><a href="#features">Inside</a><a href="#list">List your coin</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn small ghost hide-sm" data-href="repo" href="https://github.com/aiteleresearch/mintro">GitHub</a>
+      <a class="btn small primary" data-href="download" href="https://github.com/aiteleresearch/mintro/releases/latest" data-magnetic><span>Download</span></a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="top" data-scene="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <p class="kicker rise" style="--d:.1s"><span class="live"></span>Free · Open source · 0% fee</p>
+        <h1 data-split data-hero>Early coins.<br>Ordinary laptop.<br><span class="grad">Three clicks.</span></h1>
+        <p class="lede rise" style="--d:.65s">MINTRO floats on your desktop, picks the young coins where your laptop mines the biggest
+          slice of new supply, and tunes itself to your PC. You press Start.</p>
+        <div class="cta-row rise" style="--d:.8s">
+          <a class="btn primary lg" data-href="download" href="https://github.com/aiteleresearch/mintro/releases/latest" data-magnetic>
+            <span><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 3.2 7.6 2.4v5.3H2zM8.4 2.3 16 1.2v6.5H8.4zM2 8.5h5.6v5.3L2 13zm6.4 0H16v6.6l-7.6-1.1z" fill="currentColor"/></svg>
+            Download for Windows</span>
+          </a>
+          <a class="btn ghost lg" href="#showcase" data-magnetic><span>See it work
+            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 2v10m0 0 4-4m-4 4L3 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+        </div>
+        <p class="meta rise" style="--d:.95s">Windows 10 &amp; 11 · per-user install, no admin · 47 MB · GPL-3.0</p>
+      </div>
+    </div>
+    <div class="gl-fallback" aria-hidden="true"><span></span></div>
+    <a class="scroll-cue rise" style="--d:1.2s" href="#showcase" aria-label="Scroll to the app"><span></span></a>
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>XMRig <em>RandomX</em></span><span>cpuminer-opt <em>yespower</em></span><span>SRBMiner-Multi <em>firopow</em></span>
+        <span>Adaptive basket <em>up to 500 coins</em></span><span>Auto-tuned <em>per PC</em></span><span>One-click wallets <em>official tools</em></span>
+        <span>Pool fallbacks <em>nearest first</em></span><span>MINTRO fee <em>0%</em></span>
+        <span>XMRig <em>RandomX</em></span><span>cpuminer-opt <em>yespower</em></span><span>SRBMiner-Multi <em>firopow</em></span>
+        <span>Adaptive basket <em>up to 500 coins</em></span><span>Auto-tuned <em>per PC</em></span><span>One-click wallets <em>official tools</em></span>
+        <span>Pool fallbacks <em>nearest first</em></span><span>MINTRO fee <em>0%</em></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOWCASE -->
+  <section class="showcase" id="showcase" data-scene="showcase">
+    <div class="wrap">
+      <header class="sec-head center">
+        <p class="eyebrow" data-reveal>The app</p>
+        <h2 data-split>A card, not a cockpit.</h2>
+        <p class="sec-lede" data-reveal>Everything MINTRO does fits in a 360-pixel card that floats above your work.
+          Shrink it to a strip, drag it anywhere, forget it's there.</p>
+      </header>
+
+      <div class="stage" id="stage">
+        <div class="callout l1" style="--d:.15s"><b>Auto-tuned</b><span>8 of 16 threads, idle priority while you work</span></div>
+        <div class="callout l2" style="--d:.35s"><b>Pauses on battery</b><span>and backs off the moment you touch the mouse</span></div>
+        <div class="callout r1" style="--d:.25s"><b>Rotates the basket</b><span>20-minute turns, planned per coin</span></div>
+        <div class="callout r2" style="--d:.45s"><b>Seed backup saved</b><span>wallets made with each coin's official tool</span></div>
+
+        <div class="device" id="device" aria-label="The MINTRO card, mining" role="img">
+          <div class="dcard">
+            <div class="d-gloss"></div>
+            <div class="d-head layer" style="--z:10px">
+              <span class="d-logo"></span><b>MINTRO</b><span class="d-pill"><i></i>Mining</span><span class="d-min"></span>
+            </div>
+            <div class="d-hero layer" style="--z:46px">
+              <div class="d-power">
+                <svg viewBox="0 0 120 120"><circle class="trk" cx="60" cy="60" r="54"/><circle class="arc" id="dArc" cx="60" cy="60" r="54"/></svg>
+                <span class="d-core"><i></i><i></i></span>
+              </div>
+            </div>
+            <div class="d-text layer" style="--z:28px">
+              <div class="d-title">Mining Zephyr</div>
+              <div class="d-sub"><span id="dTurn">Turn ends in 11:42</span> · 3 of 7 coins</div>
+              <div class="d-tune"><i></i>Auto · Gaming laptop · 8 of 16 threads · tuned</div>
+            </div>
+            <div class="d-stats layer" style="--z:22px">
+              <div><label>Mined</label><b id="dMined">$0.4213</b><small>estimated</small></div>
+              <div><label>Basket</label><b>7 coins</b><small>all set</small></div>
+              <div><label>Speed</label><b id="dHash">2.41 kH/s</b><small>RandomX</small></div>
+            </div>
+            <div class="d-basket layer" style="--z:14px">
+              <div class="d-bh"><span>Your basket</span><span>3 of 7</span></div>
+              <ul>
+                <li class="on"><span class="av" style="--h:156">ZEP</span><span class="nm"><b>Zephyr</b><small>mining · 31% of time</small></span><span class="am"><b id="dZeph">0.01412</b><small>$0.18</small></span></li>
+                <li><span class="av" style="--h:268">SAL</span><span class="nm"><b>Salvium</b><small>next · 24% of time</small></span><span class="am"><b>0.9204</b><small>$0.11</small></span></li>
+                <li><span class="av" style="--h:24">NEW</span><span class="nm"><b>A new coin</b><small>no market yet · early</small></span><span class="am"><b>3.104</b><small>—</small></span></li>
+              </ul>
+            </div>
+            <div class="d-seg layer" style="--z:12px"><span class="on">Auto</span><span>Eco</span><span>Balanced</span><span>Max</span></div>
+          </div>
+        </div>
+        <div class="device-shadow" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPEN NUMBERS -->
+  <section class="numbers" id="numbers" data-scene="numbers">
+    <div class="wrap">
+      <header class="sec-head center">
+        <p class="eyebrow" data-reveal>Open numbers</p>
+        <h2 data-split>Don't take our word for it.</h2>
+        <p class="sec-lede" data-reveal>Every number here is live, and each one links to its public source so you can
+          check it yourself.</p>
+      </header>
+      <div class="nums" data-reveal>
+        <article class="num spot">
+          <span class="num-label"><i class="pulse"></i>Mining right now</span>
+          <b class="num-val" data-stat="mining_now">—</b>
+          <span class="num-note">PCs that reported mining in the last 20 minutes</span>
+          <a class="verify" data-href="statsRaw" href="#numbers">Raw data ↗</a>
+        </article>
+        <article class="num spot">
+          <span class="num-label">Downloads</span>
+          <b class="num-val" data-stat="downloads">—</b>
+          <span class="num-note">Windows installer downloads, as counted by GitHub</span>
+          <a class="verify" data-href="downloadsRaw" href="#numbers">Check on GitHub ↗</a>
+        </article>
+        <article class="num spot">
+          <span class="num-label">Mined in the last 24 h</span>
+          <b class="num-val" data-stat="mined_24h">—</b>
+          <span class="num-note">PCs that mined at some point today</span>
+          <a class="verify" data-href="statsRaw" href="#numbers">Raw data ↗</a>
+        </article>
+        <article class="num spot">
+          <span class="num-label">Installs</span>
+          <b class="num-val" data-stat="installs">—</b>
+          <span class="num-note">Every install that has checked in, each counted once</span>
+          <a class="verify" data-href="historyCsv" href="#numbers">Daily record ↗</a>
+        </article>
+      </div>
+      <div class="trend glass" data-reveal>
+        <div class="trend-head"><span>Peak miners per day</span><span id="trendRange">last 30 days</span></div>
+        <svg id="trendChart" viewBox="0 0 600 120" preserveAspectRatio="none" aria-label="Peak miners per day" role="img"></svg>
+        <p class="trend-foot" id="numsFoot">Counted from anonymous heartbeats: a random ID and whether the PC is mining. No wallets,
+          no names, and anyone can switch it off in MINTRO's settings.
+          <a data-href="method" href="#numbers">How it's counted ↗</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- THREE CLICKS -->
+  <section class="clicks" id="how" data-scene="clicks">
+    <div class="wrap">
+      <header class="sec-head center">
+        <p class="eyebrow" data-reveal>How it works</p>
+        <h2 data-split>Three clicks. Then it runs itself.</h2>
+      </header>
+      <div class="steps" id="steps">
+        <svg class="steps-line" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true">
+          <defs><linearGradient id="lineGrad" x1="0" x2="1"><stop offset="0" stop-color="#3ddc97" stop-opacity="0"/><stop offset=".2" stop-color="#3ddc97"/><stop offset=".8" stop-color="#a6f7d2"/><stop offset="1" stop-color="#a6f7d2" stop-opacity="0"/></linearGradient></defs>
+          <path id="stepsPath" d="M 0 30 C 250 -10, 380 70, 500 30 S 760 -10, 1000 30"/>
+        </svg>
+        <article class="step spot" data-reveal="flip" style="--d:0s">
+          <div class="step-ico"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="i-tray" d="M8 30v8a2 2 0 0 0 2 2h28a2 2 0 0 0 2-2v-8"/><g class="i-drop"><path d="M24 6v20"/><path d="M16 18l8 8 8-8"/></g></svg></div>
+          <span class="step-n">01</span>
+          <h3>Install</h3>
+          <p>Run the setup file. It installs in seconds, for your Windows account only, and opens the card.</p>
+        </article>
+        <article class="step spot" data-reveal="flip" style="--d:.15s">
+          <div class="step-ico"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="14" width="36" height="25" rx="5"/><path d="M6 21h36"/><rect x="29" y="25" width="13" height="8" rx="3"/><path class="i-spark" d="M38 3l1.5 4.2L44 8.7l-4.5 1.5L38 14.5l-1.5-4.3L32 8.7l4.5-1.5z"/></svg></div>
+          <span class="step-n">02</span>
+          <h3>Add wallets</h3>
+          <p>Press <b>Create wallets</b> and MINTRO makes them with each coin's official tool, or paste your own addresses.</p>
+        </article>
+        <article class="step spot" data-reveal="flip" style="--d:.3s">
+          <div class="step-ico"><svg viewBox="0 0 48 48" aria-hidden="true"><circle class="i-pulse" cx="24" cy="24" r="19"/><circle cx="24" cy="24" r="14"/><path class="i-play" d="M21 17.5 31 24l-10 6.5z"/></svg></div>
+          <span class="step-n">03</span>
+          <h3>Start</h3>
+          <p>Press the big button. MINTRO rotates through your basket, backs off while you work and pauses on battery.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- BASKET -->
+  <section class="split-sec" id="basket" data-scene="basket">
+    <div class="wrap two">
+      <div class="spacer" aria-hidden="true"></div>
+      <div class="copy">
+        <p class="eyebrow" data-reveal>The basket</p>
+        <h2 data-split>One laptop. A whole basket of bets.</h2>
+        <p data-reveal>A laptop can't out-mine a data centre, but on a young coin with few miners it mines a real share of
+          what's new. MINTRO scores every CPU coin on the pool, builds a basket that fits your machine, and rotates
+          through it twenty minutes at a time.</p>
+        <div class="scores glass" data-reveal id="scores">
+          <div class="scores-head"><span>Example basket</span><span>score</span></div>
+          <div class="score" style="--v:86"><b>Zephyr</b><span class="why">big share of new supply</span><i></i><em>86</em></div>
+          <div class="score" style="--v:78"><b>Salvium</b><span class="why">active miners, real market</span><i></i><em>78</em></div>
+          <div class="score" style="--v:71"><b>A new coin</b><span class="why">no market yet · earliest stage</span><i></i><em>71</em></div>
+          <div class="score" style="--v:63"><b>Raptoreum</b><span class="why">steady payouts</span><i></i><em>63</em></div>
+          <div class="score" style="--v:48"><b>Monero</b><span class="why">huge network, tiny share</span><i></i><em>48</em></div>
+        </div>
+        <div class="stats" data-reveal>
+          <div><b><span data-count="500">500</span></b><span>coins max, sized to your PC</span></div>
+          <div><b><span data-count="20">20</span><small>min</small></b><span>turns, shared by plan</span></div>
+          <div><b><span data-count="7">7</span><small>days</small></b><span>to a payout, or it's out</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUTO MODE -->
+  <section class="split-sec" id="tuned" data-scene="tuned">
+    <div class="wrap two">
+      <div class="copy">
+        <p class="eyebrow" data-reveal>Auto mode</p>
+        <h2 data-split>Tuned to your PC before you touch a setting.</h2>
+        <p data-reveal>On first launch MINTRO reads your processor, memory, graphics and battery. Then it keeps adjusting,
+          every second it runs.</p>
+        <div class="term glass" id="term" data-reveal>
+          <div class="term-bar"><i></i><i></i><i></i><span>mintro · auto</span></div>
+          <div class="term-body" data-typer>
+<p>› CPU    16 threads · 24 MB cache · gaming laptop</p>
+<p data-ok>› Plan   8 threads, Balanced class</p>
+<p data-ok>› You    typing → idle priority, 4 threads</p>
+<p data-ok>› RAM    2.1 GB free → RandomX light mode</p>
+<p data-ok>› Power  on battery → paused</p>
+<p data-ok>› Learn  2.41 kH/s measured → basket re-planned</p>
+          </div>
+        </div>
+      </div>
+      <div class="spacer" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- INSIDE -->
+  <section class="features" id="features" data-scene="features">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="eyebrow" data-reveal>Inside</p>
+        <h2 data-split>Serious engineering. Zero setup.</h2>
+      </header>
+      <div class="bento">
+        <article class="tile spot t-wallet" data-tilt="3" data-reveal>
+          <div class="tile-txt">
+            <h3>One-click wallets</h3>
+            <p>For Monero-family coins, MINTRO runs each coin's official wallet tool offline, writes your seed backup,
+              and fills in the address. Nothing leaves your PC.</p>
+          </div>
+          <div class="seed" aria-hidden="true">
+            <div class="seed-head"><svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="2"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>BACKUP-ZEPH-KEEP-SECRET.txt</div>
+            <ol class="seed-words">
+              <li>orbit</li><li>lantern</li><li>gravel</li><li>hollow</li><li>mint</li><li>cascade</li>
+              <li>ember</li><li>voyage</li><li>quartz</li><li>meadow</li><li>signal</li><li>harbor</li>
+            </ol>
+            <div class="seed-addr"><code>ZEPHs7Qm9…f4K2</code><em>address filled in</em></div>
+          </div>
+        </article>
+
+        <article class="tile spot t-fee" data-tilt="4" data-reveal style="--d:.1s">
+          <div class="big"><span data-count="0" data-from="9">0</span>%</div>
+
+          <h3>MINTRO's fee</h3>
+          <p>Every share goes to your own address. The engines' own small fees are listed in the app.</p>
+        </article>
+
+        <article class="tile spot t-engines" data-tilt="3" data-reveal>
+          <h3>Three proven engines</h3>
+          <p>Downloaded from each project's official release and fingerprint-checked before first use.</p>
+          <ul class="engines">
+            <li><b>XMRig</b><span>RandomX · GhostRider</span><em>1%</em></li>
+            <li><b>cpuminer-opt</b><span>yespower · yescrypt · power2b · minotaurx</span><em>0%</em></li>
+            <li><b>SRBMiner-Multi</b><span>firopow · meowpow · GPU coins</span><em>~0.85%</em></li>
+          </ul>
+          <div class="algos" aria-hidden="true"><div class="algos-track">
+            <span>RandomX</span><span>RandomARQ</span><span>RandomWOW</span><span>GhostRider</span><span>yespower</span><span>yespowerR16</span><span>yescryptR32</span><span>power2b</span><span>minotaurx</span><span>firopow</span><span>meowpow</span>
+            <span>RandomX</span><span>RandomARQ</span><span>RandomWOW</span><span>GhostRider</span><span>yespower</span><span>yespowerR16</span><span>yescryptR32</span><span>power2b</span><span>minotaurx</span><span>firopow</span><span>meowpow</span>
+          </div></div>
+          <p class="note">Engine fees as their developers set them.</p>
+        </article>
+
+        <article class="tile spot t-pools" data-tilt="3" data-reveal style="--d:.1s">
+          <div class="tile-txt">
+            <h3>Never stuck on a dead pool</h3>
+            <p>Nearest server first. If it doesn't answer, the next one. Monero also falls back to SupportXMR and HashVault.</p>
+          </div>
+          <ul class="pools" id="pools" aria-hidden="true">
+            <li><i></i><b>rplant · asia</b><span>standby</span></li>
+            <li><i></i><b>rplant · eu</b><span>standby</span></li>
+            <li><i></i><b>SupportXMR</b><span>standby</span></li>
+          </ul>
+        </article>
+
+        <article class="tile spot t-av" data-tilt="4" data-reveal>
+          <svg class="shield" viewBox="0 0 64 64" aria-hidden="true"><path class="sh" d="M32 6 52 13v17c0 13-8.6 22.6-20 27-11.4-4.4-20-14-20-27V13z"/><path class="ck" d="M23 32l7 7 12-14"/><rect class="scan" x="12" y="6" width="40" height="3" rx="1.5"/></svg>
+          <h3>Antivirus, explained</h3>
+          <p>Windows flags every miner. MINTRO says why, and excludes only its own miner folder after Windows asks you.</p>
+        </article>
+
+        <article class="tile spot t-strip" data-tilt="4" data-reveal style="--d:.1s">
+          <div class="morph" aria-hidden="true"><div class="m-card"><span class="m-dot"></span><span class="m-l m1"></span><span class="m-l m2"></span><span class="m-l m3"></span></div></div>
+          <h3>Stays out of the way</h3>
+          <p>Shrinks to a strip. Fits Windows scaling and text size. Closing it stops mining.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRAIGHT TALK -->
+  <section class="honest" id="honest" data-scene="honest">
+    <div class="honest-sticky">
+      <div class="wrap">
+        <p class="eyebrow">Straight talk</p>
+        <p class="honest-text" id="honestText">A laptop will never out-mine a data centre. But on a young coin with few miners,
+          it can mine <em>a real share</em> of what's new. Most young coins go nowhere. <em>Some don't.</em> MINTRO is
+          <em>a lottery ticket</em> you run on spare compute, and it <em>tells you so.</em></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR COIN PROJECTS -->
+  <section class="split-sec listing" id="list" data-scene="listing">
+    <div class="wrap two">
+      <div class="spacer" aria-hidden="true"></div>
+      <div class="copy">
+        <p class="eyebrow gold" data-reveal>For coin projects</p>
+        <h2 data-split>Put your coin in front of miners.</h2>
+        <p data-reveal>MINTRO is free for everyone who mines. It's paid for by coin projects that list their coins:
+          once listed, every MINTRO PC can mine yours, with no setup on the miner's side. Listings are always labelled.</p>
+        <div class="tiers" data-reveal>
+          <div class="tier"><b>Listed</b><span>Your coin joins every MINTRO's catalog with your pitch and links, scored like any other coin.
+            On the rplant pool or your own.</span></div>
+          <div class="tier feat"><b>Featured</b><span>Everything in Listed, plus a guaranteed share of each basket's mining time
+            (up to 10%), shown on the coin.</span></div>
+          <div class="tier"><b>Promo</b><span>Not mineable with MINTRO yet? A labelled spot in the Sponsored box.</span></div>
+        </div>
+        <form class="apply glass" id="applyForm" data-reveal novalidate>
+          <div class="apply-grid">
+            <label>Project<input name="project" required maxlength="80" autocomplete="organization"></label>
+            <label>Ticker<input name="symbol" required maxlength="10" placeholder="e.g. NOVA"></label>
+            <label>Algorithm<select name="algorithm" required>
+              <option>RandomX</option><option>RandomARQ</option><option>RandomWOW</option><option value="gr">GhostRider</option>
+              <option>yespower</option><option>yespowerR16</option><option>yescryptR32</option><option>power2b</option>
+              <option>minotaurx</option><option>firopow</option><option>meowpow</option></select></label>
+            <label>Plan<select name="plan"><option value="standard">Listed</option><option value="featured">Featured</option>
+              <option value="promo">Promo</option></select></label>
+            <label class="wide">Where is it mined?<select name="source"><option value="rplant">On the rplant pool</option>
+              <option value="custom">On our own pool</option></select></label>
+            <label class="pool-f">Pool host<input name="pool_host" maxlength="120" placeholder="pool.example.org"></label>
+            <label class="pool-f">Port<input name="pool_port" maxlength="6" inputmode="numeric" placeholder="3333"></label>
+            <label class="pool-f">TLS<select name="pool_tls"><option value="true">Yes</option><option value="false">No</option></select></label>
+            <label>Website<input name="site" required type="url" placeholder="https://"></label>
+            <label>Explorer<input name="explorer" type="url" placeholder="https://"></label>
+            <label>Wallet download<input name="wallet" type="url" placeholder="https://"></label>
+            <label>Email<input name="email" required type="email" autocomplete="email"></label>
+            <label>Telegram (optional)<input name="telegram" maxlength="60"></label>
+            <label class="wide">Anything we should know?<textarea name="message" maxlength="1500" rows="3"></textarea></label>
+            <label class="hp" aria-hidden="true">Website URL<input name="website_url" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <div class="apply-foot">
+            <button class="btn primary gold" type="submit" data-magnetic><span>Request a listing</span></button>
+            <p class="apply-msg" id="applyMsg" role="status">We check every coin and pool before listing, and reply within two business days.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="split-sec faq" id="faq" data-scene="faq">
+    <div class="wrap two">
+      <div class="copy">
+        <p class="eyebrow" data-reveal>FAQ</p>
+        <h2 data-split>Good questions.</h2>
+        <div class="qa" data-reveal>
+          <details><summary>Will this make me money?</summary><div class="ans"><p>Probably not much in dollars today. A laptop's
+            mining earns cents to a few dollars a month, and electricity can cost more. The idea is to collect small amounts of
+            several early coins in case one becomes valuable. Most won't. Not financial advice.</p></div></details>
+          <details><summary>Does mining more coins at once earn more?</summary><div class="ans"><p>No. Your laptop has a fixed
+            speed, and the basket spreads it across several bets. It changes what you hold, not how much compute you have.</p></div></details>
+          <details><summary>Why does Windows Security flag it?</summary><div class="ans"><p>Every antivirus flags crypto-mining
+            engines, including the open-source ones MINTRO uses. MINTRO downloads them from their official releases and checks
+            their fingerprints. When Windows Security blocks one, the card explains why and offers to exclude only MINTRO's miner
+            folder, behind Windows' own admin prompt.</p></div></details>
+          <details><summary>Does MINTRO take a cut?</summary><div class="ans"><p>No. Every share goes to your own wallet address.
+            The engines keep their own small developer fees (XMRig 1%, SRBMiner-Multi about 0.85%, cpuminer-opt none), listed
+            in the app's settings.</p></div></details>
+          <details><summary>Will it slow my laptop down?</summary><div class="ans"><p>In Auto mode it drops to idle priority the
+            moment you use the PC and uses fewer threads while you work. It pauses on battery. Like any sustained load it runs
+            the fans; Eco mode keeps things cool and quiet.</p></div></details>
+          <details><summary>Is everything really free?</summary><div class="ans"><p>Yes: GPU mining, the tax report, alerts,
+            My PCs, all of it. MINTRO is paid for by coin projects that list their coins. Listed and featured coins are
+            always labelled, and you can switch off featured listings' guaranteed share in Settings.</p></div></details>
+          <details><summary>Is it open source?</summary><div class="ans"><p>Yes, under GPL-3.0. Read the code, build it
+            yourself, or contribute on GitHub.</p></div></details>
+        </div>
+      </div>
+      <div class="spacer" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final" id="download" data-scene="cta">
+    <div class="wrap center">
+      <h2 class="mega" data-split><span class="grad">Be early.</span></h2>
+      <p class="final-sub" data-reveal>Free for Windows 10 and 11. Three clicks to your first share.</p>
+      <div data-reveal style="--d:.15s">
+        <a class="btn primary xl" data-href="download" href="https://github.com/aiteleresearch/mintro/releases/latest" data-magnetic>
+          <span><svg width="20" height="20" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 3.2 7.6 2.4v5.3H2zM8.4 2.3 16 1.2v6.5H8.4zM2 8.5h5.6v5.3L2 13zm6.4 0H16v6.6l-7.6-1.1z" fill="currentColor"/></svg>
+          Download MINTRO</span>
+        </a>
+      </div>
+      <p class="meta" data-reveal style="--d:.25s">47 MB · installs per user · uninstall any time from Settings &gt; Apps</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <a class="brand" href="#top"><span class="brand-gem"><i></i></span>MINTRO</a>
+    <nav aria-label="Project">
+      <a data-href="repo" href="https://github.com/aiteleresearch/mintro">GitHub</a>
+      <a data-href="download" href="https://github.com/aiteleresearch/mintro/releases/latest">Releases</a>
+      <a data-href="license" href="https://github.com/aiteleresearch/mintro/blob/main/LICENSE">License</a>
+    </nav>
+    <p class="fine">"Mined" amounts are estimates; pool payouts are what count. Coins with no market may never be worth anything.
+      Not financial advice.</p>
+    <p class="fine">© <span id="year">2026</span> MINTRO contributors · GPL-3.0</p>
+  </div>
+</footer>
+</body>
+</html>

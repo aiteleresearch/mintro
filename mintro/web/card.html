@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MINTRO</title>
+<style>
+  :root {
+    --bg: #0d0e10; --glow: rgba(61, 220, 151, .11);
+    --surface: rgba(255, 255, 255, .035); --surface-2: rgba(255, 255, 255, .065); --hover: rgba(255, 255, 255, .045);
+    --line: rgba(255, 255, 255, .075); --ink: #f3f4f6; --ink-2: #a2a6ae; --ink-3: #6c717a;
+    --mint: #3ddc97; --mint-ink: #04291a; --mint-soft: rgba(61, 220, 151, .14);
+    --amber: #f3b04d; --amber-soft: rgba(243, 176, 77, .12); --red: #ff7b6f; --red-soft: rgba(255, 123, 111, .12);
+    --track: rgba(255, 255, 255, .07); --backdrop: #17181b; --shadow: 0 40px 80px -30px rgba(0, 0, 0, .7);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f8f9; --glow: rgba(14, 159, 110, .10);
+      --surface: #ffffff; --surface-2: #eceef1; --hover: rgba(0, 0, 0, .035);
+      --line: rgba(0, 0, 0, .08); --ink: #121418; --ink-2: #565b64; --ink-3: #8b9099;
+      --mint: #0b9a69; --mint-ink: #ffffff; --mint-soft: rgba(11, 154, 105, .11);
+      --amber: #a5600a; --amber-soft: rgba(165, 96, 10, .10); --red: #c23b2f; --red-soft: rgba(194, 59, 47, .09);
+      --track: rgba(0, 0, 0, .07); --backdrop: #e3e5e8; --shadow: 0 40px 80px -36px rgba(0, 0, 0, .35);
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }  /* rows styled as flex still honour hidden */
+  html, body { margin: 0; height: 100%; }
+  body {
+    font: 13px/1.45 "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: var(--ink); background: var(--bg); overflow: clip; user-select: none;
+    -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+  svg { display: block; }
+
+  /* In a normal browser tab, show the card floating on a backdrop so it looks like it will on the desktop */
+  html.browser body { background: var(--backdrop); display: grid; place-items: center; }
+  html.browser .card { width: 360px; height: 640px; border-radius: 20px; border: 1px solid var(--line); box-shadow: var(--shadow); }
+  html.browser .card.compact { height: 64px; }
+  html.browser #btnClose { display: none; }
+
+  /* clip, not hidden: a hidden-overflow box can still be scrolled by scrollIntoView, which pushed the header off */
+  html { overflow: clip; }
+  .card {
+    position: relative; height: 100%; display: flex; flex-direction: column; overflow: clip;
+    background: radial-gradient(120% 55% at 50% -8%, var(--glow), transparent 62%), var(--bg);
+  }
+
+  /* header */
+  .bar { display: flex; align-items: center; gap: 2px; height: 46px; padding: 0 8px 0 0; flex: none; }
+  .drag { flex: 1; height: 100%; display: flex; align-items: center; gap: 9px; cursor: default; }
+  .drag.grab { flex: none; padding: 0 8px 0 16px; }
+  .logo { width: 14px; height: 14px; border-radius: 4px; transform: rotate(45deg); flex: none;
+          background: linear-gradient(135deg, #8ff5c6, var(--mint) 55%, #17a86c); box-shadow: 0 0 16px var(--mint-soft); }
+  .word { font-weight: 700; font-size: 12px; letter-spacing: .2em; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px 3px 8px; border-radius: 99px; flex: none;
+          background: var(--surface-2); color: var(--ink-2); font-size: 11.5px; font-weight: 600; transition: filter .15s; }
+  .pill:hover { filter: brightness(1.15); }
+  .pill i { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3); }
+  .pill.on { color: var(--mint); background: var(--mint-soft); } .pill.on i { background: var(--mint); animation: blink 1.6s ease-in-out infinite; }
+  .pill.warn { color: var(--amber); background: var(--amber-soft); } .pill.warn i { background: var(--amber); }
+  .pill.bad { color: var(--red); background: var(--red-soft); } .pill.bad i { background: var(--red); }
+  @keyframes blink { 50% { opacity: .35; } }
+  .icon { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; color: var(--ink-3); transition: background .15s, color .15s; }
+  .icon:hover { background: var(--hover); color: var(--ink); }
+  #btnClose:hover { background: var(--red-soft); color: var(--red); }
+
+  /* hero */
+  .hero { display: flex; flex-direction: column; align-items: center; padding: 6px 20px 14px; flex: none; }
+  .power { position: relative; width: 116px; height: 116px; border-radius: 50%; display: grid; place-items: center; }
+  .ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 4; }
+  .ring .track { stroke: var(--track); }
+  .ring .arc { stroke: var(--mint); stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: 339.3; transition: stroke-dashoffset 1.4s linear, opacity .3s; }
+  .power.starting .ring { animation: spin 1.4s linear infinite; }
+  .power.starting .arc { stroke-dashoffset: 255 !important; transition: none; }
+  @keyframes spin { to { transform: rotate(270deg); } }
+  .core { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; color: var(--mint-ink);
+          background: linear-gradient(160deg, #7cf0bd, var(--mint) 60%, #15a56a); box-shadow: 0 12px 30px -10px var(--mint), inset 0 1px 0 rgba(255,255,255,.35);
+          transition: transform .18s ease, box-shadow .2s, background .2s; }
+  .power:hover .core { transform: scale(1.04); }
+  .power:active .core { transform: scale(.97); }
+  .power.running .core { background: var(--surface-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+  .title { margin-top: 12px; display: flex; align-items: baseline; gap: 5px; height: 34px; }
+  .title b { font: 600 28px/1 "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif; letter-spacing: -.02em; }
+  .title span { color: var(--ink-3); font-size: 13px; font-weight: 600; }
+  .title.word b { font-size: 21px; }
+  .sub { color: var(--ink-2); font-size: 12.5px; text-align: center; min-height: 18px; }
+  .tune { margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink-3);
+          padding: 2px 8px; border-radius: 99px; max-width: 100%; }
+  .tune:hover { background: var(--hover); color: var(--ink-2); }
+  .tune i { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); flex: none; }
+  .tune.ok i { background: var(--mint); }
+  .tune span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pc { margin: 2px 0 4px; padding: 10px 12px; border-radius: 10px; background: var(--surface-2); font-size: 12px; line-height: 1.55; }
+  .pc b { font-weight: 600; } .pc span { color: var(--ink-2); }
+  .notice { margin-top: 12px; width: 100%; padding: 10px 12px; border-radius: 12px; font-size: 12px; line-height: 1.45;
+            background: var(--amber-soft); color: var(--ink); }
+  .notice.bad { background: var(--red-soft); }
+  .notice button { margin-top: 7px; font-weight: 600; color: var(--amber); }
+  .notice.bad button { color: var(--red); }
+  .notice-actions { display: flex; align-items: center; gap: 12px; margin-top: 9px; flex-wrap: wrap; }
+  .notice-actions button { margin-top: 0; }
+  .notice .cta { width: auto; padding: 7px 12px; color: var(--mint-ink); }
+  .notice .cta:disabled { opacity: .6; }
+  .notice small { display: block; margin-top: 7px; color: var(--ink-3); font-size: 11px; overflow-wrap: anywhere; }
+
+  /* stats */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0 14px; border-radius: 14px; background: var(--surface);
+           border: 1px solid var(--line); flex: none; }
+  .stats button { padding: 10px 12px; text-align: left; min-width: 0; transition: background .15s; }
+  .stats button:hover { background: var(--hover); }
+  .stats button:first-child { border-radius: 13px 0 0 13px; } .stats button:last-child { border-radius: 0 13px 13px 0; }
+  .stats button + button { border-left: 1px solid var(--line); }
+  .stats label { display: block; font-size: 10.5px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: .07em; }
+  .stats b { display: block; margin-top: 2px; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stats small { display: block; font-size: 10.5px; color: var(--ink-3); margin-top: -1px; }
+
+  /* basket */
+  .basket { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 14px; }
+  .basket-head { display: flex; justify-content: space-between; padding: 0 18px 6px; font-size: 10.5px; font-weight: 600;
+                 color: var(--ink-3); text-transform: uppercase; letter-spacing: .07em; }
+  #list { list-style: none; margin: 0; padding: 0 8px 8px; overflow-y: auto; overflow-anchor: none; flex: 1; scrollbar-width: thin; scrollbar-color: var(--surface-2) transparent; }
+  #list::-webkit-scrollbar { width: 6px; } #list::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 3px; }
+  .coin { border-radius: 12px; transition: background .15s; }
+  .coin:hover, .coin.open { background: var(--hover); }
+  .coin.current { background: var(--mint-soft); }
+  .coin-row { width: 100%; display: flex; align-items: center; gap: 11px; padding: 8px 10px; text-align: left; }
+  .av { position: relative; width: 30px; height: 30px; border-radius: 50%; flex: none; display: grid; place-items: center;
+        font-size: 10.5px; font-weight: 700; color: #fff; letter-spacing: .02em;
+        background: linear-gradient(140deg, hsl(var(--h) 72% 58%), hsl(calc(var(--h) + 38) 68% 42%)); }
+  .coin.dim .av { filter: saturate(.35) opacity(.7); }
+  .av i { position: absolute; right: -1px; bottom: -1px; width: 10px; height: 10px; border-radius: 50%; background: var(--mint);
+          border: 2px solid var(--bg); display: none; }
+  .coin.current.mining .av i { display: block; }
+  .coin.current.mining .av i::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--mint); animation: ping 1.6s ease-out infinite; }
+  @keyframes ping { from { transform: scale(.6); opacity: .9; } to { transform: scale(1.6); opacity: 0; } }
+  .meta { flex: 1; min-width: 0; }
+  .meta b { display: block; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .meta b em { font-style: normal; font-weight: 500; color: var(--ink-3); font-size: 11.5px; margin-left: 3px; }
+  .meta small { display: block; font-size: 11.5px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .st-add { color: var(--mint) !important; font-weight: 600; } .st-bad { color: var(--red) !important; } .st-now { color: var(--mint) !important; }
+  .amt { text-align: right; flex: none; max-width: 110px; }
+  .amt b { display: block; font-size: 12.5px; font-weight: 600; }
+  .amt small { display: block; font-size: 11px; color: var(--ink-3); }
+  .detail { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .22s ease; }
+  .coin.open .detail { grid-template-rows: 1fr; }
+  .detail > div { overflow: hidden; padding: 0 10px 0 51px; }
+  .coin.open .detail > div { padding-bottom: 11px; }
+  .why { margin: 0 0 6px; font-size: 12px; color: var(--ink-2); }
+  .how { margin: 0 0 9px; font-size: 11.5px; color: var(--ink-3); }
+  .addr { display: flex; gap: 6px; }
+  .addr input { flex: 1; min-width: 0; font: 12px/1 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--ink);
+                background: var(--surface); border: 1px solid var(--line); border-radius: 9px; padding: 8px 9px; outline: none; user-select: text; }
+  .addr input:focus { border-color: var(--mint); }
+  .addr button { padding: 0 12px; border-radius: 9px; font-size: 12px; font-weight: 600; background: var(--mint); color: var(--mint-ink); }
+  .addr button:disabled { opacity: .45; cursor: default; }
+  .links { display: flex; gap: 14px; margin-top: 9px; font-size: 11.5px; }
+  .links a { color: var(--ink-2); text-decoration: none; } .links a:hover { color: var(--mint); }
+  .err { margin-top: 6px; font-size: 11.5px; color: var(--red); }
+  .cta { width: 100%; padding: 9px 12px; border-radius: 10px; font-size: 12.5px; font-weight: 600; background: var(--mint); color: var(--mint-ink); }
+  .cta:hover { filter: brightness(1.06); }
+  .hint { margin: 6px 0 10px; font-size: 11.5px; color: var(--ink-3); }
+  .wjob { margin-bottom: 10px; font-size: 11.5px; color: var(--ink-2); }
+  .progress { height: 5px; border-radius: 99px; background: var(--surface-2); overflow: hidden; margin-bottom: 6px; }
+  .progress i { display: block; height: 100%; background: var(--mint); transition: width .6s ease; }
+  .wmade { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; font-size: 12px; }
+  .wmade span { color: var(--mint); font-weight: 600; margin-right: auto; }
+  .wbtn { font-size: 11.5px; font-weight: 600; color: var(--ink-2); padding: 4px 8px; border-radius: 7px; background: var(--surface-2); }
+  .wbtn:hover { color: var(--ink); }
+  .werr { margin-bottom: 8px; font-size: 11.5px; color: var(--red); }
+  .seed { margin-bottom: 10px; padding: 10px; border-radius: 10px; background: var(--amber-soft); }
+  .seed .sw { font-size: 11.5px; color: var(--ink); margin-bottom: 8px; }
+  .words { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px 8px; margin: 0; padding: 0 0 0 18px; user-select: text;
+           font: 11.5px/1.5 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--ink); }
+  .smeta { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 11px; color: var(--ink-2); }
+  .smeta span { margin-right: auto; }
+  .bh-right { display: flex; align-items: center; gap: 10px; }
+  .bh-btn { font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--mint); }
+  .bh-btn:hover { text-decoration: underline; }
+  .empty { padding: 18px; text-align: center; color: var(--ink-3); font-size: 12px; }
+
+  /* footer */
+  .foot { display: flex; align-items: center; gap: 8px; padding: 10px 12px 12px; border-top: 1px solid var(--line); flex: none; }
+  .seg { position: relative; flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); padding: 3px; border-radius: 11px; background: var(--surface-2); }
+  .seg .thumb { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc((100% - 6px) / 4); border-radius: 8px; background: var(--bg);
+                box-shadow: 0 1px 3px rgba(0,0,0,.25), inset 0 0 0 1px var(--line); transition: transform .25s cubic-bezier(.3,.7,.2,1); }
+  .seg button { position: relative; padding: 6px 0; font-size: 12px; font-weight: 600; color: var(--ink-3); transition: color .2s; }
+  .seg button.on { color: var(--ink); }
+
+  /* settings sheet */
+  .sheet { position: absolute; inset: 0; background: rgba(0,0,0,.35); display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .sheet.open { opacity: 1; pointer-events: auto; }
+  .sheet-card { width: 100%; background: var(--bg); border-top: 1px solid var(--line); border-radius: 18px 18px 0 0; padding: 14px 16px 16px;
+                transform: translateY(16px); transition: transform .22s ease; }
+  .sheet.open .sheet-card { transform: none; }
+  .sheet-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .sheet-head b { font-size: 14px; }
+  .opt { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .opt small { display: block; color: var(--ink-3); font-size: 11.5px; }
+  .opt select { font: inherit; color: var(--ink); background: var(--surface-2); border: 0; border-radius: 8px; padding: 6px 8px; }
+  .switch { appearance: none; width: 36px; height: 20px; border-radius: 99px; background: var(--surface-2); position: relative; cursor: pointer; transition: background .2s; flex: none; margin: 0; }
+  .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .2s; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  .switch:checked { background: var(--mint); } .switch:checked::after { transform: translateX(16px); }
+  .links-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+  .sheet .linkbtn { font-weight: 600; color: var(--mint); font-size: 12.5px; }
+  .sheet .linkbtn.danger { color: var(--red); margin-left: auto; }
+  html.browser .app-only { display: none; }
+  .rate { display: inline-flex; align-items: center; gap: 6px; background: var(--surface-2); border-radius: 8px; padding: 0 8px; flex: none; }
+  .rate input { width: 64px; border: 0; background: none; color: var(--ink); font: 600 13px/1 inherit; padding: 7px 0; outline: none; user-select: text; text-align: right; }
+  .rate em { font-style: normal; font-size: 11px; color: var(--ink-3); }
+  .fine { margin: 10px 0 0; font-size: 11px; color: var(--ink-3); line-height: 1.5; }
+  .fine a { color: var(--ink-2); }
+  .earn-list { list-style: none; margin: 4px 0 0; padding: 0; max-height: 260px; overflow-y: auto; }
+  .earn-list li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 12.5px; }
+  .earn-list li b { font-weight: 600; } .earn-list li span { color: var(--ink-3); }
+  .earn-list li.total { border-bottom: 0; font-weight: 700; }
+
+  /* panels: extras, checks, sponsored coins */
+  .sheet-card { max-height: 94%; overflow-y: auto; }
+  .optbtn { width: 100%; text-align: left; } .optbtn em { font-style: normal; color: var(--ink-3); font-size: 18px; }
+  .linkbtn.small { font-size: 11px; }
+  .gpuline i { background: var(--ink-3); } .gpuline.ok i { background: var(--mint); }
+  .sponsored { margin: 8px 0 0; padding: 8px 10px; border-radius: 12px; border: 1px dashed var(--line); }
+  .sponsored h4 { margin: 0 0 4px; font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+  .sp { padding: 6px 0; border-top: 1px solid var(--line); font-size: 12px; } .sp:first-of-type { border-top: 0; }
+  .sp b { font-weight: 600; } .sp .tag { font-size: 10px; background: var(--amber-soft); color: var(--amber); padding: 1px 6px; border-radius: 99px; margin-left: 6px; }
+  .sp p { margin: 3px 0; color: var(--ink-2); } .sp a { color: var(--ink-2); font-size: 11.5px; margin-right: 10px; text-decoration: none; }
+  .sell { margin-top: 8px; font-size: 11.5px; color: var(--ink-3); }
+  .sell a { color: var(--ink-2); text-decoration: none; margin-left: 4px; } .sell a:hover { color: var(--mint); }
+  .chip-list { font-size: 9.5px; font-weight: 700; font-style: normal; color: var(--ink-2); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-left: 5px; }
+  .chip-list.feat { color: var(--amber); border-color: var(--amber-soft); }
+  .pitch { margin: 0 0 6px; font-size: 12px; color: var(--ink); } .pitch:empty { display: none; }
+  .chip-gpu { font-size: 9.5px; font-weight: 700; font-style: normal; color: var(--mint); border: 1px solid var(--mint-soft); border-radius: 4px; padding: 0 4px; margin-left: 5px; }
+  .checks { list-style: none; margin: 4px 0 0; padding: 0; }
+  .checks li { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+  .checks i { width: 14px; flex: none; font-style: normal; font-weight: 700; } .checks .ok i { color: var(--mint); }
+  .checks .bad i { color: var(--red); } .checks .info i { color: var(--ink-3); }
+  .checks b { display: block; font-weight: 600; } .checks span { color: var(--ink-2); }
+  .expect { margin: 4px 0 12px; padding-left: 18px; font-size: 12.5px; line-height: 1.5; } .expect li { margin-bottom: 8px; } .expect b { font-weight: 600; }
+  .ex-row { display: flex; gap: 8px; margin: 8px 0; }
+  .ex-row input { flex: 1; min-width: 0; font: 12px ui-monospace, Consolas, monospace; color: var(--ink); background: var(--surface);
+                   border: 1px solid var(--line); border-radius: 9px; padding: 8px; outline: none; user-select: text; }
+  .ex-row button { padding: 0 12px; border-radius: 9px; font-weight: 600; font-size: 12px; background: var(--mint); color: var(--mint-ink); }
+  .ex-h { margin: 14px 0 4px; font-size: 10.5px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
+  .ex-list { list-style: none; padding: 0; margin: 4px 0; font-size: 12px; }
+  .ex-list li { padding: 6px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 10px; }
+  .ex-list span { color: var(--ink-3); }
+  .update-row { cursor: default; } .update-row b { font-weight: 600; } .update-row .linkbtn { flex: none; }
+
+  /* compact strip */
+  .mini { display: none; height: 100%; align-items: center; gap: 4px; padding-right: 10px; }
+  .mini .drag { gap: 10px; padding-left: 18px; min-width: 0; }  /* room for the rotated logo */
+  .mini-text { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mini-text span { color: var(--ink-3); font-weight: 500; }
+  .mini-power { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--mint); color: var(--mint-ink); flex: none; }
+  .mini-power.running { background: var(--surface-2); color: var(--ink); }
+  .card.compact > :not(.mini) { display: none !important; }
+  .card.compact .mini { display: flex; }
+
+  .toast { position: absolute; left: 14px; right: 14px; bottom: 64px; padding: 9px 12px; border-radius: 10px; background: var(--ink); color: var(--bg);
+           font-size: 12px; opacity: 0; transform: translateY(6px); transition: opacity .2s, transform .2s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <header class="bar">
+    <div class="drag pywebview-drag-region grab">
+      <span class="logo" aria-hidden="true"></span>
+      <span class="word">MINTRO</span>
+    </div>
+    <button class="pill" id="pill" title="Show what needs attention"><i></i><b id="pillText">Loading</b></button>
+    <div class="drag pywebview-drag-region"></div>
+    <button class="icon" id="btnCompact" title="Shrink to a strip" aria-label="Shrink to a strip">
+      <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <button class="icon" id="btnClose" title="Quit MINTRO (stops mining)" aria-label="Quit MINTRO">
+      <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3.5 3.5l7 7m0-7l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </header>
+
+  <section class="hero">
+    <button class="power" id="power" aria-label="Start mining">
+      <svg class="ring" viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="54"/><circle class="arc" id="arc" cx="60" cy="60" r="54"/></svg>
+      <span class="core" id="glyph"></span>
+    </button>
+    <div class="title word" id="title"><b>Tuning for this PC</b><span></span></div>
+    <div class="sub" id="sub">Checking the processor, memory and power…</div>
+    <button class="tune" id="tune" title="How MINTRO is tuned for this PC" hidden><i></i><span id="tuneText"></span></button>
+    <button class="tune gpuline" id="gpuLine" title="GPU mining" hidden><i></i><span id="gpuText"></span></button>
+    <div class="notice" id="notice" hidden></div>
+  </section>
+
+  <section class="stats">
+    <button id="tileMined" title="What you've mined so far"><label>Mined</label><b id="statMined">—</b><small id="statMinedNote">&nbsp;</small></button>
+    <button id="tileBasket" title="Jump to your basket"><label>Basket</label><b id="statBasket">—</b><small id="statBasketNote">&nbsp;</small></button>
+    <button id="tilePower" title="Electricity price and power settings"><label>Power</label><b id="statPower">—</b><small id="statPowerNote">&nbsp;</small></button>
+  </section>
+
+  <section class="basket">
+    <div class="basket-head"><span>Your basket</span>
+      <span class="bh-right"><button class="bh-btn" id="createAll" hidden></button><span id="basketMeta"></span></span>
+    </div>
+    <ul id="list"><li class="empty">Loading coins…</li></ul>
+  </section>
+
+  <footer class="foot">
+    <div class="seg" id="seg" role="radiogroup" aria-label="Power mode">
+      <span class="thumb" id="thumb"></span>
+      <button data-p="auto" title="Tuned to this PC: backs off while you use it, speeds up when it's idle">Auto</button>
+      <button data-p="eco" title="Half the threads, lowest priority: cool and quiet">Eco</button>
+      <button data-p="balanced" title="Best speed per watt, low priority so your apps stay smooth">Balanced</button>
+      <button data-p="max" title="Full speed at normal priority">Max</button>
+    </div>
+    <button class="icon" id="btnSettings" title="Settings" aria-label="Settings">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </footer>
+
+  <div class="mini">
+    <div class="drag pywebview-drag-region"><span class="logo" aria-hidden="true"></span><span class="mini-text" id="miniText">MINTRO</span></div>
+    <button class="mini-power" id="miniPower" aria-label="Start or pause mining"></button>
+    <button class="icon" id="btnExpand" title="Expand" aria-label="Expand">
+      <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3.5 8.5L7 5l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <div class="sheet-card">
+      <div class="sheet-head"><b>Settings</b>
+        <button class="icon" id="sheetClose" aria-label="Close settings"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3.5 3.5l7 7m0-7l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="pc" id="pcInfo"></div>
+      <label class="opt"><span>Electricity price<small>From your bill; sets the Power cost</small></span>
+        <span class="rate"><input id="optRate" inputmode="decimal" autocomplete="off" aria-label="Electricity price per kWh"><em id="optRateUnit">USD/kWh</em></span>
+      </label>
+      <label class="opt"><span>Pause on battery<small>Mining drains and heats a battery fast</small></span><input type="checkbox" class="switch" id="optBattery"></label>
+      <label class="opt"><span>Basket size<small>Auto holds as many coins as can each reach a payout within a week</small></span>
+        <select id="optMax"><option value="500">Auto</option><option value="25">Up to 25</option><option value="10">Up to 10</option><option value="5">Up to 5</option><option value="3">Up to 3</option><option value="1">1 coin</option></select>
+      </label>
+      <label class="opt" id="optFeaturedRow" hidden><span>Featured listings<small>Give featured coins their guaranteed share of mining time</small></span><input type="checkbox" class="switch" id="optFeatured"></label>
+      <label class="opt" id="optStatsRow" hidden><span>Count me in the public miner counter<small>Anonymous: a random ID and whether it's mining, nothing else</small></span><input type="checkbox" class="switch" id="optStats"></label>
+      <button class="opt optbtn" id="openExtras"><span>Extras<small>GPU mining, tax report, alerts, all your PCs</small></span><em>›</em></button>
+      <button class="opt optbtn" id="openChecks"><span>Run a check<small>Pool, miners, Windows Security, wallets, payouts</small></span><em>›</em></button>
+      <div class="opt update-row"><span>MINTRO <b id="appVersion"></b><small id="updateText"></small></span>
+        <button class="linkbtn small" id="updateBtn" hidden></button></div>
+      <div class="links-row">
+        <button class="linkbtn" id="openReport">Profit report ↗</button>
+        <button class="linkbtn app-only" id="openWallets">Wallets folder ↗</button>
+        <button class="linkbtn app-only danger" id="quitApp">Quit MINTRO</button>
+      </div>
+      <p class="fine">"Mined" is MINTRO's estimate from your speed and live network data; the pool's payouts are what counts.
+        Coins with no market may never be worth anything. Not financial advice. <span id="feeNotes"></span>
+        MINTRO itself takes no fee. <button class="linkbtn small" id="openExpect">What to expect</button></p>
+    </div>
+  </div>
+
+  <div class="sheet" id="extras">
+    <div class="sheet-card">
+      <div class="sheet-head"><b>Extras</b>
+        <button class="icon" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3.5 3.5l7 7m0-7l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      </div>
+      <div id="extrasBody"></div>
+    </div>
+  </div>
+
+  <div class="sheet" id="checks">
+    <div class="sheet-card">
+      <div class="sheet-head"><b>Check</b>
+        <button class="icon" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3.5 3.5l7 7m0-7l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      </div>
+      <ul class="checks" id="checkList"><li>Checking…</li></ul>
+      <p class="fine">A real payout is the final proof: once a coin passes the pool's minimum, its coins should arrive in
+        your wallet within the pool's payout interval.</p>
+    </div>
+  </div>
+
+  <div class="sheet" id="expect">
+    <div class="sheet-card">
+      <div class="sheet-head"><b>What to expect</b></div>
+      <ul class="expect">
+        <li><b>Small amounts.</b> A laptop mines cents' worth a day; a desktop a little more. MINTRO shows earnings
+          after electricity so you can judge for yourself.</li>
+        <li><b>A lottery, not an income.</b> Most new coins never gain value. The upside is holding a slice of a coin
+          early, in case it does.</li>
+        <li><b>Your coins, your wallets.</b> Pools pay straight to your addresses. MINTRO never holds your coins and takes
+          no fee.</li>
+        <li><b>Windows Security will flag the miner.</b> It treats every crypto miner as a threat; the card shows how
+          to allow MINTRO's miner folder.</li>
+        <li><b>Updates install themselves.</b> Each one is checked against the publisher's signature and installs while
+          you're away from the PC. Mining keeps going.</li>
+        <li id="expectStats" hidden><b>Counted, anonymously.</b> MINTRO tells the public miner counter that one PC is
+          mining: a random ID, nothing else. Settings has the off switch.</li>
+      </ul>
+      <button class="cta" id="expectOk">Got it</button>
+    </div>
+  </div>
+
+  <div class="sheet" id="earn">
+    <div class="sheet-card">
+      <div class="sheet-head"><b>Mined so far</b>
+        <button class="icon" data-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3.5 3.5l7 7m0-7l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      </div>
+      <ul class="earn-list" id="earnList"></ul>
+      <p class="fine">Estimates from your speed and each coin's network. The pool sends coins to your address once a coin
+        passes its minimum payout; check the real balance in that coin's wallet.
+        <a href="https://pool.rplant.xyz/" target="_blank" rel="noopener">Pool site ↗</a></p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+// Anything that breaks in the card ends up in data\mintro.log instead of failing silently
+function report(kind, msg) {
+  try { fetch("/api/log", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind, msg: String(msg).slice(0, 600) }) }); } catch {}
+}
+window.addEventListener("error", (e) => report("error", `${e.message} @${e.lineno}:${e.colno}`));
+window.addEventListener("unhandledrejection", (e) => report("rejection", (e.reason && (e.reason.stack || e.reason.message)) || e.reason));
+
+const $ = (s) => document.querySelector(s);
+const ICON = {
+  play: '<svg width="30" height="30" viewBox="0 0 24 24"><path d="M8.5 6.2v11.6c0 .8.9 1.3 1.6.8l8.6-5.8c.6-.4.6-1.2 0-1.6l-8.6-5.8c-.7-.5-1.6 0-1.6.8z" fill="currentColor"/></svg>',
+  pause: '<svg width="28" height="28" viewBox="0 0 24 24"><rect x="6.5" y="5.5" width="4" height="13" rx="1.3" fill="currentColor"/><rect x="13.5" y="5.5" width="4" height="13" rx="1.3" fill="currentColor"/></svg>',
+  playS: '<svg width="15" height="15" viewBox="0 0 24 24"><path d="M8.5 6.2v11.6c0 .8.9 1.3 1.6.8l8.6-5.8c.6-.4.6-1.2 0-1.6l-8.6-5.8c-.7-.5-1.6 0-1.6.8z" fill="currentColor"/></svg>',
+  pauseS: '<svg width="14" height="14" viewBox="0 0 24 24"><rect x="6.5" y="5.5" width="4" height="13" rx="1.3" fill="currentColor"/><rect x="13.5" y="5.5" width="4" height="13" rx="1.3" fill="currentColor"/></svg>',
+};
+const ARC = 339.3;
+// The desktop app's bridge (window.pywebview.api) arrives a moment after the page itself
+const bridge = new Promise((resolve) => {
+  const ready = () => resolve(!!(window.pywebview && window.pywebview.api));
+  if (window.pywebview && window.pywebview.api) return ready();
+  window.addEventListener("pywebviewready", ready);
+  setTimeout(ready, 20000);
+});
+const inApp = () => !!(window.pywebview && window.pywebview.api);
+async function native(name, ...args) {
+  if (!(await bridge) || typeof window.pywebview.api[name] !== "function") return undefined;
+  try { return await window.pywebview.api[name](...args); }
+  catch (e) { report("bridge", `${name}: ${(e && e.message) || e}`); return undefined; }
+}
+let S = null, rows = new Map(), order = "", toastTimer = null, autoOpened = false, rateTimer = null;
+
+if (!window.pywebview) document.documentElement.classList.add("browser");
+bridge.then((ok) => { if (ok) document.documentElement.classList.remove("browser"); });
+
+async function api(path, body) {
+  const res = await fetch(path, body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  return data;
+}
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = (u) => (typeof u === "string" && u.startsWith("https://") ? u : null);
+
+function money(v) {
+  const cur = (S && S.currency) || "USD";
+  const a = Math.abs(v);
+  const o = { style: "currency", currency: cur };
+  if (a >= 100) o.maximumFractionDigits = 0;
+  else if (a >= 1 || a === 0) { o.minimumFractionDigits = 2; o.maximumFractionDigits = 2; }
+  else { o.minimumSignificantDigits = 2; o.maximumSignificantDigits = 2; }
+  return new Intl.NumberFormat(undefined, o).format(v);
+}
+function amount(n) {
+  if (!n) return "—";
+  if (n >= 10000) return new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(n);
+  return n.toLocaleString(undefined, n >= 1 ? { maximumFractionDigits: 2 } : { maximumSignificantDigits: 3 });
+}
+function speedParts(h) {
+  if (h >= 1e6) return [(h / 1e6).toFixed(2), "MH/s"];
+  if (h >= 1e3) return [(h / 1e3).toFixed(2), "kH/s"];
+  return [Math.round(h).toString(), "H/s"];
+}
+function days(d) {
+  if (d == null) return "";
+  if (d < 1) return "<1 day";
+  if (d < 1.5) return "~1 day";
+  return `~${Math.round(d)} days`;
+}
+function hue(sym) { let h = 0; for (const c of sym) h = (h * 31 + c.charCodeAt(0)) % 360; return h; }
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 3200);
+}
+
+const running = () => S && S.want && ["starting", "mining", "paused"].includes(S.state);
+
+function render(s) {
+  S = s;
+  const st = s.state;
+  // header pill
+  const pill = $("#pill");
+  const [pc, pt] = {
+    mining: ["on", "Mining"], starting: ["on", "Starting"], paused: ["warn", "Paused"], setup: ["warn", "Set up"],
+    blocked: ["bad", "Blocked"], error: ["bad", "Error"], stopped: ["", "Ready"],
+  }[st] || ["", st];
+  const [pillClass, pillText] = st === "stopped" && !s.active_count ? ["warn", "Set up"] : [pc, pt];
+  pill.className = "pill " + pillClass; $("#pillText").textContent = pillText;
+
+  // hero
+  const power = $("#power"), isRun = running();
+  power.classList.toggle("running", isRun);
+  power.classList.toggle("starting", st === "starting");
+  power.setAttribute("aria-label", isRun ? "Pause mining" : "Start mining");
+  $("#glyph").innerHTML = isRun ? ICON.pause : ICON.play;
+  const arc = $("#arc");
+  const c = s.current;
+  arc.style.opacity = c ? 1 : 0;
+  arc.style.strokeDashoffset = c ? ARC * (c.slice_left / c.slice_len) : ARC;
+
+  const title = $("#title");
+  if (st === "mining" && s.hashrate) {
+    const [n, u] = speedParts(s.hashrate);
+    title.className = "title"; title.innerHTML = `<b>${n}</b><span>${u}</span>`;
+  } else {
+    const word = { starting: "Starting", paused: "Paused", setup: "Add an address", blocked: "Blocked", error: "Hold on", stopped: s.active_count ? "Ready to mine" : "Add an address" }[st] || "MINTRO";
+    title.className = "title word"; title.innerHTML = `<b>${esc(word)}</b><span></span>`;
+  }
+  let sub = "";
+  if (st === "mining" && c) sub = `${c.name} · ${Math.max(1, Math.round(c.slice_left / 60))} min left in its turn`;
+  else if (st === "starting") sub = s.message || "Warming up…";
+  else if (st === "paused") sub = s.message;
+  else if (st === "stopped") sub = s.active_count ? `${s.active_count} coin${s.active_count > 1 ? "s" : ""} ready · press start` : "Paste a wallet address for a coin below";
+  else if (st === "setup") sub = "Paste a wallet address for a coin below";
+  $("#sub").textContent = sub;
+
+  const notice = $("#notice");
+  if (st === "blocked" || st === "error") {
+    notice.hidden = false; notice.className = "notice" + (st === "error" ? " bad" : "");
+    const d = s.defender || {}, blockedByAv = st === "blocked" && d.blocked;
+    const key = `${s.message}|${blockedByAv}|${d.folder_allowed}`;
+    if (notice.dataset.key !== key) {  // re-render only on change, so a pending "Allow" button keeps its state
+      notice.dataset.key = key;
+      notice.innerHTML = `<div>${esc(s.message)}</div>` + (!blockedByAv ? "" :
+        `<div class="notice-actions">${d.folder_allowed ? "" : `<button class="cta" id="allowMiner">Allow MINTRO's miner</button>`}`
+        + `<button id="openSec">Open Windows Security ↗</button></div>`
+        + (d.folder_allowed ? "" : `<small>Only ${esc(d.folder)} is skipped, and XMRig is checked against its official `
+          + `fingerprint first. Undo anytime in Windows Security &gt; Exclusions.</small>`));
+      const allow = $("#allowMiner"), open = $("#openSec");
+      if (allow) allow.onclick = () => allowMiner(allow);
+      if (open) open.onclick = () => api("/api/defender/open", {}).catch((e) => toast(e.message));
+    }
+  } else { notice.hidden = true; notice.dataset.key = ""; }
+
+  // stats
+  $("#statMined").textContent = money(s.total_value || 0);
+  $("#statMinedNote").textContent = s.unpriced ? `+${s.unpriced} coin${s.unpriced > 1 ? "s" : ""} unpriced` : "estimated";
+  $("#statBasket").textContent = `${s.active_count} coin${s.active_count === 1 ? "" : "s"}`;
+  const waiting = s.entries.filter((e) => e.status === "needs_address").length;
+  $("#statBasketNote").textContent = waiting ? `${waiting} need an address` : "auto-sized";
+  $("#statPower").textContent = s.power_cost_day ? `${money(s.power_cost_day)}` : "Idle";
+  $("#statPowerNote").textContent = s.power_cost_day ? "per day" : " ";
+
+  // power mode
+  const modes = ["auto", "eco", "balanced", "max"], i = Math.max(0, modes.indexOf(s.prefs.power));
+  renderTuning(s);
+  $("#thumb").style.transform = `translateX(${i * 100}%)`;
+  document.querySelectorAll("#seg button").forEach((b) => b.classList.toggle("on", b.dataset.p === s.prefs.power));
+  $("#optBattery").checked = !!s.prefs.pause_on_battery;
+  $("#optMax").value = String([500, 25, 10, 5, 3, 1].find((v) => v <= s.prefs.max_coins) || 500);
+  $("#optFeaturedRow").hidden = !s.entries.some((e) => e.listing && e.listing.tier === "featured");
+  $("#optFeatured").checked = s.prefs.featured !== false;
+  if (document.activeElement !== $("#optRate") && s.rate != null) $("#optRate").value = +Number(s.rate).toPrecision(4);
+  $("#optRateUnit").textContent = `${s.currency}/kWh`;
+  if ($("#earn").classList.contains("open")) renderEarnings();
+
+  // compact strip
+  $("#miniPower").innerHTML = isRun ? ICON.pauseS : ICON.playS;
+  $("#miniPower").classList.toggle("running", isRun);
+  $("#miniText").innerHTML = st === "mining" && c
+    ? `${esc(c.symbol)} <span>· ${speedParts(s.hashrate).join(" ")}</span>`
+    : `${esc(pillText)} <span>· ${s.active_count} coin${s.active_count === 1 ? "" : "s"}</span>`;
+
+  renderList(s);
+  renderExtras(s);
+}
+
+function statusLine(e) {
+  const now = e.current && S.state === "mining";
+  if (jobActive(e.wallet && e.wallet.job)) return [`Creating wallet… ${e.wallet.job.progress}%`, "st-now"];
+  switch (e.status) {
+    case "active": return [now ? `Mining now · payout ${days(e.payout_days)}`
+                                 : `${Math.round(e.share * 100)}% of time · payout ${days(e.payout_days)}`, now ? "st-now" : ""];
+    case "needs_address": return ["Add an address to include it", "st-add"];
+    case "rejected": return ["The pool rejected this address", "st-bad"];
+    case "too_slow": return [`Too slow here: a payout would take ${days(e.payout_days_full)}`, ""];
+    default: return ["Standby: lower priority than what fits", ""];
+  }
+}
+
+function renderList(s) {
+  const list = $("#list");
+  $("#basketMeta").textContent = s.entries.length ? `${s.active_count} of ${s.entries.length}` : "";
+  announceJobs(s.entries);
+  const creatable = s.entries.filter((e) => e.status === "needs_address" && e.wallet && e.wallet.supported
+    && !e.wallet.created && !jobActive(e.wallet.job)).map((e) => e.symbol);
+  const all = $("#createAll");
+  all.hidden = creatable.length < 2;
+  all.textContent = `Create ${creatable.length} wallets`;
+  all.onclick = () => act("/api/wallet/create", { symbols: creatable });
+  if (!s.entries.length) { list.innerHTML = `<li class="empty">No coins available right now.</li>`; rows.clear(); order = ""; return; }
+  if (list.querySelector(".empty")) list.innerHTML = "";
+  const newOrder = s.entries.map((e) => e.symbol).join();
+  for (const e of s.entries) {
+    let li = rows.get(e.symbol);
+    if (!li) { li = makeRow(e); rows.set(e.symbol, li); }
+    updateRow(li, e);
+  }
+  for (const [sym, li] of rows) if (!s.entries.some((e) => e.symbol === sym)) { li.remove(); rows.delete(sym); }
+  if (newOrder !== order) { s.entries.forEach((e) => list.appendChild(rows.get(e.symbol))); order = newOrder; }
+  if (!autoOpened) {  // first visit: open the top coin that needs an address
+    autoOpened = true;
+    const first = s.entries.find((e) => e.status === "needs_address");
+    if (first && !s.active_count) rows.get(first.symbol).classList.add("open");
+  }
+}
+
+function makeRow(e) {
+  const li = document.createElement("li");
+  li.className = "coin"; li.dataset.s = e.symbol;
+  const links = [["wallet", "Wallet download"], ["site", "Official site"], ["be", "Explorer"]]
+    .map(([k, label]) => safeUrl(e.links && e.links[k]) ? `<a href="${esc(e.links[k])}" target="_blank" rel="noopener">${label} ↗</a>` : "").join("");
+  li.innerHTML = `
+    <button class="coin-row" aria-expanded="false">
+      <span class="av" style="--h:${hue(e.symbol)}">${esc(e.symbol.slice(0, 3))}<i></i></span>
+      <span class="meta"><b>${esc(e.name)} <em>${esc(e.symbol)}</em>${e.lane === "gpu" ? '<i class="chip-gpu">GPU</i>' : ""}<i class="chip-list" hidden></i></b><small class="st"></small></span>
+      <span class="amt"><b class="mined"></b><small class="val"></small></span>
+    </button>
+    <div class="detail"><div>
+      <p class="pitch"></p>
+      <p class="why"></p>
+      <div class="wallet"></div>
+      <div class="seed" hidden></div>
+      <p class="how"></p>
+      <div class="addr"><input spellcheck="false" autocomplete="off" placeholder="Paste your ${esc(e.symbol)} wallet address"><button class="save" disabled>Save</button></div>
+      <div class="err" hidden></div>
+      <div class="links">${links}</div>
+      <div class="sell"></div>
+    </div></div>`;
+  const row = li.querySelector(".coin-row"), input = li.querySelector("input"), save = li.querySelector(".save"), err = li.querySelector(".err");
+  row.onclick = () => {
+    const open = li.classList.toggle("open");
+    row.setAttribute("aria-expanded", open);
+    if (open) setTimeout(() => { revealInList(li); if (!input.value) input.focus({ preventScroll: true }); }, 260);
+  };
+  input.value = e.address || "";
+  input.oninput = () => { li.dataset.dirty = "1"; save.disabled = input.value.trim() === (li.dataset.saved || ""); err.hidden = true; };
+  input.onkeydown = (ev) => { if (ev.key === "Enter" && !save.disabled) save.click(); };
+  save.onclick = async () => {
+    save.disabled = true;
+    try {
+      render(await api("/api/address", { symbol: e.symbol, address: input.value.trim() }));
+      delete li.dataset.dirty; li.dataset.saved = input.value.trim();
+      toast(input.value.trim() ? `${e.symbol} added to your basket` : `${e.symbol} address removed`);
+    } catch (ex) { err.textContent = ex.message; err.hidden = false; save.disabled = false; }
+  };
+  li.dataset.saved = e.address || "";
+  li.querySelector(".detail").addEventListener("click", (ev) => {
+    const btn = ev.target.closest("[data-act]");
+    if (btn) walletAction(li, e.symbol, btn.dataset.act);
+  });
+  return li;
+}
+
+async function walletAction(li, symbol, action) {
+  const seedBox = li.querySelector(".seed");
+  try {
+    if (action === "create") render(await api("/api/wallet/create", { symbols: [symbol] }));
+    else if (action === "open") await api("/api/wallet/open", { symbol });
+    else if (action === "hide") { seedBox.hidden = true; seedBox.innerHTML = ""; }
+    else if (action === "copy") {
+      await navigator.clipboard.writeText(seedBox.dataset.words);
+      toast("Seed words copied. Paste them somewhere safe, then copy something else over them.");
+    } else if (action === "seed") {
+      if (!seedBox.hidden) return walletAction(li, symbol, "hide");
+      const b = await api("/api/wallet/seed", { symbol });
+      const words = b.seed.trim().split(/\s+/);
+      seedBox.dataset.words = b.seed.trim();
+      seedBox.innerHTML = `<div class="sw">Write these ${words.length} words on paper, in order. Anyone who has them can spend these coins.</div>
+        <ol class="words">${words.map((w) => `<li>${esc(w)}</li>`).join("")}</ol>
+        <div class="smeta"><span>Restore height ${b.restore_height ? Number(b.restore_height).toLocaleString() : "0 (from the start)"}</span>
+          <button class="wbtn" data-act="copy">Copy</button><button class="wbtn" data-act="hide">Hide</button></div>`;
+      seedBox.hidden = false;
+    }
+  } catch (ex) { toast(ex.message); }
+}
+
+const jobActive = (j) => j && !["done", "error"].includes(j.state);
+
+function walletBlock(e) {
+  const w = e.wallet || {}, j = w.job;
+  if (jobActive(j)) return [`job:${j.progress}:${j.message}`,
+    `<div class="wjob"><div class="progress"><i style="width:${j.progress}%"></i></div>${esc(j.message)}</div>`];
+  if (w.created) return ["made", `<div class="wmade"><span>✓ Wallet made by MINTRO</span>
+    <button class="wbtn" data-act="seed">Seed words</button><button class="wbtn" data-act="open">Open folder</button></div>`];
+  if (j && j.state === "error" && !e.address) return [`err:${j.message}`,
+    `<div class="werr">${esc(j.message)}</div><button class="cta" data-act="create">Try again</button><div class="hint"></div>`];
+  if (w.supported && !e.address) return ["cta", `<button class="cta" data-act="create">Create a wallet for me</button>
+    <div class="hint">Uses the official ${esc(e.name)} wallet (a one-time download). You'll get seed words to keep.</div>`];
+  return ["none", ""];
+}
+
+let prevJobs = {};
+function announceJobs(entries) {
+  for (const e of entries) {
+    const j = e.wallet && e.wallet.job, before = prevJobs[e.symbol];
+    if (before && jobActive(before) && j && j.state === "done") {
+      toast(`${e.symbol} wallet created. Open it and back up its seed words.`);
+      rows.get(e.symbol)?.classList.add("open");
+    } else if (before && jobActive(before) && j && j.state === "error") toast(`${e.symbol}: ${j.message}`);
+    prevJobs[e.symbol] = j;
+  }
+}
+
+function linkList(items) {
+  return items.map((m) => safeUrl(m.url) ? `<a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.name)} ↗</a>` : "").join(" ")
+    + (items.some((m) => m.affiliate) ? " <span>(affiliate links)</span>" : "");
+}
+
+function sellHtml(e) {
+  const markets = e.markets || [], hw = e.hardware_wallets || [];
+  return (markets.length ? `<div>Where to sell: ${linkList(markets)}</div>` : "")
+    + (hw.length ? `<div>Store safely: ${linkList(hw)}</div>` : "");
+}
+
+let expectShown = false, sheetKey = "", updatedShown = false;
+function renderExtras(s) {
+  $("#feeNotes").textContent = (s.engine_fees || []).join(" ");
+  const a = s.app || {};
+  $("#optStatsRow").hidden = $("#expectStats").hidden = !a.stats_on;
+  if (document.activeElement !== $("#optStats")) $("#optStats").checked = !!a.share_stats;
+  $("#appVersion").textContent = a.version || "";
+  $("#updateText").textContent = ({ idle: a.message || "Up to date", checking: "Checking for updates…",
+    ready: `${a.available} is ready: it installs when you step away, and mining keeps going`,
+    error: `Couldn't update: ${a.message}` })[a.state] || a.message || "";
+  const ub = $("#updateBtn");
+  ub.hidden = !["idle", "ready", "error"].includes(a.state);
+  ub.textContent = a.state === "ready" ? "Install now" : "Check now";
+  if (a.just_updated && !updatedShown) {
+    updatedShown = true;
+    toast(`MINTRO updated to ${a.version}. Mining didn't stop.`);
+    api("/api/update/seen", {}).catch(() => {});
+  }
+
+  const g = s.gpu || {}, line = $("#gpuLine");
+  line.hidden = !g.name;
+  if (g.name) {
+    line.classList.toggle("ok", g.state === "mining");
+    $("#gpuText").textContent = !g.enabled ? `GPU: ${g.name} · GPU mining off (turn on in Extras)`
+      : g.state === "mining" ? `GPU: ${g.coin} · ${speedParts(g.hashrate).join(" ")}`
+      : g.state === "stopped" ? `GPU: ${g.name} · ready, starts with Start`
+      : `GPU: ${g.message || g.state}`;
+  }
+
+  // Sponsored coins sit at the end of the coin list, so they scroll with it instead of taking room from it
+  const sp = s.sponsored || [], list = $("#list");
+  let box = $("#sponsored");
+  if (!box) { box = document.createElement("li"); box.id = "sponsored"; box.className = "sponsored"; }
+  if (list.lastElementChild !== box) list.appendChild(box);
+  box.hidden = !sp.length;
+  const spKey = JSON.stringify(sp);
+  if (box.dataset.key !== spKey) {
+    box.dataset.key = spKey;
+    box.innerHTML = `<h4>Sponsored</h4>` + sp.map((c) => `<div class="sp"><b>${esc(c.name)} <em class="muted">${esc(c.symbol)}</em></b>`
+      + `<span class="tag">Sponsored</span><p>${esc(c.pitch)}</p>`
+      + `<p class="muted">${c.mineable ? "In the coin list above, scored like every other coin: sponsorship doesn't change its score."
+          : "Not mineable with MINTRO yet."}</p>`
+      + Object.entries(c.links).map(([k, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${{ site: "Website", wallet: "Wallet", explorer: "Explorer" }[k] || k} ↗</a>`).join("")
+      + `</div>`).join("");
+  }
+
+  if (!s.expectations_seen && !expectShown) { expectShown = true; openSheet("#expect"); }
+  if ($("#extras").classList.contains("open")) renderExtrasSheet(s);
+}
+
+function renderExtrasSheet(s) {
+  const x = s.extras || {}, g = s.gpu || {};
+  const key = JSON.stringify([g, x.fleet_folder, x.fleet, x.alerts]);
+  const body = $("#extrasBody");
+  if (key === sheetKey || body.contains(document.activeElement)) return;  // don't reset what's being typed
+  sheetKey = key;
+  const pcs = (x.fleet || []).map((pc) => `<li><b>${pc.online ? "●" : "○"} ${esc(pc.pc)}</b><span>${esc(pc.coin || pc.state || "")}`
+    + `${pc.hashrate ? " · " + speedParts(pc.hashrate).join(" ") : ""} · ${money(pc.mined_value || 0)}</span></li>`).join("");
+  const alerts = (x.alerts || []).slice(0, 6).map((a) => `<li><b>${esc(a.title)}</b><span>${esc(a.text)}</span></li>`).join("");
+  body.innerHTML = `<div class="ex-h">Tax report</div><button class="cta" id="exTax">Save tax report (CSV)</button>`
+    + `<div class="ex-h">GPU mining</div>`
+    + (g.name ? `<label class="opt"><span>${esc(g.name)}<small>Mines GPU coins with SRBMiner-Multi alongside the CPU basket</small></span>`
+        + `<input type="checkbox" class="switch" id="exGpu" ${g.enabled ? "checked" : ""}></label>`
+      : `<p class="muted">No discrete graphics card found on this PC.</p>`)
+    + `<div class="ex-h">My PCs</div><div class="ex-row"><input id="exFolder" value="${esc(x.fleet_folder || "")}"`
+    + ` placeholder="${esc(x.fleet_suggestion || "A shared folder, e.g. on OneDrive")}"><button id="exFolderSave">Save</button></div>`
+    + `<ul class="ex-list">${pcs || '<li><span>Pick a folder every PC can see (OneDrive works). Each PC running MINTRO with it appears here.</span></li>'}</ul>`
+    + `<div class="ex-h">Recent alerts</div><ul class="ex-list">${alerts || "<li><span>None yet. Payout, price and new-coin alerts show up as Windows notifications.</span></li>"}</ul>`;
+  $("#exTax").onclick = async () => { try { const r = await api("/api/extras/tax", {}); toast(`Saved ${r.path.split("\\").pop()} to Documents\\MINTRO`); } catch (e) { toast(e.message); } };
+  const gpuToggle = $("#exGpu");
+  if (gpuToggle) gpuToggle.onchange = (e) => act("/api/gpu", { enabled: e.target.checked });
+  $("#exFolderSave").onclick = () => act("/api/extras/fleet", { folder: $("#exFolder").value }).then(() => { sheetKey = ""; toast("Saved"); });
+}
+
+async function runChecks() {
+  openSheet("#checks");
+  $("#checkList").innerHTML = "<li>Checking…</li>";
+  try {
+    const r = await api("/api/selftest", {});
+    $("#checkList").innerHTML = r.checks.map((c) => `<li class="${c.ok === true ? "ok" : c.ok === false ? "bad" : "info"}">`
+      + `<i>${c.ok === true ? "✓" : c.ok === false ? "!" : "·"}</i><div><b>${esc(c.name)}</b><span>${esc(c.detail)}</span></div></li>`).join("");
+  } catch (e) { $("#checkList").innerHTML = `<li class="bad"><i>!</i><div><b>Check failed</b><span>${esc(e.message)}</span></div></li>`; }
+}
+
+function updateRow(li, e) {
+  const sell = li.querySelector(".sell"), sellKey = JSON.stringify([e.markets, e.hardware_wallets]);
+  if (sell.dataset.key !== sellKey) { sell.dataset.key = sellKey; sell.innerHTML = sellHtml(e); }
+  li.classList.toggle("current", !!e.current && running());
+  li.classList.toggle("mining", !!e.current && S.state === "mining");
+  li.classList.toggle("dim", !["active", "needs_address"].includes(e.status));
+  const [text, cls] = statusLine(e);
+  const st = li.querySelector(".st"); st.textContent = text; st.className = "st " + cls;
+  li.querySelector(".why").textContent = e.reason;
+  const chip = li.querySelector(".chip-list"), tier = e.listing && e.listing.tier;
+  chip.hidden = !tier;
+  chip.classList.toggle("feat", tier === "featured");
+  chip.textContent = tier === "featured" ? "Featured" : "Listed";
+  chip.title = tier === "featured" ? `Featured listing: guaranteed ${Math.round((e.featured_share || 0) * 100)}% of mining time` : "Listed by its project";
+  li.querySelector(".pitch").textContent = (e.listing && e.listing.pitch) || "";
+  const [key, html] = walletBlock(e), box = li.querySelector(".wallet");
+  if (box.dataset.key !== key) { box.dataset.key = key; box.innerHTML = html; }
+  const how = li.querySelector(".how");
+  how.hidden = !!e.address || !!(e.wallet && e.wallet.created);
+  how.textContent = e.wallet && e.wallet.supported
+    ? "Or paste a receive address from a wallet you already have:"
+    : `Install the official ${e.name} wallet, create a wallet, write down its seed words, then copy its receive address here.`;
+  li.querySelector(".mined").textContent = e.mined ? `${amount(e.mined)}` : "—";
+  li.querySelector(".val").textContent = e.price == null ? "no market yet" : e.mined ? money(e.value) : `${money(e.price)} each`;
+  const input = li.querySelector("input");
+  if (!li.dataset.dirty && document.activeElement !== input) { input.value = e.address || ""; li.dataset.saved = e.address || ""; }
+}
+
+async function act(path, body) {
+  try { render(await api(path, body)); } catch (e) { toast(e.message); }
+}
+function revealInList(li) {
+  // Scroll only the coin list (scrollIntoView would also shift the card itself)
+  const list = $("#list");
+  const top = li.offsetTop - list.offsetTop, bottom = top + li.offsetHeight;
+  if (top < list.scrollTop) list.scrollTo({ top, behavior: "smooth" });
+  else if (bottom > list.scrollTop + list.clientHeight) list.scrollTo({ top: Math.min(top, bottom - list.clientHeight), behavior: "smooth" });
+}
+function openRow(symbol, focusInput) {
+  const li = symbol && rows.get(symbol);
+  if (!li) return;
+  li.classList.add("open");
+  li.querySelector(".coin-row").setAttribute("aria-expanded", "true");
+  setTimeout(() => {  // after the row's open animation, so its full height is known
+    revealInList(li);
+    if (focusInput && !li.querySelector("input").value) li.querySelector("input").focus({ preventScroll: true });
+  }, 260);
+}
+const firstNeedingAddress = () => S && S.entries.find((e) => e.status === "needs_address");
+
+function toggle() {
+  if (!S) return;
+  if (running()) return act("/api/stop", {});
+  if (!S.active_count) {  // nothing mineable yet: guide to the address field instead of failing
+    const first = firstNeedingAddress();
+    if (first) openRow(first.symbol, true);
+    return toast("Add a wallet address first, or create a wallet for a coin");
+  }
+  act("/api/start", {});
+}
+
+function openSheet(id) { closeSheets(); $(id).classList.add("open"); }
+function closeSheets() { document.querySelectorAll(".sheet.open").forEach((s) => s.classList.remove("open")); }
+
+function renderEarnings() {
+  const items = S.entries.filter((e) => e.mined > 0);
+  $("#earnList").innerHTML = items.length
+    ? items.map((e) => `<li><b>${esc(e.name)}</b><span>${amount(e.mined)} ${esc(e.symbol)} · ${e.value == null ? "no market yet" : money(e.value)}</span></li>`).join("")
+      + `<li class="total"><b>Total (coins with a market)</b><span>${money(S.total_value || 0)}</span></li>`
+    : `<li><span>Nothing yet. Press start and coins appear here as they're mined.</span></li>`;
+}
+
+async function allowMiner(button) {
+  button.disabled = true;
+  button.textContent = "Waiting for Windows…";
+  try {
+    const r = await api("/api/defender/allow", {});
+    toast({ ok: "Done: MINTRO's miner folder is allowed. Starting…",
+            cancelled: "Windows didn't get permission, so nothing changed.",
+            failed: "Windows couldn't add the exclusion. Try Open Windows Security instead." }[r.result] || "Done");
+    render(r);
+  } catch (e) { toast(e.message); }
+  if (button.isConnected) { button.disabled = false; button.textContent = "Allow MINTRO's miner"; }
+}
+
+function renderTuning(s) {
+  const t = s.tuning;
+  if (!t) return;
+  const mode = { auto: "Auto", eco: "Eco", balanced: "Balanced", max: "Max" }[s.prefs.power] || "Auto";
+  const status = t.calibrated ? "tuned" : running() ? "calibrating" : "calibrates on start";
+  $("#tune").hidden = false;
+  $("#tune").classList.toggle("ok", !!t.calibrated);
+  $("#tuneText").textContent = `${mode} · ${t.tier} · ${t.threads} of ${t.all_threads} threads`
+    + `${t.memory === "light" ? " · light memory" : ""} · ${status}`;
+  const autoLine = s.prefs.power !== "auto" ? "Choose Auto to let MINTRO adapt this to what you're doing."
+    : t.active ? "You're using the PC, so Auto runs lighter and at low priority."
+    : "The PC is idle, so Auto runs at full speed.";
+  $("#pcInfo").innerHTML = `<b>This PC: ${esc(t.tier)}</b><br><span>${esc(t.cpu || "")}</span><br>`
+    + `<span>Mining with ${t.threads} of ${t.all_threads} threads (RandomX uses at most ${t.base_threads} here) · `
+    + `${t.ram_gb} GB RAM, ${t.free_gb} GB free.</span><br>`
+    + `<span>${t.memory === "light"
+      ? "Memory is short, so RandomX coins run in light mode: slower, but your PC won't swap. Free 2.6 GB for full speed."
+      : "Enough free memory for full-speed RandomX."}</span><br>`
+    + `<span>${autoLine} ${t.calibrated ? "Speeds are measured on this PC." : "Speeds are estimates until a few minutes of mining."}</span>`;
+}
+
+async function setCompact(on) {
+  $("#card").classList.toggle("compact", on);
+  if (on) closeSheets();
+  if (inApp()) {
+    const now = await native("compact", on);
+    if (typeof now === "boolean") $("#card").classList.toggle("compact", now);
+  }
+}
+
+$("#power").onclick = toggle;
+$("#miniPower").onclick = toggle;
+document.querySelectorAll("#seg button").forEach((b) => (b.onclick = () => act("/api/prefs", { power: b.dataset.p })));
+$("#pill").onclick = () => {  // jump to whatever needs attention
+  if (!S) return;
+  const target = (S.current && running() && S.current.symbol)
+    || (S.entries.find((e) => e.status === "rejected") || firstNeedingAddress() || {}).symbol;
+  if (target) openRow(target, true);
+  else if (S.state === "stopped" && S.active_count) toast("Ready: press the big button to start");
+};
+$("#tileMined").onclick = () => { if (S) { renderEarnings(); openSheet("#earn"); } };
+$("#tileBasket").onclick = () => {
+  const first = firstNeedingAddress();
+  if (first) openRow(first.symbol, true);
+  else $("#list").scrollTo({ top: 0, behavior: "smooth" });
+};
+$("#tilePower").onclick = () => { openSheet("#sheet"); setTimeout(() => $("#optRate").select(), 250); };
+$("#btnSettings").onclick = () => openSheet("#sheet");
+$("#tune").onclick = () => openSheet("#sheet");
+$("#gpuLine").onclick = () => { openSheet("#extras"); sheetKey = ""; renderExtrasSheet(S); };
+$("#openExtras").onclick = () => { openSheet("#extras"); sheetKey = ""; renderExtrasSheet(S); };
+$("#openChecks").onclick = runChecks;
+$("#openExpect").onclick = () => openSheet("#expect");
+$("#expectOk").onclick = () => { closeSheets(); api("/api/ack", {}).catch(() => {}); };
+$("#sheetClose").onclick = closeSheets;
+document.querySelectorAll(".sheet").forEach((sheet) => sheet.addEventListener("click", (e) => {
+  if (e.target === sheet || e.target.closest("[data-close]")) sheet.classList.remove("open");
+}));
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheets(); });
+$("#optBattery").onchange = (e) => act("/api/prefs", { pause_on_battery: e.target.checked });
+$("#optStats").onchange = (e) => act("/api/share-stats", { enabled: e.target.checked });
+$("#updateBtn").onclick = () => act(S.app && S.app.state === "ready" ? "/api/update/install" : "/api/update/check", {});
+$("#optMax").onchange = (e) => act("/api/prefs", { max_coins: +e.target.value });
+$("#optFeatured").onchange = (e) => act("/api/prefs", { featured: e.target.checked });
+$("#optRate").addEventListener("input", () => {
+  clearTimeout(rateTimer);
+  rateTimer = setTimeout(async () => {
+    const v = parseFloat($("#optRate").value.replace(",", "."));
+    if (!(v >= 0) || (S && Math.abs(v - S.rate) < 1e-9)) return;
+    try { await api("/api/settings", { rate: v }); await poll(); toast("Electricity price saved"); }
+    catch (e) { toast(e.message); }
+  }, 700);
+});
+$("#openReport").onclick = () => (inApp() ? native("open_report") : window.open("/", "_blank"));
+$("#openWallets").onclick = () => native("open_folder", "wallets");
+$("#quitApp").onclick = () => native("close");
+$("#btnClose").onclick = () => native("close");
+$("#btnCompact").onclick = () => setCompact(true);
+$("#btnExpand").onclick = () => setCompact(false);
+bridge.then(async (ok) => {
+  if (!ok) return;
+  if (await native("is_compact")) $("#card").classList.add("compact");
+  // Let the app size the window for this pixel ratio (display scaling x Windows text size)
+  native("set_scale", devicePixelRatio);
+  matchMedia(`(resolution: ${devicePixelRatio}dppx)`).addEventListener("change", () => native("set_scale", devicePixelRatio), { once: true });
+});
+// External links open in the default browser, not inside the card
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a[href]");
+  if (!a || !inApp()) return;
+  const href = a.getAttribute("href");
+  if (href.startsWith("https://")) { e.preventDefault(); native("open_url", href); }
+});
+
+async function poll() {
+  try { render(await api("/api/state")); }
+  catch (e) { $("#pill").className = "pill bad"; $("#pillText").textContent = "Offline"; }
+}
+poll();
+setInterval(poll, 1500);
+// Layout facts for data\mintro.log, once per window size (helps diagnose sizing problems on other PCs)
+let lastLayout = "";
+function reportLayout() {
+  const c = $("#card").getBoundingClientRect(), h = $(".bar").getBoundingClientRect();
+  const vv = window.visualViewport || { offsetTop: 0, height: innerHeight, scale: 1 };
+  const atTop = document.elementFromPoint(innerWidth / 2, 4);
+  const facts = `viewport ${innerWidth}x${innerHeight} dpr ${devicePixelRatio} | visual offset ${Math.round(vv.offsetTop)} h ${Math.round(vv.height)} scale ${vv.scale}`
+    + ` | card top ${Math.round(c.top)} h ${Math.round(c.height)} | header top ${Math.round(h.top)}`
+    + ` | scroll ${document.scrollingElement.scrollTop}/${$("#card").scrollTop}/${document.body.scrollTop}`
+    + ` | at top: ${atTop ? atTop.tagName + "." + atTop.className : "none"} | classes "${document.documentElement.className}"`;
+  if (facts !== lastLayout) { lastLayout = facts; report("layout", facts); }
+}
+addEventListener("resize", () => setTimeout(reportLayout, 300));setTimeout(reportLayout, 1500);
+bridge.then(() => setTimeout(reportLayout, 500));
+</script>
+</body>
+</html>

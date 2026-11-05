@@ -1,0 +1,19 @@
+# MINTRO backend: miner counter and listing requests. Deploy steps: docs/STATS.md
+name = "mintro-stats"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+[vars]
+GITHUB_REPO = "aiteleresearch/mintro"   # your repository, for the download counter
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mintro-stats"
+database_id = "PASTE-THE-ID-FROM-wrangler-d1-create"
+
+[triggers]
+crons = ["0 * * * *"]   # hourly: record the day's peak
+
+# Secrets (not in this file): wrangler secret put SALT        (any long random string)
+#                             wrangler secret put ADMIN_TOKEN (a long random string; publisher/admin.py uses it)
+#                             wrangler secret put GITHUB_TOKEN (optional: higher GitHub API limits)

@@ -1,0 +1,21 @@
+# What MINTRO writes while it runs (your settings, wallets, miners) never goes into the repo
+data/
+miners/
+tools/
+wallets/
+
+# Build output
+build/
+dist/
+__pycache__/
+*.pyc
+
+# Publisher secrets live outside the repo (%USERPROFILE%\MINTRO-publisher), but never commit one by accident
+license-signing-key*.json
+*.pfx
+
+# Per-user Claude Code settings
+.claude/settings.local.json
+
+# The admin tool's unpublished working copy
+listings/listings.draft.json
