@@ -520,14 +520,84 @@ h1 { font-size: clamp(46px, 6.4vw, 104px); line-height: .96; letter-spacing: -.0
 .final-sub { font-size: 20px; color: var(--ink-2); margin: 0 0 34px; }
 .final .meta { margin-top: 24px; }
 
-/* ---------- footer ---------- */
+/* ---------- footer (the Aitele venture footer, in MINTRO's colours) ---------- */
 
-.foot { border-top: 1px solid var(--line); background: rgba(5, 6, 7, .94); padding: 44px 0 52px; }
-.foot-in { display: grid; grid-template-columns: auto 1fr; gap: 18px 40px; align-items: center; }
-.foot nav { display: flex; gap: 24px; justify-content: flex-end; font-size: 14px; color: var(--ink-2); }
-.foot nav a:hover { color: var(--ink); }
-.fine { margin: 0; color: var(--ink-3); font-size: 12.5px; grid-column: 1 / -1; }
-@media (max-width: 640px) { .foot-in { grid-template-columns: 1fr; } .foot nav { justify-content: flex-start; } }
+.foot { border-top: 1px solid var(--line); background: linear-gradient(180deg, rgba(11, 13, 15, .97), rgba(5, 6, 7, .99)); padding: 76px 0 40px; }
+.foot-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr); gap: 56px; }
+.foot-about { margin: 22px 0 0; max-width: 36ch; color: var(--ink-2); font-size: 15px; line-height: 1.7; }
+.foot-venture { margin: 22px 0 0; font: 500 11.5px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.foot-venture a { color: var(--ink-2); transition: color .2s; }
+.foot-venture a:hover { color: var(--mint-2); }
+.social { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.social a { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; border: 1px solid var(--line);
+  background: var(--panel); color: var(--ink-2); transition: color .25s, border-color .25s, background .25s, transform .4s var(--ease); }
+.social a:hover { color: var(--mint-2); border-color: rgba(61, 220, 151, .42); background: var(--mint-soft); transform: translateY(-2px); }
+.social svg { width: 16px; height: 16px; fill: currentColor; }
+.foot-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+.foot-h { margin: 6px 0 18px; font: 500 11.5px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--mint); }
+.foot-cols ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.foot-cols a { font-size: 14.5px; color: var(--ink-2); overflow-wrap: anywhere; transition: color .2s; }
+.foot-cols a:hover { color: var(--ink); }
+.foot-bottom { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; gap: 14px 48px;
+  justify-content: space-between; align-items: flex-start; }
+.fine { margin: 0; color: var(--ink-3); font-size: 12.5px; line-height: 1.65; max-width: 70ch; }
+.foot-copy { font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+@media (max-width: 980px) {
+  .foot-top { grid-template-columns: 1fr; gap: 48px; }
+  .foot-bottom { flex-direction: column; }
+  .foot-copy { white-space: normal; }
+}
+@media (max-width: 640px) {
+  .foot { padding-top: 60px; }
+  .foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 20px; }
+  .foot-bottom { margin-top: 48px; }
+}
+
+/* ---------- legal pages ---------- */
+
+.legal-page { background: radial-gradient(70% 50% at 18% -8%, rgba(61, 220, 151, .11), transparent 60%),
+  radial-gradient(50% 40% at 100% 0%, rgba(242, 196, 109, .05), transparent 60%), var(--bg); }
+.legal { position: relative; z-index: 2; padding: 156px 0 120px; }
+.legal-in { max-width: 940px; }
+.legal-head h1 { font-size: clamp(42px, 6.4vw, 76px); line-height: 1.02; letter-spacing: -.04em; }
+.legal-lede { margin: 24px 0 0; max-width: 58ch; color: var(--ink-2); font-size: 18.5px; line-height: 1.6; }
+.legal-meta { margin: 26px 0 0; font: 500 12px/1.5 var(--mono); letter-spacing: .08em; color: var(--ink-3); }
+.clauses { list-style: none; margin: 68px 0 0; padding: 0; border-top: 1px solid var(--line); }
+.clause { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 36px; padding: 38px 0; border-bottom: 1px solid var(--line); }
+.c-idx span { font: 600 13px/1 var(--mono); color: var(--mint); }
+.c-idx small { display: block; margin-top: 12px; font: 500 11px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.c-body h2 { font-size: clamp(20px, 2.3vw, 26px); line-height: 1.25; letter-spacing: -.02em; }
+.c-body p, .c-body li { color: var(--ink-2); font-size: 16px; line-height: 1.78; }
+.c-body p { margin: 14px 0 0; }
+.c-body ul { margin: 14px 0 0; padding-left: 20px; }
+.c-body li + li { margin-top: 8px; }
+.c-body li::marker { color: var(--mint); }
+.c-body strong { color: var(--ink); font-weight: 600; }
+.c-body a { color: var(--mint-2); text-decoration: underline; text-decoration-color: rgba(166, 247, 210, .35); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.c-body a:hover { text-decoration-color: var(--mint-2); }
+.legal-more { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 48px; }
+.legal-more span { font: 500 11.5px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin-right: 6px; }
+.legal-more a { padding: 10px 16px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--panel); color: var(--ink-2);
+  font-size: 14px; transition: color .2s, border-color .2s, background .2s; }
+.legal-more a:hover { color: var(--ink); border-color: rgba(61, 220, 151, .45); background: var(--mint-soft); }
+.contact-in { max-width: 1120px; }
+.contact-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 28px; margin-top: 56px; align-items: start; }
+.contact .apply { max-width: none; padding: 28px; }
+.apply.mint input:focus, .apply.mint select:focus, .apply.mint textarea:focus { border-color: var(--mint); box-shadow: 0 0 0 3px rgba(61, 220, 151, .16); }
+.contact-side { display: grid; gap: 14px; }
+.contact-card { padding: 22px 24px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); }
+.contact-card .foot-h { margin: 0 0 12px; }
+.contact-card a { font: 500 16px/1.4 var(--display); color: var(--ink); overflow-wrap: anywhere; transition: color .2s; }
+.contact-card a:hover { color: var(--mint-2); }
+.contact-card p { margin: 8px 0 0; color: var(--ink-3); font-size: 14px; line-height: 1.6; }
+@media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; } }
+@media (max-width: 720px) {
+  .legal { padding: 120px 0 90px; }
+  .contact .apply { padding: 20px; }
+  .clause { grid-template-columns: 1fr; gap: 12px; padding: 30px 0; }
+  .c-idx { display: flex; align-items: baseline; gap: 12px; }
+  .c-idx small { margin-top: 0; }
+}
 
 /* ---------- reduced motion ---------- */
 

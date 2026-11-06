@@ -4,8 +4,10 @@
 
   // Your GitHub repository ("owner/name"), stats service (server/stats, docs/STATS.md) and a contact email.
   // Every Download and GitHub link, the live numbers and the listing form use these.
-  const SITE = { repo: 'aiteleresearch/mintro', stats: '', email: '' };
+  // api: MINTRO's mail endpoint (server.js in the Aitele deployment): listing requests are emailed to the team.
+  const SITE = { repo: 'aiteleresearch/mintro', stats: '', email: 'hello@aiteleresearch.com', api: 'https://mintra.aiteleresearch.com' };
   const hasRepo = !SITE.repo.includes('OWNER'), statsBase = SITE.stats.replace(/\/+$/, '');
+  const apiBase = SITE.api.replace(/\/+$/, '');
 
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -376,21 +378,27 @@
       const missing = ['project', 'symbol', 'site', 'email'].find((k) => !String(data[k] || '').trim());
       if (missing) { say(`Please fill in ${missing === 'symbol' ? 'the ticker' : missing}.`, 'err'); form[missing].focus(); return; }
       if (data.source === 'custom' && !(data.pool_host && data.pool_port)) { say('Add your pool host and port.', 'err'); return; }
-      if (!statsBase) {
-        if (SITE.email) {
-          location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(`Listing request: ${data.project} (${data.symbol})`)}`
-            + `&body=${encodeURIComponent(Object.entries(data).filter(([k, v]) => v && k !== 'website_url').map(([k, v]) => `${k}: ${v}`).join('\n'))}`;
-        } else {
-          say('Listing requests open soon.', 'err');
-        }
+      const mailRequest = () => {
+        location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(`Listing request: ${data.project} (${data.symbol})`)}`
+          + `&body=${encodeURIComponent(Object.entries(data).filter(([k, v]) => v && k !== 'website_url').map(([k, v]) => `${k}: ${v}`).join('\n'))}`;
+      };
+      const endpoint = apiBase ? `${apiBase}/api/listing` : statsBase ? `${statsBase}/v1/listing-request` : '';
+      if (!endpoint) {
+        if (SITE.email) mailRequest(); else say('Listing requests open soon.', 'err');
         return;
       }
       const button = $('button[type=submit]', form);
       button.disabled = true;
       say('Sending…');
       try {
-        const r = await fetch(`${statsBase}/v1/listing-request`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-        const body = await r.json().catch(() => ({}));
+        const r = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+          .catch(() => null);
+        const body = r ? await r.json().catch(() => ({})) : {};
+        if ((!r || r.status >= 500 || r.status === 404) && SITE.email) {
+          say("We couldn't reach our server, so your email app will open with the request filled in — just press send.", 'err');
+          mailRequest();
+          return;
+        }
         if (!r.ok || body.error) throw new Error(body.error || `The request didn't go through (${r.status}).`);
         form.reset();
         syncPool();

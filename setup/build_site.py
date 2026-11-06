@@ -20,7 +20,7 @@ TOP = "mintro-website"
 
 
 def site_files() -> list[Path]:
-    files = [DOCS / "index.html", DOCS / "404.html", DOCS / "site.webmanifest"]
+    files = sorted(DOCS.glob("*.html")) + [DOCS / "site.webmanifest"]  # the pages: home, contact, legal, 404
     files += sorted(p for p in (DOCS / "assets").rglob("*") if p.is_file())
     return files
 
@@ -31,9 +31,9 @@ def main() -> None:
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
         for f in site_files():
             data = f.read_bytes()
-            if f.name == "index.html":
+            if f.suffix == ".html":
                 data = data.replace(GITHUB_PAGES.encode(), PLACEHOLDER.encode())
-                assert PLACEHOLDER.encode() in data, "index.html has no site address to replace"
+                assert f.name == "404.html" or PLACEHOLDER.encode() in data, f"{f.name} has no site address to replace"
             z.writestr(f"{TOP}/site/{f.relative_to(DOCS).as_posix()}", data)
         for name, mode in (("install.sh", 0o755), ("README.txt", 0o644)):
             text = (DEPLOY / name).read_bytes().replace(b"\r\n", b"\n")  # Linux line endings, whatever git did
