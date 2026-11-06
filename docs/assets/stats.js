@@ -95,6 +95,24 @@
         has been here before and whether it's its first visit today — no cookies, no IDs, no IP addresses kept. Updates
         are installed copies of MINTRO that fetched a new version.</p>`;
     document.body.append(dlg);
+    // The scrollbar shows only while the person scrolls the overlay (wheel, touch, keys, or dragging the bar), and
+    // fades out once it rests (style.css: .scrolling). Scrolls the browser makes itself — focusing a button when the
+    // overlay opens — don't count.
+    let resting = 0, intent = 0, dragging = false;
+    const SCROLL_KEYS = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '];
+    const meant = () => { intent = Date.now(); };
+    const hide = () => { if (dragging) resting = setTimeout(hide, 900); else dlg.classList.remove('scrolling'); };
+    dlg.addEventListener('wheel', meant, { passive: true });
+    dlg.addEventListener('touchmove', meant, { passive: true });
+    dlg.addEventListener('keydown', (e) => { if (SCROLL_KEYS.includes(e.key)) meant(); });
+    dlg.addEventListener('pointerdown', (e) => { if (e.target === dlg) { dragging = true; meant(); } }); // on the bar
+    addEventListener('pointerup', () => { dragging = false; });
+    dlg.addEventListener('scroll', () => {
+      if (!dragging && Date.now() - intent > 1000) return;
+      dlg.classList.add('scrolling');
+      clearTimeout(resting);
+      resting = setTimeout(hide, 900);
+    }, { passive: true });
     $('.sd-x', dlg).addEventListener('click', () => dlg.close());
     dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); }); // the backdrop
     $$('[data-metric]', dlg).forEach((b) => b.addEventListener('click', () => { metric = b.dataset.metric; render(); }));

@@ -622,6 +622,15 @@ button.verify { background: none; border: 0; padding: 0; font: inherit; cursor: 
 .stats-dlg::backdrop { background: rgba(2, 3, 4, .72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 .stats-dlg[open] { animation: sd-in .45s var(--ease); }
 @keyframes sd-in { from { opacity: 0; transform: translateY(18px) scale(.98); } }
+/* Its scrollbar: a thin mint thumb on no track, shown only while the overlay scrolls (stats.js sets .scrolling).
+   Chrome, Edge and Firefox use the standard properties; Safari the ::-webkit-scrollbar ones. */
+.stats-dlg { scrollbar-width: thin; scrollbar-color: transparent transparent; transition: scrollbar-color .35s; }
+.stats-dlg.scrolling { scrollbar-color: rgba(61, 220, 151, .6) transparent; }
+.stats-dlg::-webkit-scrollbar { width: 10px; }
+.stats-dlg::-webkit-scrollbar-track { background: transparent; margin: 22px 0; }
+.stats-dlg::-webkit-scrollbar-thumb { border-radius: 10px; border: 3px solid transparent; background: transparent padding-box; }
+.stats-dlg.scrolling::-webkit-scrollbar-thumb { background-color: rgba(61, 220, 151, .6); }
+.stats-dlg.scrolling::-webkit-scrollbar-thumb:hover, .stats-dlg.scrolling::-webkit-scrollbar-thumb:active { background-color: var(--mint); }
 .sd-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 28px 30px 0; }
 .sd-head .eyebrow { margin-bottom: 10px; }
 .sd-head h2 { font-size: clamp(24px, 3.4vw, 32px); }
