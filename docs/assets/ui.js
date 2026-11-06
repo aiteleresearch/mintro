@@ -349,6 +349,7 @@
       } else {
         chart([]);
       }
+      if (stats.downloads == null && apiBase) { try { stats.downloads = (await getJSON(`${apiBase}/api/stats`)).totals.downloads; } catch { /* not live yet */ } }
       if (stats.downloads == null && hasRepo) { try { stats.downloads = await githubDownloads(); } catch { /* rate-limited */ } }
       ['mining_now', 'downloads', 'mined_24h', 'installs'].forEach((k) => show(k, stats[k]));
       if (stats.updated) {

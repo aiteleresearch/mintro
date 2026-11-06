@@ -46,6 +46,7 @@
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin>
 <script type="module" src="assets/scene.js"></script>
 <script defer src="assets/ui.js"></script>
+<script defer src="assets/stats.js"></script>
 </head>
 <body>
 
@@ -93,6 +94,11 @@
           </a>
           <a class="btn ghost lg" href="#showcase" data-magnetic><span>See it work
             <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 2v10m0 0 4-4m-4 4L3 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+        </div>
+        <div class="dl-stat rise" style="--d:.9s" data-dlstat hidden>
+          <svg class="dl-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v8m0 0 3.2-3.2M8 10.5 4.8 7.3M3 13.5h10"/></svg>
+          <span><b data-dl-total>—</b> downloads</span>
+          <button class="dl-o" type="button" data-stats-open aria-label="Download and visitor statistics" title="Statistics">i</button>
         </div>
         <p class="meta rise" style="--d:.95s">Windows 10 &amp; 11 · per-user install, no admin · 47 MB · GPL-3.0</p>
       </div>
@@ -184,8 +190,8 @@
         <article class="num spot">
           <span class="num-label">Downloads</span>
           <b class="num-val" data-stat="downloads">—</b>
-          <span class="num-note">Windows installer downloads, as counted by GitHub</span>
-          <a class="verify" data-href="downloadsRaw" href="#numbers">Check on GitHub ↗</a>
+          <span class="num-note">Windows installer downloads from MINTRO's website, since day one</span>
+          <button class="verify" type="button" data-stats-open>Statistics ↗</button>
         </article>
         <article class="num spot">
           <span class="num-label">Mined in the last 24 h</span>
@@ -473,6 +479,11 @@
         </a>
       </div>
       <p class="meta" data-reveal style="--d:.25s">47 MB · installs per user · uninstall any time from Settings &gt; Apps</p>
+      <div class="dl-stat" data-dlstat hidden>
+        <svg class="dl-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v8m0 0 3.2-3.2M8 10.5 4.8 7.3M3 13.5h10"/></svg>
+        <span><b data-dl-total>—</b> downloads</span>
+        <button class="dl-o" type="button" data-stats-open aria-label="Download and visitor statistics" title="Statistics">i</button>
+      </div>
     </div>
   </section>
 </main>

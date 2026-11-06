@@ -1,8 +1,12 @@
 """Publisher settings: fill these in before releasing your build. Empty values switch the feature off."""
 
-# Your GitHub repository, "owner/name". Installed copies update themselves from its latest release
-# (see docs/UPDATES.md), and the website's download counter reads its release downloads.
+# Your GitHub repository, "owner/name". Installed copies fall back to its latest release for updates
+# (see docs/UPDATES.md).
 GITHUB_REPO = "aiteleresearch/mintro"
+
+# Where installed copies look for updates first: the release feed on MINTRO's website, in the same shape as
+# GitHub's "latest release" API (the Aitele deployment serves it with the installer and the signed update).
+UPDATE_FEED = "https://mintra.aiteleresearch.com/download/release.json"
 
 # The public miner counter (server/stats, see docs/STATS.md), e.g. "https://mintro-stats.you.workers.dev".
 # Installed copies send it an anonymous "I'm mining" heartbeat unless the person turns that off in Settings.

@@ -1,7 +1,8 @@
 """Automatic updates that never stop the miner.
 
-1. A few minutes after start, then every few hours, MINTRO asks GitHub for the latest release of
-   config.GITHUB_REPO (or the feed in app-prefs.json "update_feed", for a beta channel).
+1. A few minutes after start, then every few hours, MINTRO asks MINTRO's website for the latest release
+   (config.UPDATE_FEED), falling back to GitHub's latest release of config.GITHUB_REPO; the feed in
+   app-prefs.json "update_feed" (a beta channel) replaces both.
 2. If it's newer, MINTRO downloads MINTRO-Update-<version>.zip and its .sig, and checks the signature against
    the publisher key in signing.py. An update that isn't signed by the publisher is never installed.
 3. It unpacks the new version next to the installed one (%LOCALAPPDATA%\\Programs\\MINTRO-update-<version>).
@@ -108,11 +109,32 @@ def installed() -> bool:
     return bool(getattr(sys, "frozen", False)) and Path(sys.executable).resolve().parent == installer.APP_DIR.resolve()
 
 
-def feed_url() -> str:
+def feed_urls() -> list[str]:
+    """Where to look for a newer release, in order; the first that answers is used."""
     prefs = store.load("app-prefs.json") or {}
     if prefs.get("update_feed"):
-        return prefs["update_feed"]
-    return f"https://api.github.com/repos/{config.GITHUB_REPO}/releases/latest" if config.GITHUB_REPO else ""
+        return [prefs["update_feed"]]
+    urls = [config.UPDATE_FEED] if getattr(config, "UPDATE_FEED", "") else []
+    if config.GITHUB_REPO:
+        urls.append(f"https://api.github.com/repos/{config.GITHUB_REPO}/releases/latest")
+    return urls
+
+
+def feed_url() -> str:
+    urls = feed_urls()
+    return urls[0] if urls else ""
+
+
+def latest_release() -> dict:
+    """The newest release from the first update source that answers."""
+    error: Exception | None = None
+    for url in feed_urls():
+        try:
+            return market.fetch_json(url)
+        except Exception as e:
+            log.info("update source %s didn't answer: %s", url, e)
+            error = e
+    raise error or RuntimeError("No update source is set.")
 
 
 class Updater:
@@ -182,7 +204,7 @@ class Updater:
         """Look for a newer release; download, verify and unpack it if there is one."""
         with self._lock:
             self.state, self.message = "checking", ""
-            release = market.fetch_json(feed_url())
+            release = latest_release()
             version = str(release.get("tag_name", "")).lstrip("vV")
             if parse_version(version) <= parse_version(__version__):
                 self.state, self.message, self.available = "idle", "Up to date", None

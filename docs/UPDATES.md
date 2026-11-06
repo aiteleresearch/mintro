@@ -9,9 +9,14 @@ Installed copies of MINTRO update themselves, and mining doesn't stop while they
    - `MINTRO-Setup-0.4.2.exe`: the installer, for new users (and the website's download counter);
    - `MINTRO-Update-0.4.2.zip`: the same app, for installed copies;
    - `MINTRO-Update-0.4.2.zip.sig`: its signature, made with your publisher key.
-3. On GitHub, create a release tagged `v0.4.2` and upload all three files.
+3. Publish them on MINTRO's website: in the Aitele repo run
+   `bash "Ventures websites/Mintro/sync-from-mintro.sh"` (it copies the three files and writes
+   `download/release.json`), then `bash deploy/build-zip.sh`, upload the zip to the VM and re-run `install.sh`.
+4. Optional: also create a GitHub release tagged `v0.4.2` with the same three files. Copies from 0.4.1 and
+   earlier only look on GitHub, so one GitHub release moves them onto the website's feed for good.
 
-That's all. Each installed MINTRO checks the latest release a few minutes after it starts and then every 6 hours.
+That's all. Each installed MINTRO checks https://mintra.aiteleresearch.com/download/release.json (GitHub's latest
+release if the website doesn't answer) a few minutes after it starts and then every 6 hours.
 
 ## What happens on each PC
 
@@ -35,7 +40,7 @@ never touch. A manual reinstall with a new setup file over a running MINTRO also
 
 ## Testing an update before everyone gets it
 
-Point one PC at a test feed instead of the GitHub release: add `"update_feed": "https://.../latest.json"` to
+Point one PC at a test feed instead of the normal one: add `"update_feed": "https://.../latest.json"` to
 `%LOCALAPPDATA%\MINTRO\data\app-prefs.json`, where `latest.json` has the same shape as GitHub's
 `/releases/latest` response (`tag_name` and `assets` with `name` and `browser_download_url`). The signature
 check still applies. Remove the line to go back to normal releases.
