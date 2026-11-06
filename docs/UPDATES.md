@@ -15,7 +15,7 @@ Installed copies of MINTRO update themselves, and mining doesn't stop while they
 4. Optional: also create a GitHub release tagged `v0.4.2` with the same three files. Copies from 0.4.1 and
    earlier only look on GitHub, so one GitHub release moves them onto the website's feed for good.
 
-That's all. Each installed MINTRO checks https://mintra.aiteleresearch.com/download/release.json (GitHub's latest
+That's all. Each installed MINTRO checks https://mintro.aiteleresearch.com/download/release.json (GitHub's latest
 release if the website doesn't answer) a few minutes after it starts and then every 6 hours.
 
 ## What happens on each PC

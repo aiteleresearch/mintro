@@ -5,7 +5,7 @@
    so the server never sees an ID. Only the site's own copy (where API is this page's origin) counts visits. */
 (() => {
   'use strict';
-  const API = 'https://mintra.aiteleresearch.com';
+  const API = 'https://mintro.aiteleresearch.com';
   const base = API.replace(/\/+$/, '');
   const ownSite = (() => { try { return new URL(base, location.href).origin === location.origin; } catch { return false; } })();
   const utcDay = () => new Date().toISOString().slice(0, 10);

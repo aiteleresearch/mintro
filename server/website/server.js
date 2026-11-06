@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// MINTRO website server, for the copy of the site on the Aitele VM (mintra.aiteleresearch.com). Caddy serves the
+// MINTRO website server, for the copy of the site on the Aitele VM (mintro.aiteleresearch.com). Caddy serves the
 // pages and passes /api/* and /download/* here. No dependencies.
 //
 //   POST /api/contact     the contact form  } emailed the way every Aitele venture's sendInquiry does: the team
@@ -34,7 +34,7 @@ try {
 } catch { /* no .env.local */ }
 
 const PORT = Number(process.env.PORT) || 5100;
-const SITE_URL = (process.env.MINTRO_SITE_URL || 'https://mintra.aiteleresearch.com').replace(/\/+$/, '');
+const SITE_URL = (process.env.MINTRO_SITE_URL || 'https://mintro.aiteleresearch.com').replace(/\/+$/, '');
 const SITE_DIR = path.resolve(process.env.MINTRO_SITE_DIR || path.join(__dirname, 'site'));
 const DATA_DIR = path.resolve(process.env.MINTRO_DATA_DIR || path.join(__dirname, '..', 'mintro-data'));
 const INBOX = process.env.CONTACT_INBOX || 'hello@aiteleresearch.com';
@@ -430,7 +430,7 @@ function readJson(req, cb) {
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://x');
   const origin = req.headers.origin;
-  // The site's own pages (whatever host serves them: mintra, or localhost in a preview), plus the allowed origins.
+  // The site's own pages (whatever host serves them: mintro, or localhost in a preview), plus the allowed origins.
   const sameHost = (() => { try { return !!origin && new URL(origin).host === req.headers.host; } catch { return false; } })();
   const allowed = origin && (ORIGINS.has(origin) || sameHost) ? origin : '';
 

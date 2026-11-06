@@ -6,8 +6,8 @@
   // Every Download and GitHub link, the live numbers and the listing form use these.
   // api: MINTRO's mail endpoint (server.js in the Aitele deployment): listing requests are emailed to the team.
   // download: the Windows installer, served from MINTRO's own site (it redirects to the current version).
-  const SITE = { repo: 'aiteleresearch/mintro', stats: '', email: 'hello@aiteleresearch.com', api: 'https://mintra.aiteleresearch.com',
-    download: 'https://mintra.aiteleresearch.com/download/latest' };
+  const SITE = { repo: 'aiteleresearch/mintro', stats: '', email: 'hello@aiteleresearch.com', api: 'https://mintro.aiteleresearch.com',
+    download: 'https://mintro.aiteleresearch.com/download/latest' };
   const hasRepo = !SITE.repo.includes('OWNER'), statsBase = SITE.stats.replace(/\/+$/, '');
   const apiBase = SITE.api.replace(/\/+$/, '');
 
