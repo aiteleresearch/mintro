@@ -5,7 +5,9 @@
   // Your GitHub repository ("owner/name"), stats service (server/stats, docs/STATS.md) and a contact email.
   // Every Download and GitHub link, the live numbers and the listing form use these.
   // api: MINTRO's mail endpoint (server.js in the Aitele deployment): listing requests are emailed to the team.
-  const SITE = { repo: 'aiteleresearch/mintro', stats: '', email: 'hello@aiteleresearch.com', api: 'https://mintra.aiteleresearch.com' };
+  // download: the Windows installer, served from MINTRO's own site (it redirects to the current version).
+  const SITE = { repo: 'aiteleresearch/mintro', stats: '', email: 'hello@aiteleresearch.com', api: 'https://mintra.aiteleresearch.com',
+    download: 'https://mintra.aiteleresearch.com/download/latest' };
   const hasRepo = !SITE.repo.includes('OWNER'), statsBase = SITE.stats.replace(/\/+$/, '');
   const apiBase = SITE.api.replace(/\/+$/, '');
 
@@ -20,7 +22,7 @@
   /* ---------- links ---------- */
 
   const LINKS = {
-    download: `https://github.com/${SITE.repo}/releases/latest`,
+    download: SITE.download,
     repo: `https://github.com/${SITE.repo}`,
     license: `https://github.com/${SITE.repo}/blob/main/LICENSE`,
     statsRaw: statsBase ? `${statsBase}/v1/stats` : '#numbers',
