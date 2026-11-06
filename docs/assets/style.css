@@ -681,6 +681,16 @@ button.sd-tile:hover { border-color: var(--line-2); }
   .sd-tile.still { grid-column: 1 / -1; }
 }
 
+/* ---------- page scrollbar: invisible until the page is scrolled, then a thin mint thumb that fades out once it
+   rests (assets/scrollbar.js sets html.scrolling) ---------- */
+html { scrollbar-width: thin; scrollbar-color: transparent transparent; transition: scrollbar-color .35s; }
+html.scrolling { scrollbar-color: rgba(61, 220, 151, .55) transparent; }
+html::-webkit-scrollbar { width: 10px; }
+html::-webkit-scrollbar-track { background: transparent; }
+html::-webkit-scrollbar-thumb { border-radius: 10px; border: 3px solid transparent; background: transparent padding-box; }
+html.scrolling::-webkit-scrollbar-thumb { background-color: rgba(61, 220, 151, .55); }
+html.scrolling::-webkit-scrollbar-thumb:hover { background-color: var(--mint); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
   .js [data-reveal], .js [data-split] .wi, .js .rise, .js .callout { transition-duration: .01ms !important; transition-delay: 0s !important; }
