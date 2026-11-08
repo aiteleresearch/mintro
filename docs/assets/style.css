@@ -696,3 +696,67 @@ html.scrolling::-webkit-scrollbar-thumb:hover { background-color: var(--mint); }
   .js [data-reveal], .js [data-split] .wi, .js .rise, .js .callout { transition-duration: .01ms !important; transition-delay: 0s !important; }
   .grain { display: none; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Dropdowns — every <select> opens in this site's theme, not the
+   OS's grey list (same treatment as aiteleresearch.com). Everywhere:
+   the colour scheme and themed options. Where the browser supports
+   styleable selects (appearance: base-select — current Chrome/Edge),
+   the open list is a themed panel with hover and selected states.
+   ───────────────────────────────────────────────────────────── */
+select { color-scheme: dark; }
+select option,
+select optgroup { background-color: #0b0d0f; color: #f1f5f3; }
+
+@supports (appearance: base-select) {
+  select:not([multiple]):not([size]),
+  select:not([multiple]):not([size])::picker(select) { appearance: base-select; }
+  :where(select:not([multiple]):not([size])) { cursor: pointer; }
+  ::picker(select) {
+    background: #0b0d0f;
+    color: #f1f5f3;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 6px;
+    margin-block: 6px;
+    width: max(anchor-size(width), 12rem);
+    max-width: calc(100vw - 24px);
+    max-height: min(60vh, 22rem);
+    overflow-y: auto;
+    box-shadow: 0 22px 54px -22px rgba(0, 0, 0, 0.85);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(61, 220, 151, 0.50) transparent;
+  }
+  select option {
+    background: transparent;
+    color: #a3abad;
+    padding: 0.55rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    line-height: 1.35;
+    white-space: normal;
+    overflow-wrap: break-word;
+    gap: 0.6rem;
+  }
+  select option:hover,
+  select option:focus-visible { background: rgba(61, 220, 151, 0.12); color: #f1f5f3; outline: none; }
+  select option:checked { color: #3ddc97; font-weight: 500; }
+  select option:disabled { color: #6a7376; background: transparent; }
+  select option::checkmark { color: #3ddc97; }
+  select::picker-icon {
+    content: "";
+    width: 11px;
+    height: 7px;
+    margin-inline-start: auto;
+    flex-shrink: 0;
+    background-color: #a3abad;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='black' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat center / contain;
+    transition: rotate 0.2s ease;
+  }
+  select:open::picker-icon { rotate: 180deg; }
+  :where(select:not([multiple]):not([size])) { align-items: center; gap: 0.6rem; }
+  /* a select that draws its own caret beside it keeps only that one */
+  select.appearance-none::picker-icon { display: none; }
+  /* the open list's chevron replaces the drawn one */
+  .apply select { background-image: none; padding-right: 0.9rem; display: flex; }
+}
