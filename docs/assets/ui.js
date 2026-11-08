@@ -116,7 +116,7 @@
 
   /* ---------- scroll-linked pieces ---------- */
 
-  const nav = $('#nav'), prog = $('#progress');
+  const nav = $('#nav');
   const navLinks = $$('.nav-links a'), navTargets = navLinks.map((a) => $(a.getAttribute('href')));
   const path = $('#stepsPath'), steps = $('#steps');
   const plen = path ? path.getTotalLength() : 0;
@@ -149,8 +149,7 @@
 
   function onScroll() {
     queued = false;
-    const y = scrollY, max = root.scrollHeight - innerHeight;
-    prog.style.transform = `scaleX(${max > 0 ? (y / max).toFixed(4) : 0})`;
+    const y = scrollY;
     nav.classList.toggle('solid', y > 30);
     if (Math.abs(y - lastY) > 4) nav.classList.toggle('hide', y > lastY && y > 600);
     lastY = y;
