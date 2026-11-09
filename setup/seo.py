@@ -29,7 +29,8 @@ SITE = "https://mintro.aiteleresearch.com"
 OLD_HOST = "https://aiteleresearch.github.io/mintro"
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 VERSION = re.search(r'__version__\s*=\s*"([^"]+)"', (ROOT / "mintro" / "__init__.py").read_text("utf-8")).group(1)
-IMAGE = f"{SITE}/assets/og.png"
+# A JPEG: WhatsApp drops a link preview whose image is over ~300 KB, and the PNG (assets/og.png) is 324 KB.
+IMAGE = f"{SITE}/assets/og.jpg"
 IMAGE_ALT = "MINTRO: a mint crystal with a basket of coins in orbit, and the words Early coins. Ordinary laptop. Three clicks."
 
 # page → (path on the site, crumb name, schema type, sitemap priority, change frequency)
@@ -168,7 +169,7 @@ def refresh(page: str, file: pathlib.Path) -> bool:
     head = set_meta(head, "property", "og:url", url, after="og:site_name")
     head = set_meta(head, "property", "og:locale", "en_US", after="og:site_name")
     head = set_meta(head, "property", "og:image", IMAGE, after="og:description")
-    head = set_meta(head, "property", "og:image:type", "image/png", after="og:image")
+    head = set_meta(head, "property", "og:image:type", "image/jpeg", after="og:image")
     head = set_meta(head, "property", "og:image:width", "1200", after="og:image:type")
     head = set_meta(head, "property", "og:image:height", "630", after="og:image:width")
     head = set_meta(head, "property", "og:image:alt", IMAGE_ALT, after="og:image:height")
