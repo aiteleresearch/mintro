@@ -36,8 +36,10 @@ website form  ──>  stats service inbox  ──>  admin tool: review, check, 
    It's a separate program on your PC, never part of the app people install, and only you can sign in: the
    first time it asks you to create the admin password (12+ characters, stored only as a salted hash), and
    every time after that you sign in with it. Sessions end after 8 idle hours or on Sign out; five wrong
-   passwords lock sign-in for a minute. Then, in Settings, enter the stats service URL and the admin token
-   (the `ADMIN_TOKEN` secret you set on the worker).
+   passwords lock sign-in for a minute. Then, once, in Settings: stats service URL `https://mintro.aiteleresearch.com`
+   (the website's own server, which collects the requests), and the admin token, which the Aitele VM generated:
+   `grep MINTRO_ADMIN_TOKEN ~/.aitele-install.conf` there. The dashboard runs only on your PC because publishing
+   signs the coin list with your publisher key (`%USERPROFILE%\MINTRO-publisher`), which must never sit on a server.
 3. **Requests** tab: every request with its plan, algorithm, pool and contact. Change a request's status as you
    go (new, reviewing, awaiting payment, listed, rejected) and keep private notes on it.
 4. **Review**: opens the listing editor pre-filled from the request (ticker, name, plan, algorithm, pool, links,

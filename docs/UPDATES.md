@@ -9,9 +9,10 @@ Installed copies of MINTRO update themselves, and mining doesn't stop while they
    - `MINTRO-Setup-0.4.2.exe`: the installer, for new users (and the website's download counter);
    - `MINTRO-Update-0.4.2.zip`: the same app, for installed copies;
    - `MINTRO-Update-0.4.2.zip.sig`: its signature, made with your publisher key.
-3. Publish them on MINTRO's website: in the Aitele repo run
-   `bash "Ventures websites/Mintro/sync-from-mintro.sh"` (it copies the three files and writes
-   `download/release.json`), then `bash deploy/build-zip.sh`, upload the zip to the VM and re-run `install.sh`.
+3. Publish them on MINTRO's website: commit and push this repo (the website ships exactly as it is on GitHub),
+   keep the three files in `dist\`, then in the Aitele repo run `bash deploy/build-zip.sh`. It takes the website
+   from GitHub and the three files from `dist\` (`MINTRO_SRC` if this repo isn't at `C:\MINTRO`), writes
+   `download/release.json`, and builds the deploy zip; upload it to the VM and re-run `install.sh`.
 4. Optional: also create a GitHub release tagged with the version and the same three files. Only copies of
    0.4.1 and earlier look on GitHub alone; 0.4.1 was never published (no GitHub release, no live website),
    so from 0.4.2 every copy anyone downloads already follows the website's feed.
@@ -55,8 +56,8 @@ at its next check (within 6 hours) and keeps even when it's offline:
     py publisher\mintro_keys.py sign-notice --kind end-of-service --text "MINTRO has closed. Thank you." --url https://...
     py publisher\mintro_keys.py sign-notice --clear
 
-Each writes (or removes) `dist/service-notice.json`; the next website deploy (`sync-from-mintro.sh`, then the
-zip and `install.sh`) puts it into `download/release.json`.
+Each writes (or removes) `dist/service-notice.json`; the next website deploy (the Aitele repo's
+`deploy/build-zip.sh`, then `install.sh` on the VM) puts it into `download/release.json`.
 
 - **message**: a note at the top of every card.
 - **end-of-service**: mining stops at once, Start stays off, and the card offers **Uninstall MINTRO**. Settings,
