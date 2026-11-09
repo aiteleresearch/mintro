@@ -37,6 +37,7 @@ class App:
         self.wallet_jobs = wallets.Jobs(self.all_coins, self.set_address)
         self.alerts = extras.Alerts()
         self.updater = updater.Updater()
+        self.updater.on_notice = self._on_notice
         self.heartbeat = telemetry.Heartbeat()
         self.quit = None  # set by the desktop card: closes the window (and so MINTRO)
         self._sponsored, self._sponsored_at = [], 0.0
@@ -62,7 +63,19 @@ class App:
         card = self.gpu_card()
         return {"progpow": card["hps"]} if card else {}
 
+    def retired(self) -> bool:
+        """The publisher has ended the MINTRO service (a signed end-of-service notice): no more mining."""
+        n = self.updater.notice
+        return bool(n) and n.get("kind") == "end-of-service"
+
+    def _on_notice(self, notice: dict | None) -> None:
+        if notice and notice.get("kind") == "end-of-service":
+            log.warning("MINTRO's publisher ended the service; stopping mining")
+            self.stop()
+
     def start(self) -> None:
+        if self.retired():
+            return
         self.engine.start()
         if self.gpu_enabled():
             self.gpu_engine.start()
@@ -391,6 +404,17 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(200, app.state())
             elif self.path == "/api/update/seen":
                 app.updater.just_updated = None
+                self._send(200, {"ok": True})
+            elif self.path == "/api/uninstall":
+                # Offered after an end-of-service notice: the installed MINTRO removes itself (it closes this
+                # card first); settings and wallets stay in %LOCALAPPDATA%\MINTRO
+                from . import installer
+                import subprocess
+                if not updater.installed():
+                    raise ValueError("Only the installed MINTRO can uninstall itself.")
+                app.stop()
+                subprocess.Popen([str(installer.EXE), "--uninstall"], creationflags=installer.DETACHED | installer.NO_WINDOW,
+                                 close_fds=True)
                 self._send(200, {"ok": True})
             elif self.path == "/api/listings/refresh":
                 # The admin tool switched this PC to a preview list (or back): reload it and replan now

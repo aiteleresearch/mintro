@@ -12,8 +12,9 @@ Installed copies of MINTRO update themselves, and mining doesn't stop while they
 3. Publish them on MINTRO's website: in the Aitele repo run
    `bash "Ventures websites/Mintro/sync-from-mintro.sh"` (it copies the three files and writes
    `download/release.json`), then `bash deploy/build-zip.sh`, upload the zip to the VM and re-run `install.sh`.
-4. Optional: also create a GitHub release tagged `v0.4.2` with the same three files. Copies from 0.4.1 and
-   earlier only look on GitHub, so one GitHub release moves them onto the website's feed for good.
+4. Optional: also create a GitHub release tagged with the version and the same three files. Only copies of
+   0.4.1 and earlier look on GitHub alone; 0.4.1 was never published (no GitHub release, no live website),
+   so from 0.4.2 every copy anyone downloads already follows the website's feed.
 
 That's all. Each installed MINTRO checks https://mintro.aiteleresearch.com/download/release.json (GitHub's latest
 release if the website doesn't answer) a few minutes after it starts and then every 6 hours.
@@ -37,6 +38,35 @@ release if the website doesn't answer) a few minutes after it starts and then ev
 
 Earnings, speeds, settings, wallets and the anonymous install ID live in `%LOCALAPPDATA%\MINTRO`, which updates
 never touch. A manual reinstall with a new setup file over a running MINTRO also keeps the miners going.
+
+## Website counters across deploys
+
+Downloads, unique visitors, page views and updates delivered are kept by the website's server in
+`/opt/aitele/mintro-data/` on the VM (`stats.json`, a `.bak`, and a dated snapshot each day), outside the folder a
+deploy replaces. Every redeploy — a new version, a page change — carries on counting from the same totals. Copy
+that folder if you ever move to a new VM.
+
+## Service notices — and if MINTRO ever closes
+
+The update feed can also carry a notice, signed with the same publisher key, that every installed MINTRO picks up
+at its next check (within 6 hours) and keeps even when it's offline:
+
+    py publisher\mintro_keys.py sign-notice --kind message --text "Planned maintenance on Sunday."
+    py publisher\mintro_keys.py sign-notice --kind end-of-service --text "MINTRO has closed. Thank you." --url https://...
+    py publisher\mintro_keys.py sign-notice --clear
+
+Each writes (or removes) `dist/service-notice.json`; the next website deploy (`sync-from-mintro.sh`, then the
+zip and `install.sh`) puts it into `download/release.json`.
+
+- **message**: a note at the top of every card.
+- **end-of-service**: mining stops at once, Start stays off, and the card offers **Uninstall MINTRO**. Settings,
+  earnings history and any wallets MINTRO made stay in `%LOCALAPPDATA%\MINTRO`, so people keep their funds.
+
+A notice that isn't signed by your key is ignored. Only the website's own feed can clear a notice (GitHub's
+release data never carries one), so a notice stays in force if the website is later switched off. Deploy with
+`--clear` to take a notice down, for example if the service resumes. Notices reach installed copies only while
+the website (or GitHub) answers: send the end-of-service notice before switching the website off, and leave it up
+for a few weeks so PCs that are rarely online still see it.
 
 ## Testing an update before everyone gets it
 

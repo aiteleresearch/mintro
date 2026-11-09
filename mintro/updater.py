@@ -41,6 +41,8 @@ MAX_DOWNLOAD = 300 * 1024 * 1024
 HEALTHY_FILE = "update-ok.json"
 PENDING_FILE = "update-pending.json"
 FAILED_FILE = "update-failed.json"   # versions that didn't start on this PC: skipped until a newer one comes
+NOTICE_FILE = "service-notice.json"  # the publisher's last signed notice (kept, so it holds offline too)
+NOTICE_KINDS = ("message", "end-of-service")
 # CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW. Not DETACHED_PROCESS: PowerShell without a console dies silently.
 NEW_PROCESS = 0x00000200 | 0x08000000
 HELPER_START_S = 20    # the helper must say it's running within this long, or MINTRO stays open
@@ -104,6 +106,32 @@ def verify_signature(sig: dict, version: str, sha256: str) -> bool:
         return False
 
 
+def notice_message(kind: str, issued: str, text: str) -> bytes:
+    """What the publisher signs for a service notice (publisher/mintro_keys.py sign-notice)."""
+    return f"MINTRO notice {kind} {issued} {hashlib.sha256(text.encode()).hexdigest()}".encode()
+
+
+def verify_notice(raw) -> dict | None:
+    """A service notice from the update feed, only if MINTRO's publisher signed it; otherwise None.
+
+    "message" shows a note on the card. "end-of-service" means the MINTRO service has closed: mining stops,
+    Start stays off, and the card offers to uninstall (settings and wallets are always kept).
+    """
+    try:
+        kind, issued, text = str(raw["kind"]), str(raw["issued"]), str(raw["text"])
+        if kind not in NOTICE_KINDS or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", issued) or not text.strip():
+            return None
+        sig = str(raw["signature"])
+        signature = base64.urlsafe_b64decode(sig + "=" * (-len(sig) % 4))
+        if signing.verify(bytes.fromhex(signing.PUBLIC_KEY_HEX), notice_message(kind, issued, text), signature):
+            url = str(raw.get("url") or "")
+            return {"kind": kind, "issued": issued, "text": text[:2000],
+                    "url": url[:300] if url.startswith("https://") else ""}
+    except Exception:
+        pass
+    return None
+
+
 def installed() -> bool:
     """True for the installed app (the only kind that updates itself)."""
     return bool(getattr(sys, "frozen", False)) and Path(sys.executable).resolve().parent == installer.APP_DIR.resolve()
@@ -125,12 +153,17 @@ def feed_url() -> str:
     return urls[0] if urls else ""
 
 
+LAST_SOURCE = {"url": ""}  # which update source answered last (a notice is only cleared by MINTRO's own feed)
+
+
 def latest_release() -> dict:
     """The newest release from the first update source that answers."""
     error: Exception | None = None
     for url in feed_urls():
         try:
-            return market.fetch_json(url)
+            release = market.fetch_json(url)
+            LAST_SOURCE["url"] = url
+            return release
         except Exception as e:
             log.info("update source %s didn't answer: %s", url, e)
             error = e
@@ -142,6 +175,8 @@ class Updater:
         self.state, self.message, self.available = "idle", "", None
         self._staged: Path | None = None
         self._lock = threading.Lock()
+        self.notice: dict | None = store.load(NOTICE_FILE) or None  # the last signed service notice, if any
+        self.on_notice = None  # set by the app: called with the new notice (or None) when it changes
         pending = store.load(PENDING_FILE) or {}
         # Just restarted after an update: say so once on the card
         self.just_updated = pending.get("from") if pending.get("to") == __version__ else None
@@ -159,7 +194,26 @@ class Updater:
 
     def status(self) -> dict:
         return {"version": __version__, "state": self.state, "message": self.message, "available": self.available,
-                "just_updated": self.just_updated}
+                "just_updated": self.just_updated, "notice": self.notice}
+
+    def take_notice(self, release: dict) -> None:
+        """Adopt the feed's service notice: kept when it's signed, cleared only when MINTRO's own feed has none."""
+        raw = release.get("mintro_notice")
+        notice = verify_notice(raw) if raw else None
+        if raw and not notice:
+            log.warning("ignored a service notice that isn't signed by MINTRO's publisher")
+            return
+        if not raw and "api.github.com" in LAST_SOURCE["url"]:
+            return  # GitHub's release data never carries notices: don't let a fallback clear one
+        if notice != self.notice:
+            self.notice = notice
+            store.save(NOTICE_FILE, notice or {})
+            log.info("service notice: %s", notice["kind"] if notice else "cleared")
+            if self.on_notice:
+                try:
+                    self.on_notice(notice)
+                except Exception:
+                    log.exception("service notice handler failed")
 
     def run(self, apply_update) -> None:
         """Background loop. apply_update() hands the miners over and closes MINTRO once the helper is running."""
@@ -205,6 +259,7 @@ class Updater:
         with self._lock:
             self.state, self.message = "checking", ""
             release = latest_release()
+            self.take_notice(release)
             version = str(release.get("tag_name", "")).lstrip("vV")
             if parse_version(version) <= parse_version(__version__):
                 self.state, self.message, self.available = "idle", "Up to date", None

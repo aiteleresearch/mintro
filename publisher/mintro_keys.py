@@ -3,6 +3,9 @@
     py publisher\\mintro_keys.py init                                                   # once: make the key
     py publisher\\mintro_keys.py sign-update dist\\MINTRO-Update-0.4.0.zip --version 0.4.0   # build.py does this
     py publisher\\mintro_keys.py sign-listings listings\\listings.json                     # admin.py does this
+    py publisher\\mintro_keys.py sign-notice --kind message --text "..."              # a note on every card
+    py publisher\\mintro_keys.py sign-notice --kind end-of-service --text "..."       # MINTRO has closed
+    py publisher\\mintro_keys.py sign-notice --clear                                  # take a notice down
 
 Installed copies only install an update, or use a listing, whose signature checks out against the public key
 in mintro/signing.py. The private key is stored OUTSIDE the repository
@@ -78,6 +81,28 @@ def sign_listings(path: Path) -> Path:
     return out
 
 
+NOTICE_FILE = ROOT / "dist" / "service-notice.json"
+
+
+def sign_notice(kind: str, text: str, url: str = "") -> Path:
+    """Write dist/service-notice.json: a signed notice the website's update feed carries to every installed copy.
+
+    The Aitele deploy sync puts it into download/release.json; installed copies check it every 6 hours. A
+    "message" shows on the card; "end-of-service" stops mining and offers to uninstall (wallets are kept).
+    """
+    import datetime
+    from mintro import updater
+    secret, _ = _key()
+    issued = datetime.date.today().isoformat()
+    notice = {"kind": kind, "issued": issued, "text": text, "url": url,
+              "signature": _b64(signing.sign(secret, updater.notice_message(kind, issued, text)))}
+    if updater.verify_notice(notice) is None:
+        sys.exit("Notice check failed: is mintro/signing.py's public key this signing key's? (url must be https://)")
+    NOTICE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    NOTICE_FILE.write_text(json.dumps(notice, ensure_ascii=False, indent=1), encoding="utf-8")
+    return NOTICE_FILE
+
+
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -87,10 +112,23 @@ if __name__ == "__main__":
     u.add_argument("--version", required=True)
     s = sub.add_parser("sign-listings")
     s.add_argument("feed")
+    n = sub.add_parser("sign-notice")
+    n.add_argument("--kind", choices=["message", "end-of-service"])
+    n.add_argument("--text")
+    n.add_argument("--url", default="")
+    n.add_argument("--clear", action="store_true", help="remove dist/service-notice.json (the next deploy clears it)")
     a = p.parse_args()
     if a.cmd == "init":
         init()
     elif a.cmd == "sign-update":
         print(sign_update(Path(a.package), a.version))
+    elif a.cmd == "sign-notice":
+        if a.clear:
+            NOTICE_FILE.unlink(missing_ok=True)
+            print("Removed", NOTICE_FILE, "- deploy the website to clear the notice on every card.")
+        elif not a.kind or not a.text:
+            sys.exit("Give --kind and --text (or --clear).")
+        else:
+            print(sign_notice(a.kind, a.text, a.url), "- deploy the website to send it to every installed MINTRO.")
     else:
         print(sign_listings(Path(a.feed)))

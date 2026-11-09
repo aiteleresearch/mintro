@@ -102,6 +102,15 @@
   .notice button { margin-top: 7px; font-weight: 600; color: var(--amber); }
   .notice.bad button { color: var(--red); }
   .notice-actions { display: flex; align-items: center; gap: 12px; margin-top: 9px; flex-wrap: wrap; }
+  /* the publisher's signed service notice (a note, or the end of the service) */
+  .service { margin: 10px 14px 0; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line);
+             background: var(--mint-soft); font-size: 12px; line-height: 1.5; color: var(--ink); }
+  .service[data-kind="end-of-service"] { background: var(--red-soft); border-color: transparent; }
+  .service h3 { margin: 0 0 4px; font-size: 13px; font-weight: 600; }
+  .service p { margin: 0; color: var(--ink-2); white-space: pre-line; overflow-wrap: anywhere; }
+  .service .notice-actions a { color: var(--mint); font-weight: 600; text-decoration: none; }
+  .service .notice-actions button { font-weight: 600; color: var(--red); }
+  .service small { display: block; margin-top: 7px; color: var(--ink-3); font-size: 11px; }
   .notice-actions button { margin-top: 0; }
   .notice .cta { width: auto; padding: 7px 12px; color: var(--mint-ink); }
   .notice .cta:disabled { opacity: .6; }
@@ -281,6 +290,16 @@
       <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3.5 3.5l7 7m0-7l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
     </button>
   </header>
+
+  <div class="service" id="service" role="status" hidden>
+    <h3 id="serviceTitle"></h3>
+    <p id="serviceText"></p>
+    <div class="notice-actions">
+      <a id="serviceLink" target="_blank" rel="noopener" hidden>Read more</a>
+      <button id="serviceUninstall" hidden>Uninstall MINTRO</button>
+    </div>
+    <small id="serviceNote" hidden>Uninstalling keeps your settings and wallets in %LOCALAPPDATA%\MINTRO — back up wallet seed words.</small>
+  </div>
 
   <section class="hero">
     <button class="power" id="power" aria-label="Start mining">
@@ -741,6 +760,19 @@ function renderExtras(s) {
   const ub = $("#updateBtn");
   ub.hidden = !["idle", "ready", "error"].includes(a.state);
   ub.textContent = a.state === "ready" ? "Install now" : "Check now";
+  const n = a.notice, svc = $("#service");
+  svc.hidden = !n;
+  if (n && svc.dataset.key !== n.issued + n.kind + n.text) {
+    svc.dataset.key = n.issued + n.kind + n.text;
+    svc.dataset.kind = n.kind;
+    const ended = n.kind === "end-of-service";
+    $("#serviceTitle").textContent = ended ? "MINTRO has closed" : "A note from MINTRO";
+    $("#serviceText").textContent = n.text;
+    $("#serviceLink").hidden = !n.url;
+    if (n.url) $("#serviceLink").href = n.url;
+    $("#serviceUninstall").hidden = $("#serviceNote").hidden = !ended;
+  }
+  $("#power").disabled = !!(n && n.kind === "end-of-service");
   if (a.just_updated && !updatedShown) {
     updatedShown = true;
     toast(`MINTRO updated to ${a.version}. Mining didn't stop.`);
@@ -864,6 +896,7 @@ const firstNeedingAddress = () => S && S.entries.find((e) => e.status === "needs
 
 function toggle() {
   if (!S) return;
+  if (S.app && S.app.notice && S.app.notice.kind === "end-of-service") return toast("MINTRO has closed, so mining is off");
   if (running()) return act("/api/stop", {});
   if (!S.active_count) {  // nothing mineable yet: guide to the address field instead of failing
     const first = firstNeedingAddress();
@@ -928,6 +961,10 @@ async function setCompact(on) {
 }
 
 $("#power").onclick = toggle;
+$("#serviceUninstall").onclick = () => {
+  if (!confirm("Uninstall MINTRO? Your settings and wallets stay in %LOCALAPPDATA%\\MINTRO.")) return;
+  api("/api/uninstall", {}).catch((e) => toast(String(e.message || e)));
+};
 $("#miniPower").onclick = toggle;
 document.querySelectorAll("#seg button").forEach((b) => (b.onclick = () => act("/api/prefs", { power: b.dataset.p })));
 $("#pill").onclick = () => {  // jump to whatever needs attention
