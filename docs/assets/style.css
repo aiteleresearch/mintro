@@ -757,3 +757,92 @@ select optgroup { background-color: #0b0d0f; color: #f1f5f3; }
   /* the open list's chevron replaces the drawn one */
   .apply select { background-image: none; padding-right: 0.9rem; display: flex; }
 }
+
+/* ---------- download guide (assets/download.js): what Windows shows for an unsigned installer ---------- */
+
+.dl-dlg { width: min(640px, calc(100% - 24px)); max-height: calc(100dvh - 32px); overflow: auto; padding: 0; border-radius: 24px;
+  border: 1px solid var(--line-2); background: linear-gradient(180deg, #0d1012, #08090a); color: var(--ink);
+  box-shadow: 0 40px 120px -20px rgba(0, 0, 0, .8), 0 0 0 1px rgba(61, 220, 151, .08) inset;
+  scrollbar-width: thin; scrollbar-color: rgba(61, 220, 151, .45) transparent; overscroll-behavior: contain; }
+.dl-dlg [hidden] { display: none !important; }
+.dl-dlg::backdrop { background: rgba(2, 3, 4, .72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.dl-dlg[open] { animation: sd-in .45s var(--ease); }
+.dg-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 28px 30px 0; }
+.dg-status { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.dg-status i { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 4px var(--mint-soft); flex: none; }
+.dl-dlg[data-mode="started"] .dg-status i { animation: dg-ping 1.8s var(--ease) infinite; }
+.dl-dlg[data-mode="elsewhere"] .dg-status { color: var(--gold); }
+.dl-dlg[data-mode="elsewhere"] .dg-status i { background: var(--gold); box-shadow: 0 0 0 4px rgba(242, 196, 109, .14); }
+@keyframes dg-ping { 0% { box-shadow: 0 0 0 0 rgba(61, 220, 151, .55); } 80%, 100% { box-shadow: 0 0 0 9px rgba(61, 220, 151, 0); } }
+.dg-head h2 { font-size: clamp(22px, 3.2vw, 28px); line-height: 1.15; }
+.dg-lede { margin: 10px 0 0; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
+.dg-elsewhere { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.dg-sent { color: var(--mint-2); font: 500 12.5px/1.4 var(--mono); overflow-wrap: anywhere; }
+
+.dg-steps { list-style: none; margin: 22px 0 0; padding: 0 30px; counter-reset: dg; display: grid; gap: 10px; }
+.dg-steps > li { position: relative; padding: 16px 18px 16px 58px; border-radius: 16px; border: 1px solid var(--line); background: var(--panel); }
+.dg-steps > li::before { counter-increment: dg; content: counter(dg); position: absolute; left: 18px; top: 15px; width: 26px; height: 26px;
+  display: grid; place-items: center; border-radius: 8px; background: var(--mint-soft); color: var(--mint-2); font: 600 13px/1 var(--display); }
+.dg-steps > li > b { display: block; font: 600 16px/1.35 var(--display); letter-spacing: -.01em; }
+.dg-steps > li > b em, .dg-steps > li > p em { font-style: normal; color: var(--ink); font-weight: 600; }
+.dg-steps > li > p { margin: 6px 0 0; color: var(--ink-2); font-size: 14px; line-height: 1.6; }
+.dg-steps q { quotes: "\201C" "\201D"; color: var(--ink); }
+.dg-file { font: 500 12.5px/1 var(--mono); color: var(--mint-2); overflow-wrap: anywhere; }
+
+/* The SmartScreen picture: a simplified Windows dialog, More info, then Run anyway */
+.ss { margin: 14px 0 0; cursor: default; }
+.ss-win { position: relative; overflow: hidden; padding: 20px 20px 16px; border-radius: 10px; background: #0f5aa8; color: #fff;
+  font: 400 13px/1.5 "Segoe UI", system-ui, sans-serif; box-shadow: 0 18px 40px -18px rgba(15, 90, 168, .8); }
+.ss-title { margin: 0 0 8px; font: 300 22px/1.2 "Segoe UI", system-ui, sans-serif; letter-spacing: 0; }
+.ss-text { margin: 0; color: rgba(255, 255, 255, .92); }
+.ss-more { margin: 10px 0 0; }
+.ss-more span { text-decoration: underline; text-underline-offset: 2px; }
+.ss-app { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 10px 0 0; max-height: 0; opacity: 0; overflow: hidden;
+  transition: max-height .45s var(--ease), opacity .35s; }
+.ss-app dt { color: rgba(255, 255, 255, .8); } .ss-app dd { margin: 0; overflow-wrap: anywhere; }
+.ss[data-stage="1"] .ss-app { max-height: 60px; opacity: 1; }
+.ss-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.ss-btns span { padding: 5px 16px; border: 1px solid rgba(255, 255, 255, .85); font-size: 13px; white-space: nowrap; }
+.ss-run { visibility: hidden; }
+.ss[data-stage="1"] .ss-run { visibility: visible; }
+[data-target] { position: relative; }
+[data-target]::after { content: ""; position: absolute; inset: -5px -8px; border-radius: 6px; border: 2px solid var(--mint); opacity: 0; }
+.ss[data-stage="0"] [data-target="0"]::after, .ss[data-stage="1"] [data-target="1"]::after { animation: ss-ring 2.8s var(--ease) both; }
+@keyframes ss-ring { 0%, 30% { opacity: 0; transform: scale(1.25); } 45%, 85% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+.ss-cursor { position: absolute; left: 0; top: 0; width: 15px; height: 21px; fill: #fff; stroke: #111; stroke-width: 1.2; stroke-linejoin: round;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); transform: translate(60%, 160%); transition: transform 1s var(--ease); pointer-events: none; }
+.ss figcaption { display: flex; gap: 8px; margin-top: 10px; font: 500 12px/1.4 var(--mono); color: var(--ink-3); }
+.ss figcaption span { transition: color .3s; }
+.ss figcaption b { font-weight: 600; }
+.ss[data-stage="0"] [data-cap="0"], .ss[data-stage="1"] [data-cap="1"] { color: var(--mint-2); }
+
+.dg-why { margin: 14px 30px 0; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--line); color: var(--ink-2); font-size: 13.5px; line-height: 1.65; }
+.dg-why summary { cursor: pointer; color: var(--ink); font-weight: 500; list-style-position: inside; }
+.dg-why summary::marker { color: var(--mint); }
+.dg-why p { margin: 10px 0 0; }
+.dg-why a { color: var(--mint-2); text-decoration: underline; text-underline-offset: 2px; }
+.dg-why em { font-style: normal; color: var(--ink); }
+.dg-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 20px 30px 26px; }
+.dg-alt { color: var(--ink-2); font-size: 14px; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-2); }
+.dg-alt:hover { color: var(--ink); text-decoration-color: currentColor; }
+.dg-foot .btn { margin-left: auto; }
+/* a link-styled button that opens the guide (FAQ, download section) */
+.dg-open { background: none; border: 0; padding: 0; font: inherit; color: var(--mint-2); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(166, 247, 210, .4); }
+.dg-open:hover { text-decoration-color: currentColor; }
+@media (max-width: 640px) {
+  .dg-head { padding: 20px 18px 0; }
+  .dg-steps { padding: 0 18px; }
+  .dg-steps > li { padding: 14px 14px 14px 50px; }
+  .dg-steps > li::before { left: 14px; top: 13px; }
+  .dg-why { margin-left: 18px; margin-right: 18px; }
+  .dg-foot { padding: 18px 18px 22px; }
+  .ss-win { padding: 16px 14px 14px; }
+  .ss-title { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dl-dlg[open], .dl-dlg[data-mode="started"] .dg-status i { animation: none; }
+  .ss-cursor, .ss-app { transition: none; }
+  .ss[data-stage="0"] [data-target="0"]::after, .ss[data-stage="1"] [data-target="1"]::after { animation: none; opacity: 1; }
+}
+.final .dg-note { margin-top: 6px; }

@@ -6,6 +6,12 @@
       "runtimeExecutable": "py",
       "runtimeArgs": ["-3", "-m", "mintro", "--no-browser", "--port", "8777", "--page", "card"],
       "port": 8777
+    },
+    {
+      "name": "website",
+      "runtimeExecutable": "py",
+      "runtimeArgs": ["-3.12", "-m", "http.server", "8793", "--bind", "127.0.0.1", "--directory", "docs"],
+      "port": 8793
     }
   ]
 }

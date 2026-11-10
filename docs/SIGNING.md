@@ -113,5 +113,17 @@ Get-AuthenticodeSignature dist\MINTRO-Setup-x.y.z.exe | Format-List Status, Sign
 3. Keep the same certificate when you renew. A new certificate from another issuer starts its reputation
    again from zero.
 
-Until a certificate is in place, the website's FAQ tells people what SmartScreen shows and how to get past
-it (*More info > Run anyway*).
+## Until it's signed
+
+The website prepares people for the warnings instead of hoping they push through. Every Download button starts
+the download and opens a short guide (`docs/assets/download.js`):
+1. if the browser says the file isn't commonly downloaded, choose *Keep*;
+2. Windows shows "Windows protected your PC": *More info*, then *Run anyway* (with an animated picture of that
+   screen and the exact file name, read from `download/release.json`);
+3. MINTRO Setup opens: *Install*.
+
+It also says why the warning appears, and that PCs with Smart App Control on can't install unsigned apps at
+all. On a phone or a Mac, Download explains that MINTRO is for Windows and offers to send the link to a PC
+instead of downloading an .exe. The FAQ and the download section open the same guide. Once the release is
+signed and SmartScreen stops warning, change the guide's wording in `download.js` (or remove the script and the
+`data-dl-guide` links).

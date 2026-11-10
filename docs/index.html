@@ -56,6 +56,7 @@
 <script type="module" src="assets/scene.js"></script>
 <script defer src="assets/ui.js"></script>
 <script defer src="assets/stats.js"></script>
+<script defer src="assets/download.js"></script>
 <script type="application/ld+json" id="mintro-ld">
 {
  "@context": "https://schema.org",
@@ -170,7 +171,7 @@
      "name": "Windows says it protected my PC. Is the installer safe?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "SmartScreen shows that screen for apps it hasn't yet seen many people install, and MINTRO is new. Choose More info, then Run anyway. The installer needs no admin rights: it only writes to your own user folder, and Settings > Apps removes it. Its source code is public on GitHub."
+      "text": "SmartScreen shows that screen for apps it hasn't yet seen many people install, and MINTRO is new and not code-signed yet. Choose More info, then Run anyway. The installer needs no admin rights: it only writes to your own user folder, and Settings > Apps removes it. Its source code is public on GitHub."
      }
     },
     {
@@ -612,9 +613,10 @@
             their fingerprints. When Windows Security blocks one, the card explains why and offers to exclude only MINTRO's miner
             folder, behind Windows' own admin prompt.</p></div></details>
           <details><summary>Windows says it protected my PC. Is the installer safe?</summary><div class="ans"><p>SmartScreen
-            shows that screen for apps it hasn't yet seen many people install, and MINTRO is new. Choose <em>More info</em>,
-            then <em>Run anyway</em>. The installer needs no admin rights: it only writes to your own user folder, and Settings
-            &gt; Apps removes it. Its source code is public on GitHub.</p></div></details>
+            shows that screen for apps it hasn't yet seen many people install, and MINTRO is new and not code-signed yet.
+            Choose <em>More info</em>, then <em>Run anyway</em>. The installer needs no admin rights: it only writes to your
+            own user folder, and Settings &gt; Apps removes it. Its source code is public on GitHub.
+            <button class="dg-open" type="button" data-dl-guide>See each step</button></p></div></details>
           <details><summary>Does MINTRO take a cut?</summary><div class="ans"><p>No. Every share goes to your own wallet address.
             The engines keep their own small developer fees (XMRig 1%, SRBMiner-Multi about 0.85%, cpuminer-opt none), listed
             in the app's settings.</p></div></details>
@@ -644,6 +646,8 @@
         </a>
       </div>
       <p class="meta" data-reveal style="--d:.25s">57 MB · installs per user · uninstall any time from Settings &gt; Apps</p>
+      <p class="meta dg-note" data-reveal style="--d:.3s">Not code-signed yet, so Windows asks you to confirm the first time.
+        <button class="dg-open" type="button" data-dl-guide>See what to click</button></p>
       <div class="dl-stat" data-dlstat hidden>
         <svg class="dl-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v8m0 0 3.2-3.2M8 10.5 4.8 7.3M3 13.5h10"/></svg>
         <span><b data-dl-total>—</b> downloads</span>
