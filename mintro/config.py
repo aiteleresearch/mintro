@@ -26,4 +26,4 @@ HARDWARE_WALLETS = {
 }
 
 # Your website
-WEBSITE_URL = "https://aiteleresearch.github.io/mintro/"
+WEBSITE_URL = "https://mintro.aiteleresearch.com/"

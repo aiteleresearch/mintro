@@ -10,17 +10,10 @@ There are two separate problems:
 
 ## 1. Sign every release
 
-Unsigned files get the "Windows protected your PC" SmartScreen screen and more heuristic detections.
-`setup/build.py` signs both files when a certificate is configured (see its docstring for the environment
-variables).
-
-- **OV code-signing certificate**: roughly $200-400/year from a CA (DigiCert, Sectigo, GlobalSign, SSL.com...).
-  Since 2023 the private key must live on a hardware token or a cloud HSM, so you get a USB token or a cloud
-  signing account rather than a `.pfx` file. With a token, set `MINTRO_SIGN_THUMBPRINT`.
-- **Open-source certificate**: Certum sells a cheaper code-signing certificate for open-source developers.
-  MINTRO is GPL-3.0, so it qualifies.
-- **Microsoft's Azure signing service** (Trusted Signing): a low monthly price and SmartScreen-friendly, but
-  only available to some regions and organisation types; check the current eligibility.
+Unsigned files get the "Windows protected your PC" SmartScreen screen and more heuristic detections, and
+Smart App Control blocks them outright. `setup/build.py` signs both files when a certificate is configured.
+**[SIGNING.md](SIGNING.md)** compares the certificates (Azure Artifact Signing, Certum Open Source, OV) and
+walks through signing a release.
 
 SmartScreen reputation builds per certificate as people download and run your signed files; the warning
 fades after enough clean installs. Keep using the same certificate.

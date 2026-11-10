@@ -9,9 +9,12 @@ address. MINTRO is paid for by coin projects that list their coins, and listed c
 
 ## Install (Windows 10/11)
 
-1. Run **`MINTRO-Setup-0.4.1.exe`** (from `dist\`, or the GitHub release). It installs in a few seconds and
-   opens MINTRO. No admin rights, no Python needed. If the build isn't code-signed, Windows SmartScreen warns:
-   choose *More info > Run anyway*.
+1. Run **`MINTRO-Setup-x.y.z.exe`** (from the website, `dist\` or the GitHub release). Its window shows what
+   MINTRO is, installs in a few seconds with one click, and opens MINTRO. Running it again updates or repairs
+   the installed copy, keeping settings and wallets. No admin rights, no Python needed. If the build isn't
+   code-signed, Windows SmartScreen warns: choose *More info > Run anyway*. For scripted installs:
+   `MINTRO-Setup-x.y.z.exe --silent` (no window; exit code 0 when installed) or `--auto` (the window, installing
+   straight away).
 2. MINTRO is now in the Start menu and on the desktop. It installs to `%LOCALAPPDATA%\Programs\MINTRO`;
    your settings, wallets and miners live in `%LOCALAPPDATA%\MINTRO`.
 3. To remove it: *Settings > Apps > MINTRO > Uninstall* (or `MINTRO.exe --uninstall`). Your data and
@@ -21,8 +24,8 @@ Needs the Microsoft Edge WebView2 runtime, which Windows 11 and up-to-date Windo
 
 ## Use it
 
-1. Open MINTRO. The card appears in the bottom-right corner, always on top. The first time, it explains what
-   to expect in a few lines.
+1. Open MINTRO. The card appears in the bottom-right corner, always on top. The first time, a three-step
+   welcome shows how it's tuned for this PC, what to expect, and offers to create wallets.
 2. Press **Create N wallets** in the basket header (Monero-family coins), or open a coin and paste a wallet
    address for it.
 3. Press the big **Start** button. Press it again to pause. Closing the card stops mining.
@@ -149,7 +152,8 @@ blocked, MINTRO doesn't keep re-downloading the engine.
 | [docs/LISTINGS.md](docs/LISTINGS.md) | coin listings, the revenue model: the request form, the admin tool, signed publishing |
 | [docs/UPDATES.md](docs/UPDATES.md) | releasing an update that installed copies pick up by themselves |
 | [docs/STATS.md](docs/STATS.md) | the stats service: public counters (downloads, miners) and listing requests |
-| [docs/ANTIVIRUS.md](docs/ANTIVIRUS.md) | code signing and false-positive submissions |
+| [docs/SIGNING.md](docs/SIGNING.md) | code-signing the installer so Windows doesn't block it: which certificate, how to sign |
+| [docs/ANTIVIRUS.md](docs/ANTIVIRUS.md) | false-positive submissions to antivirus vendors |
 | [docs/LAUNCH-POSTS.md](docs/LAUNCH-POSTS.md) | launch post drafts |
 
 Fill in `mintro/config.py` (`GITHUB_REPO`, `STATS_URL`, referral codes) and `docs/assets/ui.js` (`SITE`) before
@@ -161,8 +165,8 @@ Double-click **`MINTRO.bat`** (needs Python 3.9+, and `pywebview` for the floati
 `py -3.12 -m pip install pywebview`; without it the same card opens in your browser).
 
 Build the installer and the update package with `py -3.12 setup\build.py` (needs `pywebview` and
-`pyinstaller`). Set `MINTRO_SIGN_THUMBPRINT` (or `MINTRO_SIGN_PFX` and `MINTRO_SIGN_PASSWORD`) to code-sign the
-.exe files; see the script's docstring.
+`pyinstaller`). Set `MINTRO_SIGN_THUMBPRINT` (or `MINTRO_SIGN_DLIB` and `MINTRO_SIGN_METADATA` for Azure
+Artifact Signing) to code-sign the .exe files; see [docs/SIGNING.md](docs/SIGNING.md).
 
 If something looks wrong, `data\mintro.log` (or `%LOCALAPPDATA%\MINTRO\data\mintro.log` when installed)
 records the card's layout and any errors.
