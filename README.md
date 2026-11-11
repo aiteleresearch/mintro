@@ -1,5 +1,9 @@
 # MINTRO
 
+**A free, open-source crypto mining app for Windows 10 and 11.** · [Website](https://mintro.aiteleresearch.com/) ·
+[Download](https://mintro.aiteleresearch.com/download.html) · [Coins it mines](https://mintro.aiteleresearch.com/coins.html) ·
+[How to mine crypto on a laptop](https://mintro.aiteleresearch.com/mine-crypto-on-a-laptop.html)
+
 A floating desktop card that mines a **basket** of small CPU coins from one laptop, so you hold a little of
 several early-stage coins in case one takes off. Total earnings are set by your laptop's speed: the basket
 spreads that speed across several bets, it doesn't multiply it.
@@ -152,6 +156,7 @@ blocked, MINTRO doesn't keep re-downloading the engine.
 | [docs/LISTINGS.md](docs/LISTINGS.md) | coin listings, the revenue model: the request form, the admin tool, signed publishing |
 | [docs/UPDATES.md](docs/UPDATES.md) | releasing an update that installed copies pick up by themselves |
 | [docs/STATS.md](docs/STATS.md) | the stats service: public counters (downloads, miners) and listing requests |
+| [docs/SEO.md](docs/SEO.md) | search, AI search and fast indexing: what's automated, what to run per release, one-time setup |
 | [docs/SIGNING.md](docs/SIGNING.md) | code-signing the installer so Windows doesn't block it: which certificate, how to sign |
 | [docs/ANTIVIRUS.md](docs/ANTIVIRUS.md) | false-positive submissions to antivirus vendors |
 | [docs/LAUNCH-POSTS.md](docs/LAUNCH-POSTS.md) | launch post drafts |

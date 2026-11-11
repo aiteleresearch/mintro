@@ -315,6 +315,8 @@ h1 { font-size: clamp(46px, 6.4vw, 104px); line-height: .96; letter-spacing: -.0
 
 .clicks { padding: 140px 0; }
 .steps { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+/* sections animate their content in from the side or from a 3D tilt; keep that from ever widening the page on a phone */
+main > section { overflow-x: clip; }
 .steps-line { position: absolute; left: 0; right: 0; top: 64px; width: 100%; height: 60px; z-index: -1; overflow: visible; }
 .steps-line path { fill: none; stroke: url(#lineGrad); stroke-width: 2; filter: drop-shadow(0 0 6px rgba(61, 220, 151, .6)); }
 .step { padding: 30px 28px 32px; border-radius: 24px; }
@@ -846,3 +848,76 @@ select optgroup { background-color: #0b0d0f; color: #f1f5f3; }
   .ss[data-stage="0"] [data-target="0"]::after, .ss[data-stage="1"] [data-target="1"]::after { animation: none; opacity: 1; }
 }
 .final .dg-note { margin-top: 6px; }
+
+/* ---------- content pages: download, coins, guide, FAQ (and the links to them) ---------- */
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+a.more { display: inline-flex; align-items: center; gap: 8px; color: var(--mint-2); font-weight: 500; text-decoration: underline;
+  text-decoration-color: rgba(166, 247, 210, .35); text-underline-offset: 4px; transition: text-decoration-color .2s, gap .3s var(--ease); }
+a.more::after { content: "→"; text-decoration: none; display: inline-block; }
+a.more:hover { text-decoration-color: currentColor; gap: 12px; }
+.sec-more { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 30px; margin: 44px 0 0; font-size: 15.5px; }
+.faq .sec-more { justify-content: flex-start; margin-top: 28px; }
+.honest-more { margin: 30px 0 0; font-size: 16px; }
+.legal-in.wide { max-width: 1120px; }
+.legal code, .legal kbd { font: 500 .88em/1.4 var(--mono); color: var(--ink); background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 6px; padding: 1px 6px; overflow-wrap: anywhere; }
+.c-body h3 { margin: 0; font: 600 17px/1.35 var(--display); letter-spacing: -.01em; color: var(--ink); }
+.c-body ol { margin: 14px 0 0; padding-left: 22px; }
+.c-body ol li::marker { color: var(--mint); font-family: var(--mono); }
+.c-body em { font-style: normal; color: var(--ink); }
+
+/* table of contents under a page's title */
+.toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 30px 0 0; }
+.toc a { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink-2);
+  font-size: 13.5px; transition: color .2s, border-color .2s, background .2s; }
+.toc a:hover { color: var(--ink); border-color: rgba(61, 220, 151, .45); background: var(--mint-soft); }
+.clause, .faq-group { scroll-margin-top: 96px; }
+
+/* download page */
+.dl-hero { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 26px; margin: 34px 0 0; }
+.dl-facts { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; font: 500 12.5px/1.5 var(--mono); color: var(--ink-3); }
+.dl-facts b { color: var(--ink); font-weight: 500; }
+.dl-note { margin: 18px 0 0; color: var(--ink-3); font-size: 14px; }
+.howto { list-style: none; padding: 0 !important; counter-reset: st; display: grid; gap: 10px; }
+.howto > li { position: relative; padding: 16px 18px 16px 58px; border-radius: 16px; border: 1px solid var(--line); background: var(--panel); }
+.howto > li + li { margin-top: 0 !important; }
+.howto > li::before { counter-increment: st; content: counter(st); position: absolute; left: 18px; top: 16px; width: 26px; height: 26px;
+  display: grid; place-items: center; border-radius: 8px; background: var(--mint-soft); color: var(--mint-2); font: 600 13px/1 var(--display); }
+.howto > li p { margin: 6px 0 0 !important; font-size: 15px !important; line-height: 1.65 !important; }
+
+/* coins page */
+.coin-wrap { position: relative; margin: 56px 0 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 18px; background: var(--panel);
+  scrollbar-width: thin; scrollbar-color: rgba(61, 220, 151, .45) transparent; }
+.coin-wrap:focus-visible { outline-offset: 2px; }
+.coin-table { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14.5px; }
+.coin-table th, .coin-table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.coin-table thead th { font: 500 11px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+.coin-table tbody tr:last-child > * { border-bottom: 0; }
+.coin-table tbody tr:hover { background: rgba(255, 255, 255, .025); }
+.coin-table tbody th { font-weight: 400; }
+.coin-table tbody th b { font: 600 15px/1.3 var(--display); color: var(--ink); }
+.coin-table td { color: var(--ink-2); white-space: nowrap; }
+.coin-table .sym { margin-left: 6px; font: 500 12px/1 var(--mono); color: var(--ink-3); }
+.coin-table .tag { display: inline-block; margin-left: 8px; padding: 3px 8px; border-radius: 999px; background: var(--mint-soft); color: var(--mint-2);
+  font: 500 10.5px/1.2 var(--mono); letter-spacing: .04em; vertical-align: 2px; white-space: nowrap; }
+.coin-table .tag.gold { background: rgba(242, 196, 109, .14); color: var(--gold); }
+.coin-table .links a { color: var(--ink-2); margin-right: 14px; text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 3px; }
+.coin-table .links a:hover { color: var(--mint-2); }
+.coin-note { margin: 16px 0 0; max-width: 80ch; color: var(--ink-3); font-size: 13.5px; line-height: 1.65; }
+.algos { margin: 14px 0 0; display: grid; gap: 4px 0; }
+.algos dt { margin-top: 14px; font: 600 16px/1.35 var(--display); color: var(--ink); }
+.algos dd { margin: 4px 0 0; color: var(--ink-2); font-size: 16px; line-height: 1.75; }
+
+/* FAQ page */
+.faq-group { margin: 64px 0 0; }
+.faq-group h2 { font-size: clamp(22px, 2.6vw, 30px); letter-spacing: -.02em; margin: 0 0 8px; }
+.faq-group .qa { max-width: 760px; }
+.faq-group .qa .ans p { max-width: 700px; }
+.faq-group .qa a, .qa .ans a { color: var(--mint-2); text-decoration: underline; text-decoration-color: rgba(166, 247, 210, .35); text-underline-offset: 3px; }
+@media (max-width: 720px) {
+  .howto > li { padding: 14px 14px 14px 50px; }
+  .howto > li::before { left: 14px; top: 14px; }
+  .coin-wrap { margin-top: 40px; }
+  .faq-group { margin-top: 48px; }
+}

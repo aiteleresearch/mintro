@@ -1,0 +1,711 @@
+# MINTRO: the full website as text
+
+Source: https://mintro.aiteleresearch.com/ · Version 0.4.3 · Generated from the live pages.
+
+---
+
+URL: https://mintro.aiteleresearch.com/
+
+Free crypto mining for Windows · Open source · 0% fee
+
+# Early coins. Ordinary laptop. Three clicks.
+
+MINTRO floats on your desktop, picks the young coins where your laptop mines the biggest slice of new supply, and tunes itself to your PC. You press Start.
+Download for Windows See it work
+Windows 10 & 11 · per-user install, no admin · 57 MB · GPL-3.0
+The app
+
+## A card, not a cockpit.
+
+Everything MINTRO does fits in a 360-pixel card that floats above your work. Shrink it to a strip, drag it anywhere, forget it's there.
+Auto-tuned 8 of 16 threads, idle priority while you work
+Pauses on battery and backs off the moment you touch the mouse
+Rotates the basket 20-minute turns, planned per coin
+Seed backup saved wallets made with each coin's official tool
+Open numbers
+
+## Don't take our word for it.
+
+Every number here is live, and each one links to its public source so you can check it yourself.
+Peak miners per day last 30 days
+Counted from anonymous heartbeats: a random ID and whether the PC is mining. No wallets, no names, and anyone can switch it off in MINTRO's settings. How it's counted ↗
+How it works
+
+## Three clicks. Then it runs itself.
+
+01
+
+### Install
+
+Run the setup file. It installs in seconds, for your Windows account only, and opens the card.
+02
+
+### Add wallets
+
+Press Create wallets and MINTRO makes them with each coin's official tool, or paste your own addresses.
+03
+
+### Start
+
+Press the big button. MINTRO rotates through your basket, backs off while you work and pauses on battery.
+The basket
+
+## One laptop. A whole basket of bets.
+
+A laptop can't out-mine a data centre, but on a young coin with few miners it mines a real share of what's new. MINTRO scores every CPU coin on the pool, builds a basket that fits your machine, and rotates through it twenty minutes at a time. See every coin it can mine
+500 coins max, sized to your PC
+20 min turns, shared by plan
+7 days to a payout, or it's out
+Auto mode
+
+## Tuned to your PC before you touch a setting.
+
+On first launch MINTRO reads your processor, memory, graphics and battery. Then it keeps adjusting, every second it runs.
+mintro · auto
+› CPU 16 threads · 24 MB cache · gaming laptop
+› Plan 8 threads, Balanced class
+› You typing → idle priority, 4 threads
+› RAM 2.1 GB free → RandomX light mode
+› Power on battery → paused
+› Learn 2.41 kH/s measured → basket re-planned
+Inside
+
+## Serious engineering. Zero setup.
+
+### One-click wallets
+
+For Monero-family coins, MINTRO runs each coin's official wallet tool offline, writes your seed backup, and fills in the address. Nothing leaves your PC.
+0 %
+
+### MINTRO's fee
+
+Every share goes to your own address. The engines' own small fees are listed in the app.
+
+### Three proven engines
+
+Downloaded from each project's official release and fingerprint-checked before first use.
+- XMRig RandomX · GhostRider 1%
+- cpuminer-opt yespower · yescrypt · power2b · minotaurx 0%
+- SRBMiner-Multi firopow · meowpow · GPU coins ~0.85%
+Engine fees as their developers set them.
+
+### Never stuck on a dead pool
+
+Nearest server first. If it doesn't answer, the next one. Monero also falls back to SupportXMR and HashVault.
+
+### Antivirus, explained
+
+Windows flags every miner. MINTRO says why, and excludes only its own miner folder after Windows asks you.
+
+### Stays out of the way
+
+Shrinks to a strip. Fits Windows scaling and text size. Closing it stops mining.
+Straight talk
+A laptop will never out-mine a data centre. But on a young coin with few miners, it can mine a real share of what's new. Most young coins go nowhere. Some don't. MINTRO is a lottery ticket you run on spare compute, and it tells you so.
+For coin projects
+
+## Put your coin in front of miners.
+
+MINTRO is free for everyone who mines. It's paid for by coin projects that list their coins: once listed, every MINTRO PC can mine yours, with no setup on the miner's side. Listings are always labelled.
+Listed Your coin joins every MINTRO's catalog with your pitch and links, scored like any other coin. On the rplant pool or your own.
+Featured Everything in Listed, plus a guaranteed share of each basket's mining time (up to 10%), shown on the coin.
+Promo Not mineable with MINTRO yet? A labelled spot in the Sponsored box.
+FAQ
+
+## Good questions.
+
+### Will this make me money?
+
+Probably not much in dollars today. A laptop's mining earns cents to a few dollars a month, and electricity can cost more. The idea is to collect small amounts of several early coins in case one becomes valuable. Most won't. Not financial advice.
+
+### Does mining more coins at once earn more?
+
+No. Your laptop has a fixed speed, and the basket spreads it across several bets. It changes what you hold, not how much compute you have.
+
+### Why does Windows Security flag it?
+
+Every antivirus flags crypto-mining engines, including the open-source ones MINTRO uses. MINTRO downloads them from their official releases and checks their fingerprints. When Windows Security blocks one, the card explains why and offers to exclude only MINTRO's miner folder, behind Windows' own admin prompt.
+
+### Windows says it protected my PC. Is the installer safe?
+
+SmartScreen shows that screen for apps it hasn't yet seen many people install, and MINTRO is new and not code-signed yet. Choose More info, then Run anyway. The installer needs no admin rights: it only writes to your own user folder, and Settings > Apps removes it. Its source code is public on GitHub.
+
+### Does MINTRO take a cut?
+
+No. Every share goes to your own wallet address. The engines keep their own small developer fees (XMRig 1%, SRBMiner-Multi about 0.85%, cpuminer-opt none), listed in the app's settings.
+
+### Will it slow my laptop down?
+
+In Auto mode it drops to idle priority the moment you use the PC and uses fewer threads while you work. It pauses on battery. Like any sustained load it runs the fans; Eco mode keeps things cool and quiet.
+
+### Is everything really free?
+
+Yes: GPU mining, the tax report, alerts, My PCs, all of it. MINTRO is paid for by coin projects that list their coins. Listed and featured coins are always labelled, and you can switch off featured listings' guaranteed share in Settings.
+
+### Is it open source?
+
+Yes, under GPL-3.0. Read the code, build it yourself, or contribute on GitHub.
+
+## Be early.
+
+Free for Windows 10 and 11. Three clicks to your first share.
+Download MINTRO
+57 MB · installs per user · uninstall any time from Settings > Apps
+Not code-signed yet, so Windows asks you to confirm the first time.
+
+---
+
+URL: https://mintro.aiteleresearch.com/download.html
+
+Download
+
+# Download MINTRO for Windows.
+
+The free, open-source crypto mining app for Windows 10 and 11. It installs in a few seconds, just for your Windows account and without admin rights, then opens on your desktop.
+MINTRO isn't code-signed yet, so Windows asks you to confirm the first time.
+
+## What you need
+
+- Windows 10 or 11, 64-bit. MINTRO is a Windows app; there's no Mac, Linux or phone version.
+- Microsoft Edge WebView2. Built into Windows 11 and every up-to-date Windows 10, so there's nothing to install.
+- Memory. RandomX coins (Monero, Zephyr, Salvium) need about 2.5 GB of free RAM for full speed. With less, MINTRO switches them to a 256 MB light mode so your PC never swaps.
+- Any processor from the last decade. A graphics card is optional: with a discrete NVIDIA, AMD or Intel Arc GPU, MINTRO can mine GPU coins alongside.
+- A wallet address for each coin, which MINTRO can make for you in one click for Monero, Zephyr, Salvium and MYT.
+
+## Install it in five steps
+
+### Download the installer
+
+Press Download MINTRO above. The file is MINTRO-Setup- 0.4.3 .exe.
+
+### Keep the file
+
+If your browser says it isn't commonly downloaded, choose Keep. In Edge that's …, then Keep, then Show more and Keep anyway.
+
+### Open it: More info, then Run anyway
+
+Windows shows Windows protected your PC because MINTRO is new and not yet code-signed. Click More info, check that the app is MINTRO-Setup, then click Run anyway.
+
+### Click Install
+
+MINTRO Setup installs it in a few seconds, adds it to the Start menu and opens it. Running the installer again later updates or repairs it.
+
+### Add wallets and press Start
+
+A short welcome shows how MINTRO tuned itself to your PC and offers to create wallets. Then press the big Start button: MINTRO does the rest.
+Smart App Control, on some new Windows 11 PCs, blocks apps that aren't code-signed and offers no Run anyway, so MINTRO can't be installed on those PCs yet.
+
+## Updates install themselves
+
+MINTRO checks for a new version a few minutes after it starts and every six hours. It downloads the update, checks it was signed by MINTRO's publisher (anything else is refused), and installs it when you've been away from the PC for two minutes. Mining doesn't stop: the running miner is handed to the new version, which carries on with the same coin, pool connection and counters. If the new version doesn't start properly, the previous one comes back by itself.
+
+## What's new in MINTRO 0.4.3
+
+- A new installer: welcome, progress and a clear error screen with Try again. Run it again to update or repair; your settings and wallets stay.
+- A three-step welcome the first time MINTRO opens: how it tuned itself to your PC, what to expect, and one-click wallets.
+- The installer window sizes itself to your display scaling, so nothing is cut off at 125% or 150%.
+- Publisher details on both programs (aitele research, MINTRO, version), shown in Windows' file properties.
+
+## Uninstall any time
+
+Open Settings › Apps, find MINTRO and choose Uninstall. MINTRO's program is removed; your settings, earnings history and any wallets it made stay in %LOCALAPPDATA%\MINTRO, so you keep your coins. Delete that folder too once you've backed up your wallets' seed words.
+
+## Check it, or build it yourself
+
+MINTRO is free software under the GPL-3.0 licence. The app, this website and the release tools are on GitHub , so anyone can read exactly what the installer does, or build their own copy with py -3.12 setup\build.py.
+
+---
+
+URL: https://mintro.aiteleresearch.com/coins.html
+
+The catalog
+
+# Coins you can mine with MINTRO.
+
+MINTRO mines CPU coins on the rplant pool that its engines can drive, plus coins their projects list. Right now that's 18 coins, from Monero, Zephyr and Salvium to new coins with no market yet.
+Updated 10 November 2026 from the same catalog the app uses · the list changes as coins join or leave the pool
+- Coin · Algorithm · Hardware · Engine · Block time · Market · Links
+- Babacoin BBC · GhostRider · CPU · XMRig · 2 min · 1 exchange
+- Bitmonero BMR · RandomX · CPU · XMRig · 2 min · No market yet
+- Cascoin-Minotaurx CAS · MinotaurX · CPU · cpuminer-opt · 2.5 min · No market yet
+- Luckypepe LPEPE · yescryptR32 · CPU · cpuminer-opt · 1 min · 1 exchange
+- Microbitcoin MBC · power2b · CPU · cpuminer-opt · 1 min · No market yet
+- Monero XMR one-click wallet · RandomX · CPU · XMRig · 2 min · 5 exchanges
+- Myt MYT one-click wallet · RandomX · CPU · XMRig · 1 min · No market yet
+- Obidoge OBD · MinotaurX · CPU · cpuminer-opt · 1 min · No market yet
+- Privacydatacoin PDC · RandomARQ · CPU · XMRig · 2 min · No market yet
+- Raptoreum RTM · GhostRider · CPU · XMRig · 2 min · 1 exchange
+- Ratatoskr RATR · yespower · CPU · cpuminer-opt · 1 min · No market yet
+- Rhino RMC · yespowerR16 · CPU · cpuminer-opt · 1 min · 1 exchange
+- Salvium SAL one-click wallet · RandomX · CPU · XMRig · 2 min · 1 exchange
+- Yenten YTN · yespowerR16 · CPU · cpuminer-opt · 2 min · 1 exchange
+- Zephyr ZEPH one-click wallet · RandomX · CPU · XMRig · 2 min · 4 exchanges
+- Firo FIRO · FiroPoW · GPU · SRBMiner-Multi · 10 min · 2 exchanges
+- Kiirocoin KIIRO · FiroPoW · GPU · SRBMiner-Multi · 2.5 min · 1 exchange
+- Meowcoin MEWC · MeowPoW · GPU · SRBMiner-Multi · 2 min · 2 exchanges
+One-click wallet: MINTRO can create this coin's wallet for you with the coin's official tools. Listed: the project pays to be in MINTRO's catalog, and is scored like every other coin. A coin with no market may never be worth anything. Not financial advice.
+
+## How MINTRO picks your basket
+
+You don't pick coins by hand. MINTRO measures what your PC can do on each algorithm, then scores every coin from 0 to 100: higher when your PC would mine a bigger slice of the coin's new supply, when it has active miners, and when it either has real trading or no market yet (the earliest stage). It only keeps a coin if your PC would reach that coin's minimum payout on the pool within a week, so nothing sits stranded on the pool.
+Then it mines one coin at a time, twenty minutes per turn, and rotates so each coin gets its planned share. A laptop has one processor cache and a RandomX miner needs about 2.5 GB of memory, so running coins in turns beats running them side by side.
+
+## The algorithms, briefly
+
+- RandomX
+Monero's proof of work since 2019, built to run best on ordinary processors: it executes random programs against a dataset of about 2 GB, which favours a CPU's cache and memory over special hardware. Monero, Zephyr, Salvium and several newer coins use it. Needs about 2.5 GB of free RAM for full speed; MINTRO drops to the 256 MB light mode when memory is short.
+- RandomARQ and RandomWOW
+RandomX variants with different settings, made for ArQmA and Wownero and used by a few newer coins. Same engine, same CPU-friendly design.
+- GhostRider
+Raptoreum's algorithm. It chains CryptoNight variants with a rotating set of classic hash functions, which keeps it hard to build special hardware for. Raptoreum and Babacoin use it.
+- yespower, yespowerR16
+Memory-hard proof of work from the yescrypt family, designed to suit CPUs and resist GPUs and ASICs. Used by smaller coins such as Yenten.
+- yescryptR32
+A yescrypt variant tuned for CPU mining; light on memory, so it runs on almost any PC.
+- power2b
+yespower with BLAKE2b in place of SHA-256, used by MicroBitcoin.
+- MinotaurX
+Combines the Minotaur hash with yespower, keeping CPUs competitive. Introduced by Litecoin Cash.
+- FiroPoW and MeowPoW
+GPU algorithms from the ProgPoW family (Firo's FiroPoW, Meowcoin's MeowPoW). MINTRO mines them on a separate GPU lane with SRBMiner-Multi, only on PCs with a discrete graphics card.
+
+## The engines that do the mining
+
+- XMRig for RandomX, RandomARQ, RandomWOW and GhostRider. Its own developer fee is 1%.
+- cpuminer-opt for yespower, yespowerR16, yescryptR32, power2b and MinotaurX. No fee.
+- SRBMiner-Multi for FiroPoW and MeowPoW on a graphics card. About 0.85% fee.
+MINTRO downloads each engine from its project's official GitHub release and checks its fingerprint before the first run. MINTRO itself takes nothing: every share goes to your own address.
+
+## Want your coin here?
+
+Coin projects can apply to be listed, so every MINTRO PC can mine their coin with no setup on the miner's side, on the rplant pool or the project's own pool. Listings are always labelled, and featured coins show their guaranteed share of mining time. See the listing plans .
+
+---
+
+URL: https://mintro.aiteleresearch.com/mine-crypto-on-a-laptop.html
+
+Guide
+
+# How to mine crypto on a laptop.
+
+Yes, an ordinary Windows laptop can mine cryptocurrency. It won't make you rich, and on big coins it barely covers the electricity. Here's what it really earns, what it costs, which coins a processor can mine, and how to start in a few minutes.
+Published 10 November 2026 · Aitele Research LLP · 6 min read
+
+## Can you mine crypto on a laptop?
+
+Yes, but not Bitcoin. Bitcoin is mined by ASICs, machines built for nothing else; a laptop would earn practically zero there. Other coins chose proof-of-work algorithms that run best on an ordinary processor. Monero's RandomX is the best known; GhostRider, yespower and others work the same way. On those coins your laptop competes on fair terms with other people's PCs.
+Mining means your processor repeatedly hashes candidate blocks; whoever finds a valid one gets the block reward. A laptop alone would wait months for a block, so miners join a pool that shares each reward in proportion to the work everyone did. That's why small amounts arrive steadily instead of all at once, or never.
+
+## What a laptop really earns
+
+Your share of a coin's new supply is your speed divided by the whole network's speed. An example at the time of writing:
+- A typical laptop does about 2,000 hashes a second on RandomX.
+- Monero's whole network does about 5 billion, so the laptop's share is roughly 1 in 2.5 million.
+- Monero issues about 432 XMR a day (0.6 per block, one block every two minutes).
+- So the laptop mines about 0.00017 XMR a day: around 9 US cents at $550 per XMR, before electricity.
+A laptop mining flat out draws perhaps 20 to 30 extra watts: about 0.6 kWh a day, or around 9 cents at $0.15 per kWh. On a big, established coin, a laptop roughly breaks even.
+Small, young coins are different. With only a handful of miners, the same laptop can mine a real slice of what's new: sometimes thousands of coins instead of fractions of one. Most of those coins never gain much value, but a few do. That's the idea behind MINTRO's basket: spread the same speed across several early coins, like holding several lottery tickets, rather than chasing pennies on one big coin. Treat it as a bet, never as an income.
+
+## Which coins a laptop can mine
+
+Look for coins whose algorithm favours CPUs:
+- RandomX: Monero, Zephyr, Salvium and several newer coins.
+- GhostRider: Raptoreum and coins that copied it.
+- yespower, yescrypt, power2b, MinotaurX: smaller coins built to stay CPU-mineable.
+The coins page lists every coin MINTRO can mine today, with its algorithm, the engine that mines it and whether it trades anywhere yet. If your laptop has a discrete graphics card, GPU coins such as Firo become possible too; on most laptops the heat isn't worth it.
+
+## What you need
+
+- A Windows 10 or 11 laptop with a 64-bit processor. Anything from the last decade works; more cores and a bigger cache mean more speed.
+- About 2.5 GB of free memory for RandomX coins. With less, RandomX's light mode works at a fraction of the speed; other algorithms need far less.
+- A wallet address for each coin, where the pool sends your coins. You create it with the coin's official wallet and keep its seed words safe: whoever has them can spend the coins.
+- Mining software and a pool. Either set up an engine such as XMRig yourself, or let an app such as MINTRO choose the coins, pools and settings for you.
+
+## Mining pools and payouts
+
+A pool combines thousands of miners and pays each one their share of every block the pool finds. Each pool sets a minimum payout per coin: your coins collect on the pool until you pass it, then the pool sends them to your wallet. If your laptop is slow on a coin with a high minimum, your coins can sit on the pool for months. MINTRO only mines a coin if your PC will reach its payout within about a week.
+Pools also charge a small fee (often around 1%), and each mining engine may keep a small developer fee. Check both before you start.
+
+## Is mining safe for your laptop?
+
+Mining keeps the processor busy for hours, so it runs warm and the fans spin. Modern processors slow themselves down before they overheat, so they protect themselves, but heat is still what wears a laptop over time. Keep it sensible:
+- Keep the vents clear: a desk, not a bed or a sofa.
+- Don't mine on battery. It drains the battery and wears it faster.
+- Use fewer threads while you work, or a cooler mode such as MINTRO's Eco.
+- If the laptop is uncomfortably hot to touch, stop and let it rest.
+MINTRO's Auto mode does this for you: it drops to idle priority and fewer threads the moment you touch the keyboard, runs fully when the laptop is idle, and pauses on battery.
+
+## Why antivirus flags mining software
+
+Criminals hide miners on other people's computers, so every antivirus, including Windows Security, flags mining engines by design, even the open-source ones downloaded from their official releases. That's a policy, not a sign your copy is infected. Allow only the miner's own folder, never turn your antivirus off, and only use engines from their official releases. MINTRO explains a block on the card and offers to allow just its miner folder, behind Windows' own admin prompt.
+
+## Start in three clicks with MINTRO
+
+MINTRO is a free, open-source Windows app that does the setup for you:
+
+### Install
+
+Download MINTRO and run the installer. It installs in seconds, without admin rights.
+
+### Add wallets
+
+Press Create wallets and MINTRO makes them with each coin's official tool (Monero, Zephyr, Salvium, MYT), or paste addresses you already have.
+
+### Start
+
+Press the big button. MINTRO picks a basket of coins that fits your PC, tunes itself to it, and rotates through the basket on its own.
+
+## Or do it by hand
+
+If you'd rather run the engine yourself, the classic route for a RandomX coin is XMRig:
+- Create a wallet with the coin's official wallet and note its receive address.
+- Download XMRig from its official GitHub releases and check the published checksum.
+- Pick a pool for the coin and note its stratum address and port.
+- Run xmrig -o POOL:PORT -u YOUR_ADDRESS -p x and watch the hashrate.
+That's one coin on one pool, with your antivirus, memory settings and payouts to manage yourself. It's a good way to learn how mining works.
+
+## Tax and the law
+
+Mining is legal in most countries, but not everywhere, and many tax authorities treat mined coins as income at their value on the day you receive them. Rules differ and change, so check yours. MINTRO can export a tax report: a CSV of everything mined per day and coin, with its dollar value at the time.
+The bottom line: mining on a laptop is a cheap way to hold a little of several early coins and to learn how crypto works. It isn't an income, most early coins stay worthless, and nothing here is financial advice.
+
+---
+
+URL: https://mintro.aiteleresearch.com/faq.html
+
+FAQ
+
+# Questions, answered.
+
+Straight answers about MINTRO and mining crypto on an ordinary Windows PC: what it earns, what it costs, and what to expect.
+
+## The basics
+
+### What is MINTRO?
+
+MINTRO is a free, open-source crypto mining app for Windows 10 and 11. It floats on your desktop as a small card, mines a basket of early-stage coins that suit an ordinary processor, tunes itself to your PC, and pays every share straight to your own wallets.
+
+### Is MINTRO really free? What's the catch?
+
+It's free, with every feature included, and MINTRO takes no cut of what you mine. It's paid for by coin projects that list their coins in MINTRO's catalog. Listed coins are always labelled and scored like every other coin, and you can switch off featured coins' guaranteed share in Settings.
+
+### Is MINTRO open source?
+
+Yes, under the GPL-3.0 licence. The app, the website and the release tools are on GitHub : read the code, build it yourself, or contribute.
+
+### What do I need to run it?
+
+A 64-bit Windows 10 or 11 PC. WebView2, which MINTRO's window uses, is built into Windows 11 and up-to-date Windows 10. RandomX coins need about 2.5 GB of free memory for full speed. Download and install details .
+
+### Does MINTRO work on a Mac, Linux, Android or iPhone?
+
+No. MINTRO is a Windows app. On a phone, the website offers to send you the link so you can open it on your PC.
+
+### Can MINTRO mine Bitcoin?
+
+No. Bitcoin is mined by ASICs, machines built for nothing else, and a laptop would earn practically nothing. MINTRO mines coins whose algorithms run well on ordinary processors, such as RandomX and GhostRider.
+
+### Which coins does MINTRO mine?
+
+CPU coins on the rplant pool that its engines can mine: Monero, Zephyr, Salvium, Raptoreum and newer coins with no market yet, plus coins listed by their projects. See the full list of coins .
+
+### Do I need a graphics card?
+
+No. MINTRO mines with your processor. If your PC has a discrete NVIDIA, AMD or Intel Arc graphics card, it can also mine GPU coins on a second lane: on by default on desktops, and your choice on laptops because of the heat.
+
+## Earnings
+
+### How much can my laptop earn?
+
+Cents a day. A typical laptop mines about 0.00017 Monero a day, a few US cents, before electricity. On young coins with few miners the same laptop mines a much bigger share, but most of those coins never gain value. The guide shows the arithmetic.
+
+### Is mining on a laptop worth the electricity?
+
+On a big coin such as Monero a laptop roughly breaks even with average electricity prices. The upside is holding a slice of early coins in case one takes off: a lottery ticket, not an income. MINTRO shows earnings after electricity so you can judge for yourself.
+
+### Does mining more coins at once earn more?
+
+No. Your laptop has a fixed speed, and the basket spreads it across several bets. It changes what you hold, not how much compute you have.
+
+### When do I get paid?
+
+The pool sends a coin to your wallet once you pass its minimum payout. MINTRO only includes a coin if your PC will reach that within about a week, so your coins don't sit stranded on the pool.
+
+### Does MINTRO take a cut?
+
+No. Every share goes to your own wallet address. The mining engines keep their own small developer fees (XMRig 1%, SRBMiner-Multi about 0.85%, cpuminer-opt none), listed in the app's settings.
+
+### Where can I sell what I mine?
+
+Each coin in MINTRO lists the exchanges the pool knows it trades on, and hardware wallets that can hold it. Some early coins have no market at all yet.
+
+### Do I have to pay tax on mined coins?
+
+In many countries mined coins count as income at their value when you receive them. Rules differ, so check yours. MINTRO's tax report exports everything mined per day and coin, with its dollar value at the time, as a CSV file.
+
+## Your PC
+
+### Will MINTRO slow my laptop down?
+
+In Auto mode it drops to idle priority the moment you use the PC and uses fewer threads while you work, then runs fully when the PC is idle. It pauses on battery. Like any sustained load it runs the fans; Eco mode keeps things cool and quiet.
+
+### Can mining damage my laptop?
+
+Mining keeps the processor warm for hours, and heat is what wears a laptop over time. Processors slow themselves down before they overheat. Keep the vents clear, don't mine on battery, and use Eco if it runs hot. MINTRO's Auto mode backs off while you work and pauses on battery.
+
+### Does MINTRO mine on battery?
+
+No. By default it pauses when your laptop is unplugged and carries on when you plug it back in. You can change that in Settings.
+
+### How much memory does MINTRO need?
+
+RandomX coins need about 2.5 GB of free RAM for full speed. With less, MINTRO switches them to RandomX's 256 MB light mode so your PC never swaps. Other algorithms need far less.
+
+### What are Auto, Eco, Balanced and Max?
+
+Power modes. Auto, the default, is tuned to your PC and adapts to what you're doing. Eco uses half the threads at the lowest priority. Balanced gives the best speed per watt. Max runs at full speed at normal priority.
+
+## Safety and privacy
+
+### Why does Windows Security flag it?
+
+Every antivirus flags crypto-mining engines, including the open-source ones MINTRO uses, because criminals hide them on other people's PCs. MINTRO downloads them from their official releases and checks their fingerprints. When Windows Security blocks one, the card explains why and offers to exclude only MINTRO's miner folder, behind Windows' own admin prompt.
+
+### Windows says it protected my PC. Is the installer safe?
+
+SmartScreen shows that screen for apps it hasn't yet seen many people install, and MINTRO is new and not code-signed yet. Choose More info, then Run anyway. The installer needs no admin rights, only writes to your own user folder, and Settings › Apps removes it.
+
+### What does MINTRO send over the internet?
+
+It talks to the mining pool, to GitHub for engines and updates, to price sites, and to a coin's official wallet download when you create a wallet. It can count your PC in the public miner counter with a random ID, nothing else: no wallet, no name, no hardware. Settings has the off switch. Privacy details .
+
+### Where are my wallets, and what if I lose the seed words?
+
+Wallets MINTRO makes live in %LOCALAPPDATA%\MINTRO\wallets, each with a backup file holding its seed words. Write the seed words on paper: anyone with them can spend the coins, and without them a lost wallet can't be recovered.
+
+### How do I uninstall MINTRO?
+
+Settings › Apps › MINTRO › Uninstall. Your settings and wallets stay in %LOCALAPPDATA%\MINTRO so you keep your coins; delete that folder after backing up the seed words.
+
+## Wallets and coin projects
+
+### Do I need a crypto wallet?
+
+Yes, one address per coin, because the pool pays straight to you and MINTRO never holds your coins. For Monero, Zephyr, Salvium and MYT, MINTRO creates the wallet in one click with the coin's official tools; for others, each coin links to its official wallet.
+
+### How do I get my coin listed in MINTRO?
+
+Coin projects apply with the form in the For coin projects section. A listed coin reaches every MINTRO PC with no setup on the miner's side, carries a label, and is scored like every other coin.
+
+---
+
+URL: https://mintro.aiteleresearch.com/contact.html
+
+Contact
+
+# Talk to us.
+
+A question about MINTRO, a problem on your PC, a coin to list, or a partnership — send it here and it reaches the team. You'll get a confirmation by email, and a person replies, usually within two business days.
+Email
+hello@ aiteleresearch.com
+Prefer your own email app? Write to us directly.
+Bugs
+GitHub issues ↗
+Bug reports and feature ideas are tracked in the open.
+Coin projects
+Request a listing
+Listings are how MINTRO stays free. Every listed coin is labelled.
+
+---
+
+URL: https://mintro.aiteleresearch.com/risk.html
+
+Legal
+
+# Risk disclosure.
+
+Mining small coins is a bet, not an income. Read this before you start.
+Last updated 6 November 2026 · Aitele Research LLP
+
+## Not financial advice
+
+Nothing on this site or in the app is financial, investment or tax advice. A coin's score, a listing, or an exchange shown next to a coin is not a recommendation to mine, buy, hold or sell it.
+
+## “Mined” is an estimate
+
+The amounts MINTRO shows as mined are estimates from your measured speed. What counts is what the pool pays out, and a pool pays only once your balance passes its minimum payout. Your total earnings are set by your computer's speed; spreading it across a basket spreads the bet, it doesn't multiply it.
+
+## Coins can be worth nothing
+
+Many coins in the basket are early-stage, and some have no market at all; they may never be worth anything. Coins that do trade can be thinly traded and very volatile, and can lose most of their value quickly.
+
+## Electricity and hardware
+
+Mining keeps your processor (and, for some coins, your graphics card) busy. That uses electricity, makes heat and fan noise, and adds wear. The electricity can cost more than what you mine. MINTRO's Auto mode pauses on battery and steps back when you're using the PC, but mining still loads the machine.
+
+## Pools, exchanges and wallets
+
+Pools can go offline, change their payout rules or stop supporting a coin. Exchanges can delist coins or fail. MINTRO doesn't control any of them, and coins held on a pool or an exchange are only as safe as that service.
+
+## Antivirus warnings
+
+Antivirus software often flags mining engines, because mining software is also abused by malware. MINTRO explains a block on the card when it happens, and the antivirus guide says how to check the files. Download MINTRO only from the official link on this site.
+
+## Keep your wallets safe
+
+Whoever holds a wallet's files or backup can spend its coins. Keep a copy of MINTRO's data folder somewhere safe and private; if it's lost and you have no other backup, the coins in those wallets are gone.
+
+## Law and tax
+
+Rules on mining and crypto assets, and on taxing them, differ from country to country and change. Following them where you live is your responsibility.
+
+---
+
+URL: https://mintro.aiteleresearch.com/terms.html
+
+Legal
+
+# Terms of use.
+
+The terms for using this website and the MINTRO app. The short version: mine only on your own computers, and treat every coin as a risk.
+Last updated 9 November 2026 · Aitele Research LLP
+
+## Acceptance of these terms
+
+By using this website or downloading, installing or running MINTRO, you accept these terms. If you don't accept them, don't use the site or the app. MINTRO's source code is also licensed to you under the GNU GPL v3.0; where these terms and the GPL overlap on the code, the GPL governs.
+
+## Mine only on computers you control
+
+Install and run MINTRO only on computers you own, or that you are explicitly allowed to use for mining. Running it on someone else's computer without their knowledge — an employer's, a school's, a shared or public machine — is prohibited, and may be unlawful.
+Don't use MINTRO or this site to break the law, to attack or abuse mining pools, or to misrepresent a coin in a listing request.
+
+## Your responsibilities
+
+- The electricity your computer uses while mining, and its wear, heat and battery health.
+- Following the laws where you live on mining and crypto assets, and any tax due on what you mine.
+- Your wallets. MINTRO keeps the wallets it creates, with a plain-text backup, in its data folder on your PC; anyone who can open that folder can spend those coins, and losing it can mean losing them.
+- The wallet addresses you enter. Shares mined to a wrong address can't be recovered.
+
+## Free software, no fee
+
+MINTRO is free and takes no fee from your mining: every share goes to the address you set. The mining engines it uses may keep their own developer fee, as described in the legal notice .
+
+## Provided “as is”
+
+MINTRO and this site are provided “as is” and “as available”, without warranty of any kind, express or implied, as the GPL v3.0 also states for the code. We don't promise any earnings or payouts, that pools or engines will be available, or that any coin will ever be worth anything. Amounts the app shows as mined are estimates.
+
+## Limitation of liability
+
+To the fullest extent the law allows, Aitele Research LLP is not liable for any loss arising from your use of MINTRO or this site — including lost or worthless coins, lost wallets, electricity costs, damage to or wear of hardware, losses on exchanges, or taxes.
+
+## Pools, exchanges and wallets
+
+Mining pools, exchanges, wallet makers and coin projects named on this site or in the app are independent third parties under their own terms. Naming them is not an endorsement.
+
+## Updates and the service
+
+The installed app checks MINTRO's website for updates and installs them itself, only when they are signed by MINTRO's publisher; mining keeps going while it updates, and your settings, earnings history and wallets are never touched. MINTRO's publisher can also send a signed notice to every installed copy. If the MINTRO service ever ends, that notice stops mining and offers to uninstall the app; your settings and any wallets MINTRO made stay on your PC, so back up wallet seed words.
+
+## Changes to these terms
+
+We may update these terms as MINTRO changes. The date at the top of this page shows when they last changed; continuing to use the site or the app after a change means you accept the updated terms.
+
+## Governing law and contact
+
+These terms and your use of the site and the app are governed by the laws applicable to Aitele Research LLP, without regard to conflict-of-laws principles. Questions can be sent to hello@aiteleresearch.com .
+
+---
+
+URL: https://mintro.aiteleresearch.com/privacy.html
+
+Legal
+
+# Privacy.
+
+What this website and the MINTRO app collect, what they connect to, and what stays on your PC.
+Last updated 9 November 2026 · Aitele Research LLP
+
+## The short version
+
+This website sets no cookies and runs no third-party analytics. It counts downloads and visitors anonymously, as described below, and receives personal data only when you send us a form. The MINTRO app keeps your wallets and settings on your PC, and MINTRO 0.4.1 sends nothing about you to Aitele Research.
+
+## What the website uses
+
+Browsing collects nothing for us. Like any website, the server that delivers these pages sees your IP address in order to send them. To draw the page, your browser also loads fonts from Google Fonts, the 3D scene's library from jsDelivr, and the download count from GitHub's public API; those services receive your IP address under their own privacy policies. The download count is kept in your browser's session storage for a few minutes so it isn't fetched again on every visit.
+Counting downloads and visitors. The site shows how many times MINTRO has been downloaded and how many different browsers have visited. To count visitors without cookies, your browser keeps two small notes in its local storage — that it has been here before, and the date of its last visit — and each page view sends the server only those two yes/no answers, which it adds to daily totals. No ID, IP address or browsing history is stored. A download is counted when it starts; to count a repeat click once, the server remembers your IP address for ten minutes, in memory only.
+
+## The contact and listing forms
+
+The contact form sends your name, email address, topic and message; the listing form sends your project's details and a contact email. Either way it reaches the Aitele Research team as an email, and we send a confirmation to the address you gave. Emails are delivered through Resend, our email provider. We use what you send only to answer you (and, for a listing, to review your coin), and we never add you to a mailing list.
+To stop the forms being abused, the server remembers your IP address for a few minutes to limit how many messages it accepts from one connection; it isn't stored or logged. If the form can't reach us, your email app opens instead, with your message filled in.
+
+## What the app keeps on your PC
+
+MINTRO keeps its settings, the wallets it creates (wallet files and a plain-text backup), the mining engines and a random install ID made on first run in its data folder, %LOCALAPPDATA%\MINTRO. None of it is uploaded to us. Uninstalling the app keeps that folder, so your wallets survive.
+
+## What the app connects to
+
+- Mining pools — your wallet address and your IP address, which mining needs; the pool uses the address to pay you.
+- MINTRO's website (mintro.aiteleresearch.com) — to check for updates and service notices every 6 hours, and to download a signed update when there is one. The check sends nothing about you or your PC beyond what any web request does, and isn't logged.
+- GitHub — as a fallback for update checks, to fetch the coin listings, and to download the mining engines from their projects' official releases.
+- Coin projects' official download sites — for the wallet tools used to create wallets (for example, getmonero.org).
+- WhatToMine and CoinGecko — public price and difficulty data for the estimates.
+Each of these services handles what it receives under its own privacy policy.
+
+## The public miner counter
+
+MINTRO can count itself in a public tally of active miners. When that counter is switched on, the app sends, every 10 minutes and when mining starts or stops, exactly this: its random install ID, its version, whether it is mining, and whether it uses the CPU or GPU — no wallet address, no name, no hardware details. You can turn it off in Settings, under “Count me in the public miner counter”.
+In MINTRO 0.4.1 no counter service is set up, so nothing is sent.
+
+## Cookies
+
+This website uses no cookies and no tracking pixels.
+
+## We do not sell your data
+
+We don't sell, rent or trade personal data, and we don't use it for advertising.
+
+## Changes and contact
+
+We'll update this page if what MINTRO collects changes; the date at the top shows the last change. Questions about your data can be sent to hello@aiteleresearch.com .
+
+---
+
+URL: https://mintro.aiteleresearch.com/legal.html
+
+Legal
+
+# Legal notice.
+
+Who publishes MINTRO and this site, what you may do with each, and how coin listings work.
+Last updated 6 November 2026 · Aitele Research LLP
+
+## Owner and operator
+
+This website and the MINTRO app are published by Aitele Research LLP (“Aitele Research”, “we”, “us”). The site is published for general information about MINTRO and for people who want to download it.
+
+## MINTRO as a venture
+
+MINTRO is a venture and product of Aitele Research. References on this site to “MINTRO” describe that venture and its app; they do not denote a separate legal entity. The operating entity for all purposes is Aitele Research LLP.
+
+## Software licence and intellectual property
+
+MINTRO's source code is free software under the GNU General Public License v3.0 : you may run, study, share and modify it on the terms of that licence.
+The MINTRO name and gem mark, and this website's text, design and graphics, belong to Aitele Research LLP. The GPL licenses the code; it does not grant rights to the name or mark. You may share this site's material for personal, non-commercial reference; any other reproduction needs our written permission.
+
+## Coins, pools and mining engines
+
+Coin names, tickers and logos belong to their projects. The mining pools MINTRO connects to (such as rplant, SupportXMR and HashVault) and the mining engines it downloads from their projects' official releases (XMRig, cpuminer-opt and SRBMiner-Multi) are independent third parties with their own terms. Where an engine charges its own developer fee (about 1% for XMRig, about 0.85% for SRBMiner-Multi), that fee goes to its developers, not to us.
+
+## How listings work
+
+MINTRO takes no fee from your mining. It is paid for by coin projects that apply to be listed. A listed coin always carries a “Listed” label and is scored like any other coin. A “Featured” coin also gets a guaranteed share of mining time, at most 10%, shown on the coin; you can turn those guarantees off in Settings > Featured listings.
+A listing is not an endorsement of a coin, and not a recommendation to mine, buy or hold it.
+
+## External links
+
+This site and the app link to third-party sites — GitHub, mining pools, exchanges, wallet makers and aiteleresearch.com — for convenience. We do not control those destinations and are not responsible for their content or practices. A link is not an endorsement, and visiting a linked site is at your own discretion under that site's own terms.
+
+## Contact
+
+Questions about this notice can be sent to hello@aiteleresearch.com .

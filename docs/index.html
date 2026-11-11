@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MINTRO · Mine a basket of early coins</title>
-<meta name="description" content="MINTRO is a floating desktop card that mines a basket of early-stage CPU coins on an ordinary laptop, tuned to your PC. Free, open source, 0% fee.">
+<title>MINTRO · Free crypto mining app for Windows laptops</title>
+<meta name="description" content="Free, open-source crypto mining app for Windows 10 and 11. MINTRO mines a basket of early CPU coins on your laptop, tuned to your PC, with 0% fee.">
 <meta name="theme-color" content="#050607">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="author" content="Aitele Research LLP">
@@ -16,6 +16,8 @@
   so the canonical, og: and twitter: URLs below name the site's address directly.
 -->
 <link rel="canonical" href="https://mintro.aiteleresearch.com/">
+<link rel="alternate" hreflang="en" href="https://mintro.aiteleresearch.com/">
+<link rel="alternate" hreflang="x-default" href="https://mintro.aiteleresearch.com/">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -80,6 +82,8 @@
    "@id": "https://mintro.aiteleresearch.com/#website",
    "url": "https://mintro.aiteleresearch.com/",
    "name": "MINTRO",
+   "alternateName": "MINTRO crypto mining app",
+   "description": "MINTRO, a free and open-source crypto mining app for Windows laptops and desktops.",
    "inLanguage": "en",
    "publisher": {
     "@id": "https://aiteleresearch.com/#organization"
@@ -89,12 +93,13 @@
    "@type": "WebPage",
    "@id": "https://mintro.aiteleresearch.com/#webpage",
    "url": "https://mintro.aiteleresearch.com/",
-   "name": "MINTRO — mine a basket of early coins on an ordinary laptop",
-   "description": "MINTRO is a floating desktop card that mines a basket of early-stage CPU coins on an ordinary laptop, tuned to your PC. Free, open source, 0% fee.",
+   "name": "MINTRO — free crypto mining app for Windows laptops",
+   "description": "Free, open-source crypto mining app for Windows 10 and 11. MINTRO mines a basket of early CPU coins on your laptop, tuned to your PC, with 0% fee.",
    "isPartOf": {
     "@id": "https://mintro.aiteleresearch.com/#website"
    },
    "inLanguage": "en",
+   "dateModified": "2026-11-10",
    "primaryImageOfPage": {
     "@type": "ImageObject",
     "url": "https://mintro.aiteleresearch.com/assets/og.jpg",
@@ -109,20 +114,40 @@
    "@type": "SoftwareApplication",
    "@id": "https://mintro.aiteleresearch.com/#app",
    "name": "MINTRO",
+   "alternateName": "MINTRO crypto miner",
    "url": "https://mintro.aiteleresearch.com/",
-   "description": "MINTRO is a floating desktop card that mines a basket of early-stage CPU coins on an ordinary laptop, tuned to your PC. Free, open source, 0% fee.",
-   "applicationCategory": "UtilitiesApplication",
+   "description": "Free, open-source crypto mining app for Windows 10 and 11. MINTRO mines a basket of early CPU coins on your laptop, tuned to your PC, with 0% fee.",
+   "applicationCategory": "FinanceApplication",
    "applicationSubCategory": "Cryptocurrency mining",
    "operatingSystem": "Windows 10, Windows 11 (64-bit)",
    "softwareVersion": "0.4.3",
+   "softwareRequirements": "Windows 10 or 11, 64-bit; Microsoft Edge WebView2 Runtime (built into Windows 11)",
+   "memoryRequirements": "About 2.5 GB of free RAM for RandomX coins (others need far less)",
+   "processorRequirements": "64-bit x86 processor",
    "downloadUrl": "https://mintro.aiteleresearch.com/download/MINTRO-Setup-0.4.3.exe",
+   "installUrl": "https://mintro.aiteleresearch.com/download.html",
+   "releaseNotes": "https://mintro.aiteleresearch.com/download.html#whats-new",
+   "featureList": [
+    "Mines a basket of CPU-mineable coins, sized to what the PC can carry",
+    "Auto mode: tuned to the PC, backs off while you work, pauses on battery",
+    "One-click wallets for Monero, Zephyr, Salvium and MYT with each coin's official tools",
+    "XMRig, cpuminer-opt and SRBMiner-Multi engines, downloaded from their official releases and checksum-checked",
+    "Optional GPU mining on discrete NVIDIA, AMD and Intel Arc graphics",
+    "Pool fallbacks, payout checks and plain-language self-test",
+    "Silent, signed self-updates that never stop mining",
+    "Tax report CSV, Windows alerts and a view of all your PCs",
+    "No fee: every share goes to your own wallet address"
+   ],
+   "keywords": "crypto mining app, crypto miner for Windows, mine crypto on a laptop, CPU mining, free crypto miner, RandomX miner, Monero mining, XMRig GUI, cpuminer-opt, GhostRider, yespower, mining pool, open source miner",
    "image": "https://mintro.aiteleresearch.com/assets/og.jpg",
+   "screenshot": "https://mintro.aiteleresearch.com/assets/og.jpg",
    "license": "https://www.gnu.org/licenses/gpl-3.0.html",
    "isAccessibleForFree": true,
    "offers": {
     "@type": "Offer",
     "price": "0",
-    "priceCurrency": "USD"
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
    },
    "author": {
     "@id": "https://aiteleresearch.com/#organization"
@@ -132,7 +157,8 @@
    },
    "sameAs": [
     "https://github.com/aiteleresearch/mintro"
-   ]
+   ],
+   "fileSize": "57 MB"
   },
   {
    "@type": "FAQPage",
@@ -171,7 +197,7 @@
      "name": "Windows says it protected my PC. Is the installer safe?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "SmartScreen shows that screen for apps it hasn't yet seen many people install, and MINTRO is new and not code-signed yet. Choose More info, then Run anyway. The installer needs no admin rights: it only writes to your own user folder, and Settings > Apps removes it. Its source code is public on GitHub."
+      "text": "SmartScreen shows that screen for apps it hasn't yet seen many people install, and MINTRO is new and not code-signed yet. Choose More info , then Run anyway . The installer needs no admin rights: it only writes to your own user folder, and Settings > Apps removes it. Its source code is public on GitHub. See each step"
      }
     },
     {
@@ -245,7 +271,7 @@
   <section class="hero" id="top" data-scene="hero">
     <div class="wrap">
       <div class="hero-copy">
-        <p class="kicker rise" style="--d:.1s"><span class="live"></span>Free · Open source · 0% fee</p>
+        <p class="kicker rise" style="--d:.1s"><span class="live"></span>Free crypto mining for Windows · Open source · 0% fee</p>
         <h1 data-split data-hero>Early coins.<br>Ordinary laptop.<br><span class="grad">Three clicks.</span></h1>
         <p class="lede rise" style="--d:.65s">MINTRO floats on your desktop, picks the young coins where your laptop mines the biggest
           slice of new supply, and tunes itself to your PC. You press Start.</p>
@@ -409,6 +435,8 @@
           <p>Press the big button. MINTRO rotates through your basket, backs off while you work and pauses on battery.</p>
         </article>
       </div>
+      <p class="sec-more" data-reveal><a class="more" href="download.html">Requirements and install steps</a>
+        <a class="more" href="mine-crypto-on-a-laptop.html">How mining on a laptop works</a></p>
     </div>
   </section>
 
@@ -421,7 +449,7 @@
         <h2 data-split>One laptop. A whole basket of bets.</h2>
         <p data-reveal>A laptop can't out-mine a data centre, but on a young coin with few miners it mines a real share of
           what's new. MINTRO scores every CPU coin on the pool, builds a basket that fits your machine, and rotates
-          through it twenty minutes at a time.</p>
+          through it twenty minutes at a time. <a class="more" href="coins.html">See every coin it can mine</a></p>
         <div class="scores glass" data-reveal id="scores">
           <div class="scores-head"><span>Example basket</span><span>score</span></div>
           <div class="score" style="--v:86"><b>Zephyr</b><span class="why">big share of new supply</span><i></i><em>86</em></div>
@@ -544,6 +572,7 @@
         <p class="honest-text" id="honestText">A laptop will never out-mine a data centre. But on a young coin with few miners,
           it can mine <em>a real share</em> of what's new. Most young coins go nowhere. <em>Some don't.</em> MINTRO is
           <em>a lottery ticket</em> you run on spare compute, and it <em>tells you so.</em></p>
+        <p class="honest-more"><a class="more" href="mine-crypto-on-a-laptop.html#earnings">What a laptop really earns, with the numbers</a></p>
       </div>
     </div>
   </section>
@@ -629,6 +658,7 @@
           <details><summary>Is it open source?</summary><div class="ans"><p>Yes, under GPL-3.0. Read the code, build it
             yourself, or contribute on GitHub.</p></div></details>
         </div>
+        <p class="sec-more" data-reveal><a class="more" href="faq.html">All 27 questions, answered</a></p>
       </div>
       <div class="spacer" aria-hidden="true"></div>
     </div>
@@ -673,17 +703,18 @@
           <ul>
             <li><a href="#how">How it works</a></li>
             <li><a href="#basket">The basket</a></li>
+            <li><a href="coins.html">Coins you can mine</a></li>
             <li><a href="#features">Inside MINTRO</a></li>
             <li><a href="#numbers">Numbers</a></li>
-            <li><a href="#faq">FAQ</a></li>
           </ul>
         </div>
         <div>
           <p class="foot-h">Get MINTRO</p>
           <ul>
-            <li><a data-href="download" href="https://mintro.aiteleresearch.com/download/latest">Download for Windows</a></li>
+            <li><a href="download.html">Download for Windows</a></li>
+            <li><a href="mine-crypto-on-a-laptop.html">Mining on a laptop</a></li>
+            <li><a href="faq.html">FAQ</a></li>
             <li><a data-href="repo" href="https://github.com/aiteleresearch/mintro">Source on GitHub</a></li>
-            <li><a data-href="license" href="https://github.com/aiteleresearch/mintro/blob/main/LICENSE">License · GPL-3.0</a></li>
             <li><a href="#list">List your coin</a></li>
           </ul>
         </div>

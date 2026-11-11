@@ -1,0 +1,28 @@
+# MINTRO
+
+> MINTRO is a free, open-source (GPL-3.0) crypto mining app for Windows 10 and 11. It floats on the desktop as a small card, mines a basket of early-stage CPU-mineable coins on an ordinary laptop or desktop, tunes itself to the PC, and pays every share straight to the user's own wallets. MINTRO takes no fee.
+
+- Current version: 0.4.3, for Windows 10 and 11 (64-bit); installs per user, no admin rights.
+- Engines: XMRig (RandomX, RandomARQ, RandomWOW, GhostRider), cpuminer-opt (yespower, yespowerR16, yescryptR32, power2b, MinotaurX) and, on PCs with a discrete GPU, SRBMiner-Multi (FiroPoW, MeowPoW).
+- Coins: the CPU coins on the rplant pool those engines can mine (Monero, Zephyr, Salvium, Raptoreum and newer coins with no market yet), plus coins listed by their projects. The basket only keeps coins that reach the pool's minimum payout within a week on that PC.
+- Wallets: one-click wallets for Monero, Zephyr, Salvium and MYT made with each coin's official tools, or paste any address. MINTRO never holds anyone's coins.
+- Earnings: small. A laptop mines cents' worth a day, and most new coins never gain value: MINTRO is a way to hold a little of several early coins, not an income. Not financial advice.
+- Who makes it: Aitele Research LLP. Source code: https://github.com/aiteleresearch/mintro
+
+## Pages
+
+- [MINTRO · Free crypto mining app for Windows laptops](https://mintro.aiteleresearch.com/): Free, open-source crypto mining app for Windows 10 and 11. MINTRO mines a basket of early CPU coins on your laptop, tuned to your PC, with 0% fee.
+- [Download MINTRO for Windows · Free crypto mining app](https://mintro.aiteleresearch.com/download.html): Download MINTRO, the free, open-source crypto mining app for Windows 10 and 11. 57 MB, installs in seconds without admin rights, updates itself.
+- [Coins you can mine with MINTRO · CPU & GPU mineable coins](https://mintro.aiteleresearch.com/coins.html): Every coin MINTRO can mine on a Windows PC: Monero, Zephyr, Salvium, Raptoreum and newer CPU coins, with each one's algorithm, engine and market.
+- [How to mine crypto on a laptop (an honest guide)](https://mintro.aiteleresearch.com/mine-crypto-on-a-laptop.html): Can you mine crypto on a laptop? What it really earns, what it costs in electricity and heat, which coins a CPU can mine, and how to start safely.
+- [MINTRO FAQ · Crypto mining on a Windows laptop, answered](https://mintro.aiteleresearch.com/faq.html): Answers about MINTRO and laptop crypto mining: earnings, electricity, which coins, heat and battery, antivirus warnings, wallets, payouts and tax.
+- [Risk disclosure](https://mintro.aiteleresearch.com/risk.html): Mining risks with MINTRO: estimates aren't earnings, early coins may stay worthless, plus power, pools, antivirus, wallets and tax. Not financial advice.
+
+## Optional
+
+- [Contact](https://mintro.aiteleresearch.com/contact.html): Contact the MINTRO team — questions, problems, coin listings, partnerships and press. A venture of Aitele Research LLP.
+- [Terms](https://mintro.aiteleresearch.com/terms.html): Terms of use for MINTRO and its website: use it only on computers you control, free software with no warranty, liability limits and governing law.
+- [Privacy](https://mintro.aiteleresearch.com/privacy.html): How MINTRO handles data: no cookies or analytics on the site, wallets and settings stay on your PC, and exactly what the app connects to.
+- [Legal notice](https://mintro.aiteleresearch.com/legal.html): Legal notice for MINTRO: who owns and runs it, the software licence, coins, pools and engines, paid listings, and how to contact us.
+- [Source code on GitHub](https://github.com/aiteleresearch/mintro): the app, the website and the release tools.
+- [Full text of this site](https://mintro.aiteleresearch.com/llms-full.txt): every page above as plain Markdown.
