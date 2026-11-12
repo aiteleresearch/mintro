@@ -139,7 +139,7 @@
         reaches the team. You'll get a confirmation by email, and a person replies, usually within two business days.</p>
     </header>
     <div class="contact-grid">
-      <form class="apply glass mint" id="contactForm" data-api="https://mintro.aiteleresearch.com" data-email="hello@aiteleresearch.com" novalidate>
+      <form class="apply glass mint" id="contactForm" data-api="https://mintro.aiteleresearch.com" data-captcha="https://mintro.aiteleresearch.com/api/captcha" data-email="hello@aiteleresearch.com" novalidate>
         <div class="apply-grid">
           <label>Name<input name="name" required maxlength="80" autocomplete="name"></label>
           <label>Email<input name="email" required type="email" maxlength="120" autocomplete="email"></label>
@@ -232,5 +232,6 @@
   </div>
 </footer>
 <script defer src="assets/contact.js"></script>
+<script defer src="assets/captcha.js"></script>
 </body>
 </html>

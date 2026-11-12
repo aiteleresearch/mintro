@@ -4,6 +4,7 @@
 //
 //   POST /api/contact     the contact form  } emailed the way every Aitele venture's sendInquiry does: the team
 //   POST /api/listing     the listing form  } inbox gets it with Reply-To set to the sender, who gets a confirmation
+//   GET  /api/captcha     a fresh anti-spam challenge for those two forms (single use; see captchaCheck)
 //   POST /api/visit       a page view; counts unique visitors without cookies (the page sends two flags)
 //   GET  /api/stats       downloads, unique visitors, page views and updates delivered, per day since day one
 //   GET  /download/<file> the installer, the update package and its release feed — counted, resumable
@@ -17,7 +18,8 @@
 // daily snapshot, and pending counts are flushed on shutdown.
 //
 // Env (deploy/install.sh writes .env.local next to this file): RESEND_API_KEY, EMAIL_FROM, CONTACT_INBOX, PORT,
-// MINTRO_SITE_URL, MINTRO_DATA_DIR, MINTRO_ADMIN_TOKEN, MINTRO_ALLOWED_ORIGINS (more origins allowed to post).
+// MINTRO_SITE_URL, MINTRO_DATA_DIR, MINTRO_ADMIN_TOKEN, MINTRO_ALLOWED_ORIGINS (more origins allowed to post),
+// CAPTCHA_HMAC_KEY (signs the forms' anti-spam challenges; random per process without it).
 // Local preview: `node server.js --static` also serves the pages, on http://localhost:5100.
 'use strict';
 const http = require('node:http');
@@ -58,6 +60,46 @@ const esc = (s) => String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt
 const oneLine = (s) => String(s).replace(/[\r\n]+/g, ' ').trim();
 const str = (v, max) => String(v ?? '').trim().slice(0, max);
 const isEmail = (s) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s) && s.length <= 120;
+
+/* ---------- the forms' anti-spam check ----------
+   A self-hosted proof-of-work captcha in the ALTCHA format, the scheme every Aitele site uses. GET /api/captcha
+   hands out a challenge: sha256(salt + n) for a secret n below maxnumber, the salt carrying an expiry, signed with
+   CAPTCHA_HMAC_KEY. The page (assets/captcha.js) finds n, about a second of work, and sends it as the form's
+   `captcha` field; captchaCheck verifies signature, work, expiry and single use. No third party, no cookie. */
+
+let captchaFallbackKey = '';
+const captchaKey = () => process.env.CAPTCHA_HMAC_KEY || (captchaFallbackKey ||= crypto.randomBytes(32).toString('hex'));
+const CAPTCHA_MAX = Math.max(1000, Number(process.env.CAPTCHA_MAX_NUMBER) || 50000);
+const captchaUsed = new Map(); // challenge -> expiry: each answer buys one message
+const sha256 = (s) => crypto.createHash('sha256').update(s).digest('hex');
+const captchaSign = (s) => crypto.createHmac('sha256', captchaKey()).update(s).digest('hex');
+
+function captchaChallenge() {
+  const salt = `${crypto.randomBytes(12).toString('hex')}?expires=${Math.floor(Date.now() / 1000) + 30 * 60}`;
+  const challenge = sha256(salt + crypto.randomInt(0, CAPTCHA_MAX));
+  return { algorithm: 'SHA-256', challenge, maxnumber: CAPTCHA_MAX, salt, signature: captchaSign(challenge) };
+}
+
+/** null when the form's answer is good (and now spent), else what to tell the visitor. */
+function captchaCheck(payload) {
+  const failed = "The anti-spam check expired or didn't pass. Please send again.";
+  const raw = typeof payload === 'string' ? payload.trim() : '';
+  if (!raw) return 'Please wait a moment for the anti-spam check to finish, then send again.';
+  let p;
+  try { p = JSON.parse(Buffer.from(raw, 'base64').toString('utf8')); } catch { return failed; }
+  const { algorithm, challenge, number, salt, signature } = p || {};
+  if (algorithm !== 'SHA-256' || typeof challenge !== 'string' || typeof salt !== 'string' || typeof signature !== 'string') return failed;
+  if (!Number.isInteger(number) || number < 0 || number > CAPTCHA_MAX) return failed;
+  const now = Math.floor(Date.now() / 1000);
+  const expires = Number((/[?&]expires=(\d+)/.exec(salt) || [])[1]);
+  if (!expires || expires < now) return failed;
+  const expected = Buffer.from(captchaSign(challenge), 'hex'), given = Buffer.from(signature, 'hex');
+  if (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) return failed;
+  if (sha256(salt + number) !== challenge || captchaUsed.has(challenge)) return failed;
+  captchaUsed.set(challenge, expires);
+  if (captchaUsed.size > 5000) for (const [c, exp] of captchaUsed) if (exp < now) captchaUsed.delete(c);
+  return null;
+}
 const isUrl = (s) => /^https?:\/\/[^\s]+$/i.test(s) && s.length <= 200;
 const today = () => new Date().toISOString().slice(0, 10);
 // Only Caddy reaches this port, and Caddy sets X-Forwarded-For from the real client: its last entry is the visitor.
@@ -364,6 +406,8 @@ async function contact(d) {
   if (!name) return { status: 400, error: 'Please fill in your name.' };
   if (!isEmail(email)) return { status: 400, error: 'Please check your email address.' };
   if (!message) return { status: 400, error: 'Please write a message.' };
+  const notHuman = captchaCheck(d.captcha);
+  if (notHuman) return { status: 400, error: notHuman };
 
   const team = teamMail({ heading: 'New message from the MINTRO website', rows: [['Topic', topic], ['Name', name], ['Email', email]], message, replyName: name });
   const sent = await sendRaw({ to: INBOX, subject: `MINTRO · ${topic} — ${name}`, replyTo: email, ...team });
@@ -388,6 +432,8 @@ async function listing(d) {
   if (!isUrl(f.site)) return { status: 400, error: 'Please give the project website as a full https:// address.' };
   if (!isEmail(f.email)) return { status: 400, error: 'Please check the email address.' };
   for (const k of ['explorer', 'wallet']) if (f[k] && !isUrl(f[k])) return { status: 400, error: `Please give the ${k === 'wallet' ? 'wallet download' : 'explorer'} as a full https:// address.` };
+  const notHuman = captchaCheck(d.captcha);
+  if (notHuman) return { status: 400, error: notHuman };
 
   const id = addRequest(d); // kept for the admin dashboard even if the email can't go out
   const rows = [['Request', `#${id}`], ['Project', `${f.project} (${f.symbol})`], ['Plan', f.plan], ['Algorithm', f.algorithm || '—'],
@@ -462,6 +508,7 @@ const server = http.createServer((req, res) => {
   }
   if (req.method === 'GET' && url.pathname === '/api/health') return send(res, 200, { ok: true, email: !!process.env.RESEND_API_KEY }, allowed);
   if (req.method === 'GET' && url.pathname === '/api/stats') return send(res, 200, statsView(), allowed, { 'Cache-Control': 'public, max-age=30' });
+  if (req.method === 'GET' && url.pathname === '/api/captcha') return send(res, 200, captchaChallenge(), allowed, { 'Cache-Control': 'no-store' });
 
   if (req.method === 'POST' && url.pathname === '/api/visit') {
     if (origin && !allowed) return send(res, 403, { error: 'Origin not allowed' });

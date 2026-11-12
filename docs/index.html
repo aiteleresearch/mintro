@@ -57,6 +57,7 @@
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin>
 <script type="module" src="assets/scene.js"></script>
 <script defer src="assets/ui.js"></script>
+<script defer src="assets/captcha.js"></script>
 <script defer src="assets/stats.js"></script>
 <script defer src="assets/download.js"></script>
 <script type="application/ld+json" id="mintro-ld">
@@ -593,7 +594,7 @@
             (up to 10%), shown on the coin.</span></div>
           <div class="tier"><b>Promo</b><span>Not mineable with MINTRO yet? A labelled spot in the Sponsored box.</span></div>
         </div>
-        <form class="apply glass" id="applyForm" data-reveal novalidate>
+        <form class="apply glass" id="applyForm" data-captcha="https://mintro.aiteleresearch.com/api/captcha" data-reveal novalidate>
           <div class="apply-grid">
             <label>Project<input name="project" required maxlength="80" autocomplete="organization"></label>
             <label>Ticker<input name="symbol" required maxlength="10" placeholder="e.g. NOVA"></label>
