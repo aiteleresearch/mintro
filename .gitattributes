@@ -8,3 +8,7 @@ listings/** -text
 
 # Shell scripts run on Linux servers
 *.sh text eol=lf
+
+# The installer kept in releases/ is binary: never touch its bytes
+*.exe binary
+releases/SHA256SUMS.txt text eol=lf

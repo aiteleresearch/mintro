@@ -13,7 +13,8 @@ address. MINTRO is paid for by coin projects that list their coins, and listed c
 
 ## Install (Windows 10/11)
 
-1. Run **`MINTRO-Setup-x.y.z.exe`** (from the website, `dist\` or the GitHub release). Its window shows what
+1. Run **`MINTRO-Setup-x.y.z.exe`** (from the website, or [`releases/`](releases/) in this repository, which always
+   holds the latest installer and its SHA-256). Its window shows what
    MINTRO is, installs in a few seconds with one click, and opens MINTRO. Running it again updates or repairs
    the installed copy, keeping settings and wallets. No admin rights, no Python needed. If the build isn't
    code-signed, Windows SmartScreen warns: choose *More info > Run anyway*. For scripted installs:

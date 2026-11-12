@@ -91,6 +91,26 @@ def sign(exe: Path, description: str) -> None:
     print(f"signed: {exe.name}")
 
 
+RELEASES = ROOT / "releases"
+
+
+def keep_in_repo(setup: Path) -> Path:
+    """Put the new installer in releases/ (tracked by git) in place of the previous one, with its SHA-256.
+
+    The repository always holds exactly one installer, the latest; older ones stay in git history.
+    """
+    import hashlib
+    RELEASES.mkdir(exist_ok=True)
+    for old in RELEASES.glob("MINTRO-Setup-*.exe"):
+        if old.name != setup.name:
+            old.unlink()
+    copy = RELEASES / setup.name
+    shutil.copy2(setup, copy)
+    digest = hashlib.sha256(copy.read_bytes()).hexdigest()
+    (RELEASES / "SHA256SUMS.txt").write_text(f"{digest}  {setup.name}\n", "utf-8", newline="\n")
+    return copy
+
+
 def version_file(name: str, description: str, original: str) -> Path:
     """Windows version information for an exe: what Properties > Details shows."""
     nums = tuple((list(map(int, re.findall(r"\d+", __version__)[:4])) + [0, 0, 0, 0])[:4])
@@ -144,6 +164,7 @@ def main() -> None:
                 *webview, *slim, str(HERE / "setup_main.py"))
     setup = DIST / f"{name}.exe"
     sign(setup, "MINTRO Setup")
+    in_repo = keep_in_repo(setup)
 
     # 3) the self-update package
     update = DIST / f"MINTRO-Update-{__version__}.zip"
@@ -155,6 +176,7 @@ def main() -> None:
     else:
         print(f"update NOT signed (no publisher key at {mintro_keys.KEY_FILE}); installed copies won't take it")
     print(f"\nDone: {setup} ({setup.stat().st_size / 1e6:.0f} MB)\n      {update} ({update.stat().st_size / 1e6:.0f} MB)")
+    print(f"      {in_repo} (the copy kept in the repository: commit it with the release)")
     for exe, ok in SIGNED.items():
         print(f"  {'SIGNED  ' if ok else 'UNSIGNED'} {exe}")
     if not all(SIGNED.values()):
